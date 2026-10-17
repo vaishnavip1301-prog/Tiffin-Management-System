@@ -1,485 +1,429 @@
-/* ==============================
-   AAPLA DABBA NAVBAR
-================================ */
-/* Logo and brand text */
 
+/* ========================================
+   AAPLA DABBA - NAVBAR
+   ======================================== */
+
+.aapla-navbar {
+  width: 100%;
+  min-height: 90px;
+  padding: 12px 0;
+  background-color: #123c2e;
+  position: relative;
+  z-index: 1050;
+}
+
+/* Brand and Logo */
 .aapla-navbar .aapla-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
+  gap: 10px;
+  margin-right: 24px;
   padding: 0;
-  margin: 0;
+  text-decoration: none;
 }
 
 .aapla-navbar .aapla-logo {
-  width: 66px;
-  height: 66px;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   flex-shrink: 0;
-  display: block;
-  object-fit: cover;
-  object-position: center;
   border-radius: 50%;
+  background-color: #ffffff;
   border: 2px solid #a8f52b;
-  background: #fff5e4;
-  transition: transform 0.3s ease;
-}
-
-.aapla-navbar .aapla-brand:hover .aapla-logo {
-  transform: scale(1.05);
 }
 
 .aapla-navbar .brand-text {
   display: flex;
   flex-direction: column;
-  color: #fff5e4;
-  font-size: 23px;
-  font-weight: 700;
+  color: #fffaf1;
+  font-size: 21px;
+  font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.5px;
 }
 
 .aapla-navbar .brand-text strong {
   color: #a8f52b;
-  font-size: 25px;
+  font-weight: 800;
 }
 
 .aapla-navbar .brand-text small {
-  margin-top: 6px;
-  color: #e0e9df;
-  font-size: 8px;
+  margin-top: 5px;
+  color: #fffaf1;
+  font-size: 7px;
   font-weight: 700;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.5px;
   white-space: nowrap;
 }
 
-/* Responsive logo */
+/* Main Navigation */
+.aapla-navbar .aapla-nav {
+  align-items: center;
+  gap: 7px;
+}
 
-@media (max-width: 480px) {
+.aapla-navbar .aapla-nav .nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 11px;
+  color: #fffaf1;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.aapla-navbar .aapla-nav .nav-link:hover,
+.aapla-navbar .aapla-nav .nav-link:focus {
+  color: #a8f52b;
+}
+
+.aapla-navbar .aapla-nav .nav-link.active {
+  color: #a8f52b;
+  position: relative;
+}
+
+.aapla-navbar .aapla-nav .nav-link.active::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  bottom: 3px;
+  left: 10px;
+  height: 2px;
+  background-color: #a8f52b;
+}
+
+/* ========================================
+   COMMON DROPDOWN STYLING
+   Same style for About Us, Our Menu,
+   and Meal Plans
+   ======================================== */
+
+.aapla-navbar .aapla-dropdown {
+  position: relative;
+}
+
+/* Space between the dropdown trigger and menu */
+.aapla-navbar .aapla-dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 9px;
+}
+
+/* Dropdown Arrow Button */
+.aapla-navbar .aapla-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 10px 8px;
+  color: #fffaf1;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.aapla-navbar .aapla-dropdown-toggle:hover,
+.aapla-navbar .aapla-dropdown-toggle:focus,
+.aapla-navbar .aapla-dropdown-toggle:active {
+  color: #a8f52b;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.aapla-navbar .aapla-dropdown-toggle i {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Meal Plans button should match the other nav links */
+.aapla-navbar .aapla-plans-toggle {
+  padding-right: 11px;
+  padding-left: 11px;
+}
+
+/* Same dropdown panel for all three menus */
+.aapla-navbar .aapla-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 202px;
+  margin: 0 !important;
+  padding: 8px !important;
+  background-color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(18, 60, 46, 0.14) !important;
+  list-style: none;
+  z-index: 1060;
+}
+
+/* Show the dropdown when its state is active */
+.aapla-navbar .aapla-dropdown-menu.show {
+  display: block;
+}
+
+/* Same item styling in every dropdown */
+.aapla-navbar .aapla-dropdown-menu .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  min-height: 36px;
+  margin: 0 0 2px;
+  padding: 10px 12px !important;
+  border: none;
+  border-radius: 7px !important;
+  background-color: transparent !important;
+  color: #123c2e !important;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.aapla-navbar .aapla-dropdown-menu li:last-child .dropdown-item {
+  margin-bottom: 0;
+}
+
+/* Identical hover and selected colors */
+.aapla-navbar .aapla-dropdown-menu .dropdown-item:hover,
+.aapla-navbar .aapla-dropdown-menu .dropdown-item:focus,
+.aapla-navbar .aapla-dropdown-menu .dropdown-item.active,
+.aapla-navbar .aapla-dropdown-menu .dropdown-item:active {
+  background-color: #f2f6e8 !important;
+  color: #285b3c !important;
+  box-shadow: none;
+}
+
+/* Dropdown icons */
+.aapla-navbar .aapla-dropdown-menu .dropdown-item i {
+  flex-shrink: 0;
+  color: #4d8a3d;
+  font-size: 14px;
+}
+
+/* Remove Bootstrap focus outline from dropdown arrows */
+.aapla-navbar .aapla-dropdown-toggle:focus-visible {
+  outline: 2px solid #a8f52b;
+  outline-offset: 2px;
+}
+
+/* ========================================
+   ORDER BUTTON
+   ======================================== */
+
+.aapla-navbar .order-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 24px;
+  margin-left: 20px;
+  color: #123c2e;
+  background-color: #a8f52b;
+  border: 1px solid #a8f52b;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.aapla-navbar .order-btn:hover,
+.aapla-navbar .order-btn:focus {
+  color: #123c2e;
+  background-color: #95e51d;
+  border-color: #95e51d;
+}
+
+/* ========================================
+   MOBILE NAVBAR TOGGLE
+   ======================================== */
+
+.aapla-navbar .aapla-toggler {
+  padding: 7px 10px;
+  color: #a8f52b;
+  background: transparent;
+  border: 1px solid rgba(168, 245, 43, 0.55);
+  border-radius: 8px;
+  font-size: 25px;
+  box-shadow: none;
+}
+
+.aapla-navbar .aapla-toggler:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+/* ========================================
+   RESPONSIVE NAVBAR
+   ======================================== */
+
+@media (min-width: 992px) {
+  .aapla-navbar .navbar-collapse {
+    align-items: center;
+  }
+
+  .aapla-navbar .aapla-dropdown-menu {
+    top: calc(100% + 8px);
+  }
+}
+
+@media (max-width: 1199.98px) and (min-width: 992px) {
+  .aapla-navbar .aapla-brand {
+    margin-right: 10px;
+  }
+
+  .aapla-navbar .aapla-nav {
+    gap: 0;
+  }
+
+  .aapla-navbar .aapla-nav .nav-link {
+    padding-right: 8px;
+    padding-left: 8px;
+    font-size: 12px;
+  }
+
+  .aapla-navbar .order-btn {
+    padding-right: 14px;
+    padding-left: 14px;
+    margin-left: 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .aapla-navbar {
+    min-height: 78px;
+    padding: 10px 0;
+  }
+
   .aapla-navbar .aapla-logo {
     width: 52px;
     height: 52px;
-  }
-
-  .aapla-navbar .aapla-brand {
-    gap: 8px;
   }
 
   .aapla-navbar .brand-text {
     font-size: 19px;
   }
 
-  .aapla-navbar .brand-text strong {
-    font-size: 21px;
-  }
-
-  .aapla-navbar .brand-text small {
-    font-size: 7px;
-    letter-spacing: 0.4px;
-  }
-}
-.aapla-navbar {
-  width: 100%;
-  max-width: none;
-  min-height: 100px;
-  margin: 0;
-  padding: 14px 0;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: #123c2e;
-  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.12);
-  animation: navbarEntrance 0.7s ease both;
-}
-
-.aapla-navbar > .container,
-.aapla-navbar > .container-fluid {
-  width: 100%;
-  max-width: none;
-}
-
-/* Logo */
-
-.aapla-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 13px;
-  padding: 0;
-  margin: 0;
-  color: #fff5e4;
-  text-decoration: none;
-  flex-shrink: 0;
-}
-
-.brand-icon {
-  width: 54px;
-  height: 54px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  background: #a8f52b;
-  color: #123c2e;
-  font-size: 29px;
-  transition: transform 0.3s ease;
-}
-
-.aapla-brand:hover .brand-icon {
-  transform: rotate(-8deg) scale(1.06);
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  font-size: 23px;
-  font-weight: 700;
-  line-height: 1.05;
-  color: #fff5e4;
-  letter-spacing: -0.5px;
-}
-
-.brand-text strong {
-  color: #a8f52b;
-  font-size: 25px;
-}
-
-.brand-text small {
-  margin-top: 6px;
-  color: #e0e9df;
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-/* Navigation links */
-
-.aapla-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.aapla-navbar .navbar-nav .nav-link {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 10px;
-  border: 0;
-  background: transparent;
-  color: #e7eee7;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-  text-decoration: none;
-  transition: color 0.25s ease;
-}
-
-.aapla-navbar .navbar-nav .nav-link::after {
-  content: "";
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 3px;
-  height: 2px;
-  background: #a8f52b;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.25s ease;
-}
-
-.aapla-navbar .navbar-nav .nav-link:hover,
-.aapla-navbar .navbar-nav .nav-link.active,
-.aapla-navbar .navbar-nav .dropdown-open > .nav-link {
-  color: #a8f52b;
-}
-
-.aapla-navbar .navbar-nav .nav-link:hover::after,
-.aapla-navbar .navbar-nav .nav-link.active::after {
-  transform: scaleX(1);
-}
-
-/* Dropdown arrow */
-
-.aapla-dropdown {
-  position: relative;
-}
-
-.aapla-navbar .aapla-dropdown-toggle {
-  cursor: pointer;
-}
-
-.dropdown-arrow {
-  font-size: 11px;
-  transition: transform 0.25s ease;
-}
-
-.aapla-dropdown:hover .dropdown-arrow,
-.aapla-dropdown.dropdown-open .dropdown-arrow {
-  transform: rotate(180deg);
-}
-
-/* Dropdown menu */
-
-.aapla-navbar .aapla-dropdown-menu {
-  display: block;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  min-width: 225px;
-  margin: 0;
-  padding: 10px;
-  border: 1px solid rgba(18, 60, 46, 0.08);
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.16);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(10px);
-  transition:
-    opacity 0.22s ease,
-    visibility 0.22s ease,
-    transform 0.22s ease;
-}
-
-/* Hover opens dropdown on desktop */
-
-@media (min-width: 992px) {
-  .aapla-dropdown:hover > .aapla-dropdown-menu,
-  .aapla-dropdown:focus-within > .aapla-dropdown-menu,
-  .aapla-dropdown.dropdown-open > .aapla-dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
-}
-
-/* Dropdown items */
-
-.aapla-navbar .aapla-dropdown-menu .dropdown-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 13px;
-  border-radius: 8px;
-  color: #123c2e;
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease,
-    padding-left 0.2s ease;
-}
-
-.aapla-navbar .aapla-dropdown-menu .dropdown-item i {
-  color: #528a35;
-  font-size: 16px;
-}
-
-.aapla-navbar .aapla-dropdown-menu .dropdown-item:hover,
-.aapla-navbar .aapla-dropdown-menu .dropdown-item:focus {
-  padding-left: 18px;
-  color: #123c2e;
-  background: #eff9e5;
-}
-
-/* Order button */
-
-.aapla-navbar .order-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  padding: 15px 25px;
-  border: 2px solid #a8f52b;
-  border-radius: 12px;
-  background: #a8f52b;
-  color: #123c2e;
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.aapla-navbar .order-btn:hover {
-  background: transparent;
-  color: #a8f52b;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(168, 245, 43, 0.15);
-}
-
-.aapla-navbar .order-btn i {
-  transition: transform 0.25s ease;
-}
-
-.aapla-navbar .order-btn:hover i {
-  transform: translate(3px, -3px);
-}
-
-/* Mobile toggle */
-
-.aapla-toggler {
-  width: 45px;
-  height: 42px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(168, 245, 43, 0.5);
-  border-radius: 9px;
-  color: #a8f52b;
-  font-size: 23px;
-  box-shadow: none !important;
-}
-
-.aapla-toggler:focus {
-  outline: 2px solid #a8f52b;
-  outline-offset: 3px;
-}
-
-/* Navbar entrance animation */
-
-@keyframes navbarEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ==============================
-   TABLET AND MOBILE
-================================ */
-
-@media (max-width: 991.98px) {
-  .aapla-navbar {
-    min-height: 78px;
-    padding: 12px 0;
-  }
-
-  .aapla-toggler {
-    display: inline-flex;
-  }
-
   .aapla-navbar .navbar-collapse {
     width: 100%;
-    padding: 15px 0 5px;
+    padding: 12px 0 5px;
   }
 
-  .aapla-nav {
+  .aapla-navbar .aapla-nav {
+    width: 100%;
     align-items: stretch;
     gap: 2px;
-    margin: 0 0 15px;
   }
 
-  .aapla-navbar .navbar-nav .nav-link {
+  .aapla-navbar .aapla-nav > .nav-item {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 13px 8px;
-    text-align: left;
   }
 
-  .aapla-navbar .navbar-nav .nav-link::after {
+  .aapla-navbar .aapla-nav .nav-link {
+    min-height: 42px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .aapla-navbar .aapla-nav .nav-link.active::after {
+    right: auto;
+    bottom: 3px;
+    left: 12px;
+    width: 35px;
+  }
+
+  .aapla-navbar .aapla-dropdown > div.d-flex {
+    width: 100%;
+  }
+
+  .aapla-navbar .aapla-dropdown > div.d-flex > .nav-link:first-child {
+    flex: 1;
+    justify-content: flex-start;
+  }
+
+  .aapla-navbar .aapla-dropdown-toggle {
+    min-width: 42px;
+    justify-content: center;
+  }
+
+  .aapla-navbar .aapla-dropdown::after {
     display: none;
   }
 
   .aapla-navbar .aapla-dropdown-menu {
     position: static;
+    float: none;
     width: 100%;
     min-width: 0;
-    margin: 2px 0 10px;
-    padding: 5px;
-    border: 1px solid rgba(168, 245, 43, 0.15);
-    border-radius: 10px;
-    background: #1a4938;
-    box-shadow: none;
-
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
-
-    display: none;
-  }
-
-  .aapla-navbar .aapla-dropdown.dropdown-open > .aapla-dropdown-menu {
-    display: block;
+    margin: 0 !important;
+    padding: 8px !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
   }
 
   .aapla-navbar .aapla-dropdown-menu .dropdown-item {
-    padding: 12px;
-    color: #fff5e4;
-  }
-
-  .aapla-navbar .aapla-dropdown-menu .dropdown-item i {
-    color: #a8f52b;
-  }
-
-  .aapla-navbar .aapla-dropdown-menu .dropdown-item:hover,
-  .aapla-navbar .aapla-dropdown-menu .dropdown-item:focus {
-    padding-left: 17px;
-    color: #a8f52b;
-    background: rgba(168, 245, 43, 0.1);
+    min-height: 38px;
+    padding: 10px 14px !important;
+    font-size: 13px;
   }
 
   .aapla-navbar .order-btn {
+    display: flex;
     width: 100%;
-    padding: 14px 20px;
+    min-height: 46px;
+    margin: 12px 0 0;
+    padding: 12px 18px;
   }
 }
 
-/* Small mobile */
-
-@media (max-width: 480px) {
-  .aapla-navbar > .container-fluid {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+@media (max-width: 380px) {
+  .aapla-navbar .aapla-brand {
+    gap: 7px;
   }
 
-  .brand-icon {
-    width: 43px;
-    height: 43px;
-    border-radius: 12px;
-    font-size: 24px;
+  .aapla-navbar .aapla-logo {
+    width: 45px;
+    height: 45px;
   }
 
-  .aapla-brand {
-    gap: 9px;
+  .aapla-navbar .brand-text {
+    font-size: 17px;
   }
 
-  .brand-text {
-    font-size: 20px;
-  }
-
-  .brand-text strong {
-    font-size: 22px;
-  }
-
-  .brand-text small {
-    font-size: 7px;
-    letter-spacing: 0.6px;
-  }
-}
-
-/* Accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-  .aapla-navbar,
-  .aapla-navbar *,
-  .aapla-navbar *::before,
-  .aapla-navbar *::after {
-    animation: none !important;
-    transition: none !important;
+  .aapla-navbar .brand-text small {
+    font-size: 6px;
   }
 }

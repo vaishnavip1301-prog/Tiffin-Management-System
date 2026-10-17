@@ -1,0 +1,684 @@
+
+/* ========================================
+   SPECIAL DISHES PAGE
+   Aapla Dabba Theme
+======================================== */
+
+.special-dishes-page {
+  overflow: hidden;
+  background: #fffaf1;
+  color: #123c2e;
+}
+
+.special-dishes-page a {
+  text-decoration: none;
+}
+
+/* HERO SECTION */
+
+.special-dishes-hero {
+  position: relative;
+  padding: 110px 0 95px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(18, 60, 46, 0.94) 0%,
+      rgba(18, 60, 46, 0.78) 55%,
+      rgba(18, 60, 46, 0.58) 100%
+    ),
+    url("/images/t4.jpg") center center / cover no-repeat;
+  color: #fffaf1;
+}
+
+.special-dishes-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1140px;
+}
+
+.special-dishes-kicker,
+.special-dishes-label {
+  display: inline-block;
+  margin-bottom: 17px;
+  color: #e96b2c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.special-dishes-kicker {
+  color: #c9f58b;
+}
+
+.special-dishes-hero h1 {
+  max-width: 850px;
+  margin-bottom: 22px;
+  color: #fffaf1;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -2px;
+}
+
+.special-dishes-hero h1 span {
+  color: #a8f52b;
+}
+
+.special-dishes-hero-content > p {
+  max-width: 680px;
+  margin-bottom: 30px;
+  color: #fffaf1;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* HERO BUTTONS */
+
+.special-dishes-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.special-dishes-primary-btn,
+.special-dishes-secondary-btn,
+.special-dishes-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 50px;
+  padding: 14px 23px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 750;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
+}
+
+.special-dishes-primary-btn {
+  border: none;
+  background: #a8f52b;
+  color: #123c2e;
+  cursor: pointer;
+}
+
+.special-dishes-primary-btn:hover {
+  transform: translateY(-3px);
+  background: #c0ff60;
+  color: #123c2e;
+}
+
+.special-dishes-secondary-btn {
+  border: 1px solid rgba(255, 250, 241, 0.6);
+  background: rgba(18, 60, 46, 0.2);
+  color: #fffaf1;
+}
+
+.special-dishes-secondary-btn:hover {
+  background: #fffaf1;
+  color: #123c2e;
+}
+
+/* HERO HIGHLIGHTS */
+
+.special-dishes-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 35px;
+}
+
+.special-dishes-highlights span {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #fffaf1;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.special-dishes-highlights i {
+  color: #a8f52b;
+  font-size: 19px;
+}
+
+/* INTRO SECTION */
+
+.special-dishes-intro {
+  padding: 80px 0 60px;
+  background: #fffaf1;
+  text-align: center;
+}
+
+.special-dishes-intro .container {
+  max-width: 850px;
+}
+
+.special-dishes-intro h2 {
+  margin-bottom: 17px;
+  color: #123c2e;
+  font-size: clamp(29px, 4vw, 43px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -1px;
+}
+
+.special-dishes-intro h2 span {
+  color: #285b3c;
+}
+
+.special-dishes-intro p {
+  margin-bottom: 0;
+  color: #68776a;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+/* DISH CATALOG */
+
+.special-dishes-catalog {
+  padding: 55px 0 85px;
+  background: #fff;
+  scroll-margin-top: 90px;
+}
+
+.special-dishes-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.special-dishes-heading h2 {
+  margin-bottom: 13px;
+  color: #123c2e;
+  font-size: clamp(29px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.special-dishes-heading p {
+  margin-bottom: 0;
+  color: #68776a;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.special-dishes-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding-bottom: 5px;
+  color: #285b3c;
+  font-size: 14px;
+  font-weight: 800;
+  transition: color 0.25s ease;
+}
+
+.special-dishes-view-all:hover {
+  color: #e96b2c;
+}
+
+/* DISH CARDS */
+
+.special-dish-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #e8e9dc;
+  border-radius: 17px;
+  background: #fffaf1;
+  box-shadow: 0 10px 30px rgba(18, 60, 46, 0.07);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.special-dish-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 18px 38px rgba(18, 60, 46, 0.14);
+}
+
+/* DISH IMAGES */
+
+.special-dish-image-wrap {
+  position: relative;
+  height: 235px;
+  overflow: hidden;
+  background: #f2f6e8;
+}
+
+.special-dish-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.special-dish-card:hover .special-dish-image {
+  transform: scale(1.05);
+}
+
+.special-dish-tag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 8px 13px;
+  border-radius: 30px;
+  background: #a8f52b;
+  color: #123c2e;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* DISH DETAILS */
+
+.special-dish-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 23px;
+}
+
+.special-dish-category {
+  margin-bottom: 10px;
+  color: #e96b2c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.special-dish-card-body h3 {
+  margin-bottom: 12px;
+  color: #123c2e;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.special-dish-card-body > p {
+  min-height: 96px;
+  margin-bottom: 22px;
+  color: #68776a;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* PRICE AND ORDER */
+
+.special-dish-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 17px;
+  border-top: 1px solid #e8e9dc;
+}
+
+.special-dish-price-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.special-dish-price-wrap > span,
+.special-dish-price-wrap small {
+  color: #7b857c;
+  font-size: 11px;
+}
+
+.special-dish-price-wrap strong {
+  color: #123c2e;
+  font-size: 25px;
+  font-weight: 850;
+}
+
+.special-dish-order-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 14px;
+  border-radius: 7px;
+  background: #123c2e;
+  color: #fffaf1;
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.special-dish-order-btn:hover {
+  transform: translateY(-2px);
+  background: #285b3c;
+  color: #fff;
+}
+
+/* CATALOG NOTE */
+
+.special-dishes-note {
+  margin-top: 28px;
+  margin-bottom: 0;
+  color: #68776a;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.special-dishes-note i {
+  margin-right: 7px;
+  color: #e96b2c;
+}
+
+/* BENEFITS SECTION */
+
+.special-dishes-benefits {
+  padding: 85px 0;
+  background: #f2f6e8;
+}
+
+.special-dishes-benefits-heading {
+  max-width: 750px;
+  margin: 0 auto 42px;
+  text-align: center;
+}
+
+.special-dishes-benefits-heading h2 {
+  margin-bottom: 15px;
+  color: #123c2e;
+  font-size: clamp(29px, 4vw, 42px);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.special-dishes-benefits-heading > p {
+  margin-bottom: 0;
+  color: #68776a;
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* BENEFIT CARDS */
+
+.special-dish-benefit-card {
+  height: 100%;
+  padding: 30px 24px;
+  border: 1px solid #e1e9d6;
+  border-radius: 14px;
+  background: #fffaf1;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.special-dish-benefit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(18, 60, 46, 0.09);
+}
+
+.special-dish-benefit-card > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 20px;
+  border-radius: 13px;
+  background: #e7f7cf;
+  color: #285b3c;
+  font-size: 24px;
+}
+
+.special-dish-benefit-card h3 {
+  margin-bottom: 11px;
+  color: #123c2e;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.special-dish-benefit-card p {
+  margin-bottom: 0;
+  color: #68776a;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* FINAL CTA */
+
+.special-dishes-cta {
+  padding: 80px 0;
+  background: #fffaf1;
+}
+
+.special-dishes-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 45px;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(168, 245, 43, 0.12),
+      transparent 32%
+    ),
+    #123c2e;
+  color: #fffaf1;
+}
+
+.special-dishes-cta-inner .special-dishes-label {
+  color: #c9f58b;
+}
+
+.special-dishes-cta-inner h2 {
+  max-width: 650px;
+  margin-bottom: 13px;
+  color: #fffaf1;
+  font-size: clamp(26px, 4vw, 39px);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.special-dishes-cta-inner p {
+  margin-bottom: 0;
+  color: rgba(255, 250, 241, 0.82);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.special-dishes-cta-btn {
+  flex-shrink: 0;
+  background: #a8f52b;
+  color: #123c2e;
+}
+
+.special-dishes-cta-btn:hover {
+  transform: translateY(-3px);
+  background: #c0ff60;
+  color: #123c2e;
+}
+
+/* TABLET RESPONSIVE */
+
+@media (max-width: 991px) {
+  .special-dishes-hero {
+    padding: 90px 0 75px;
+  }
+
+  .special-dishes-heading {
+    align-items: flex-start;
+  }
+
+  .special-dish-card-body {
+    padding: 20px;
+  }
+
+  .special-dish-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .special-dish-order-btn {
+    width: 100%;
+  }
+
+  .special-dishes-cta-inner {
+    padding: 35px;
+  }
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 767px) {
+  .special-dishes-hero {
+    padding: 75px 0 60px;
+    background-position: center;
+  }
+
+  .special-dishes-hero h1 {
+    font-size: clamp(38px, 10vw, 54px);
+    letter-spacing: -1px;
+  }
+
+  .special-dishes-hero-content > p {
+    font-size: 15px;
+  }
+
+  .special-dishes-hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .special-dishes-primary-btn,
+  .special-dishes-secondary-btn {
+    width: 100%;
+  }
+
+  .special-dishes-highlights {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 28px;
+  }
+
+  .special-dishes-intro {
+    padding: 55px 0 40px;
+  }
+
+  .special-dishes-catalog {
+    padding: 45px 0 60px;
+  }
+
+  .special-dishes-heading {
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+
+  .special-dishes-heading h2,
+  .special-dishes-benefits-heading h2 {
+    font-size: 30px;
+  }
+
+  .special-dishes-view-all {
+    padding-bottom: 0;
+  }
+
+  .special-dish-image-wrap {
+    height: 230px;
+  }
+
+  .special-dish-card-body {
+    padding: 22px;
+  }
+
+  .special-dish-card-body > p {
+    min-height: auto;
+  }
+
+  .special-dish-card-footer {
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .special-dish-order-btn {
+    width: auto;
+  }
+
+  .special-dishes-benefits {
+    padding: 60px 0;
+  }
+
+  .special-dishes-benefits-heading {
+    margin-bottom: 30px;
+  }
+
+  .special-dish-benefit-card {
+    padding: 25px 22px;
+  }
+
+  .special-dishes-cta {
+    padding: 55px 0;
+  }
+
+  .special-dishes-cta-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 24px;
+    padding: 28px 23px;
+  }
+
+  .special-dishes-cta-inner h2 {
+    font-size: 29px;
+  }
+
+  .special-dishes-cta-btn {
+    width: 100%;
+  }
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 400px) {
+  .special-dishes-hero h1 {
+    font-size: 36px;
+  }
+
+  .special-dishes-kicker,
+  .special-dishes-label {
+    font-size: 10px;
+    letter-spacing: 1.4px;
+  }
+
+  .special-dish-card-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .special-dish-order-btn {
+    width: 100%;
+  }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+  .special-dish-card,
+  .special-dish-image,
+  .special-dish-benefit-card,
+  .special-dishes-primary-btn,
+  .special-dishes-secondary-btn,
+  .special-dishes-cta-btn {
+    transition: none;
+  }
+}

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
@@ -15,14 +16,37 @@ function Navbar() {
     setOpenDropdown((current) => (current === name ? "" : name));
   };
 
+  const handleDropdownEnter = (name: string) => {
+    if (window.innerWidth >= 992) {
+      setOpenDropdown(name);
+    }
+  };
+
+  const handleDropdownLeave = () => {
+    if (window.innerWidth >= 992) {
+      setOpenDropdown("");
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-lg aapla-navbar">
       <div className="container-fluid px-3 px-lg-5">
+        {/* Brand Logo */}
+        <Link
+          to="/"
+          className="navbar-brand aapla-brand"
+          onClick={closeMenu}
+        >
+          <img
+            src="/images/logo.jpg"
+            alt="Aapla Dabba Logo"
+            className="aapla-logo"
+          />
 
-       <Link to="/" className="navbar-brand aapla-brand" onClick={closeMenu}>
-            <img src="/images/logo.jpg" alt="Aapla Dabba Logo" className="aapla-logo"/>
-
-            <span className="brand-text">Aapla <strong>Dabba</strong><small>GHARGHUTI JEVAAN, ROJ NAVIN</small></span>
+          <span className="brand-text">
+            Aapla <strong>Dabba</strong>
+            <small>GHARGHUTI JEVAAN, ROJ NAVIN</small>
+          </span>
         </Link>
 
         {/* Mobile Toggle */}
@@ -31,9 +55,9 @@ function Navbar() {
           type="button"
           aria-label="Toggle navigation"
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setMenuOpen((current) => !current)}
         >
-          <i className={`bi ${menuOpen ? "bi-x-lg" : "bi-list"}`}></i>
+          <i className={`bi ${menuOpen ? "bi-x-lg" : "bi-list"}`} />
         </button>
 
         {/* Navigation */}
@@ -43,7 +67,6 @@ function Navbar() {
           }`}
         >
           <ul className="navbar-nav mx-auto aapla-nav">
-
             {/* Home */}
             <li className="nav-item">
               <NavLink
@@ -57,124 +80,168 @@ function Navbar() {
                 Home
               </NavLink>
             </li>
-               {/* About Us Dropdown */}
+
+          {/* About Dropdown */}
             <li
               className={`nav-item dropdown aapla-dropdown ${
                 openDropdown === "about" ? "dropdown-open" : ""
               }`}
-              onMouseEnter={() => {
-                if (window.innerWidth >= 992) {
-                  setOpenDropdown("about");
-                }
-              }}
-              onMouseLeave={() => setOpenDropdown("")}
+              onMouseEnter={() => handleDropdownEnter("about")}
+              onMouseLeave={handleDropdownLeave}
             >
               <button
                 type="button"
-                className="nav-link dropdown-toggle aapla-dropdown-toggle"
+                className="nav-link aapla-dropdown-toggle"
                 aria-expanded={openDropdown === "about"}
                 onClick={() => toggleDropdown("about")}
               >
                 About Us
-                <i className="bi bi-chevron-down dropdown-arrow"></i>
+                <i
+                  className={`bi ms-2 ${
+                    openDropdown === "about"
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
+                  }`}
+                />
               </button>
 
-              <ul className="dropdown-menu aapla-dropdown-menu">
+              <ul
+                className={`dropdown-menu aapla-dropdown-menu ${
+                  openDropdown === "about" ? "show" : ""
+                }`}
+              >
                 <li>
-                  <Link
-                    to="/about#our-story"
+                  <NavLink
+                    to="/about"
+                    end
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-info-circle me-2"></i>
+                    <i className="bi bi-info-circle me-2" />
+                    About Us
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/about/our-story"
+                    className="dropdown-item"
+                    onClick={closeMenu}
+                  >
+                    <i className="bi bi-book me-2" />
                     Our Story
-                  </Link>
+                  </NavLink>
                 </li>
+
                 <li>
-                  <Link
-                    to="/about#why-choose-us"
+                  <NavLink
+                    to="/about/why-choose-us"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-heart me-2"></i>
+                    <i className="bi bi-patch-check me-2" />
                     Why Choose Us
-                  </Link>
+                  </NavLink>
                 </li>
+
                 <li>
-                  <Link
-                    to="/about#our-kitchen"
+                  <NavLink
+                    to="/about/our-kitchen"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-journal-text me-2"></i>
+                    <i className="bi bi-shop me-2" />
                     Our Kitchen
-                  </Link>
+                  </NavLink>
                 </li>
               </ul>
             </li>
 
-            {/* Our Menu Dropdown */}
+            {/* Our Menu */}
             <li
               className={`nav-item dropdown aapla-dropdown ${
                 openDropdown === "menu" ? "dropdown-open" : ""
               }`}
-              onMouseEnter={() => {
-                if (window.innerWidth >= 992) {
-                  setOpenDropdown("menu");
-                }
-              }}
-              onMouseLeave={() => setOpenDropdown("")}
+              onMouseEnter={() => handleDropdownEnter("menu")}
+              onMouseLeave={handleDropdownLeave}
             >
-              <button
-                type="button"
-                className="nav-link dropdown-toggle aapla-dropdown-toggle"
-                aria-expanded={openDropdown === "menu"}
-                onClick={() => toggleDropdown("menu")}
-              >
-                Our Menu
-                <i className="bi bi-chevron-down dropdown-arrow"></i>
-              </button>
+              <div className="d-flex align-items-center">
+                <NavLink
+                  to="/menu"
+                  end
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? "active" : ""}`
+                  }
+                  onClick={closeMenu}
+                >
+                  Our Menu
+                </NavLink>
 
-              <ul className="dropdown-menu aapla-dropdown-menu">
+                <button
+                  type="button"
+                  className="nav-link aapla-dropdown-toggle"
+                  aria-label="Toggle Our Menu dropdown"
+                  aria-expanded={openDropdown === "menu"}
+                  onClick={() => toggleDropdown("menu")}
+                >
+                  <i
+                    className={`bi ${
+                      openDropdown === "menu"
+                        ? "bi-chevron-up"
+                        : "bi-chevron-down"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              <ul
+                className={`dropdown-menu aapla-dropdown-menu ${
+                  openDropdown === "menu" ? "show" : ""
+                }`}
+              >
                 <li>
-                  <Link
+                  <NavLink
                     to="/menu"
+                    end
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-grid me-2"></i>
+                    <i className="bi bi-grid me-2" />
                     All Meals
-                  </Link>
+                  </NavLink>
                 </li>
+
                 <li>
-                  <Link
-                    to="/menu"
+                  <NavLink
+                    to="/menu/daily-meal"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-egg-fried me-2"></i>
+                    <i className="bi bi-egg-fried me-2" />
                     Daily Tiffin
-                  </Link>
+                  </NavLink>
                 </li>
+
                 <li>
-                  <Link
-                    to="/menu"
+                  <NavLink
+                    to="/menu/healthy-meals"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-heart-pulse me-2"></i>
+                    <i className="bi bi-heart-pulse me-2" />
                     Healthy Meals
-                  </Link>
+                  </NavLink>
                 </li>
+
                 <li>
-                  <Link
-                    to="/menu"
+                  <NavLink
+                    to="/menu/special-dishes"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-stars me-2"></i>
+                    <i className="bi bi-stars me-2" />
                     Special Dishes
-                  </Link>
+                  </NavLink>
                 </li>
               </ul>
             </li>
@@ -184,51 +251,59 @@ function Navbar() {
               className={`nav-item dropdown aapla-dropdown ${
                 openDropdown === "plans" ? "dropdown-open" : ""
               }`}
-              onMouseEnter={() => {
-                if (window.innerWidth >= 992) {
-                  setOpenDropdown("plans");
-                }
-              }}
-              onMouseLeave={() => setOpenDropdown("")}
+              onMouseEnter={() => handleDropdownEnter("plans")}
+              onMouseLeave={handleDropdownLeave}
             >
               <button
                 type="button"
-                className="nav-link dropdown-toggle aapla-dropdown-toggle"
+                className="nav-link aapla-dropdown-toggle aapla-plans-toggle"
                 aria-expanded={openDropdown === "plans"}
                 onClick={() => toggleDropdown("plans")}
               >
                 Meal Plans
-                <i className="bi bi-chevron-down dropdown-arrow"></i>
+                <i
+                  className={`bi ms-2 ${
+                    openDropdown === "plans"
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
+                  }`}
+                />
               </button>
 
-              <ul className="dropdown-menu aapla-dropdown-menu">
+              <ul
+                className={`dropdown-menu aapla-dropdown-menu ${
+                  openDropdown === "plans" ? "show" : ""
+                }`}
+              >
                 <li>
                   <Link
                     to="/plans"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-calendar-day me-2"></i>
+                    <i className="bi bi-calendar-day me-2" />
                     Daily Plan
                   </Link>
                 </li>
+
                 <li>
                   <Link
                     to="/plans"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-calendar-week me-2"></i>
+                    <i className="bi bi-calendar-week me-2" />
                     Weekly Plan
                   </Link>
                 </li>
+
                 <li>
                   <Link
                     to="/plans"
                     className="dropdown-item"
                     onClick={closeMenu}
                   >
-                    <i className="bi bi-calendar-month me-2"></i>
+                    <i className="bi bi-calendar-month me-2" />
                     Monthly Plan
                   </Link>
                 </li>
@@ -247,7 +322,6 @@ function Navbar() {
                 Contact
               </NavLink>
             </li>
-
           </ul>
 
           {/* Order Button */}
@@ -257,9 +331,8 @@ function Navbar() {
             onClick={closeMenu}
           >
             Order Your Dabba
-            <i className="bi bi-arrow-up-right ms-2"></i>
+            <i className="bi bi-arrow-up-right ms-2" />
           </Link>
-
         </div>
       </div>
     </nav>

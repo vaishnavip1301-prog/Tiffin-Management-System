@@ -1,0 +1,500 @@
+
+/* Daily Tiffin Page */
+.daily-tiffin-page {
+  min-height: 100vh;
+  background: #fffaf1;
+  color: #123c2e;
+}
+
+.daily-tiffin-page h1,
+.daily-tiffin-page h2,
+.daily-tiffin-page h3,
+.daily-tiffin-page p {
+  margin-top: 0;
+}
+
+.daily-tiffin-page h2 {
+  color: #123c2e;
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 750;
+  letter-spacing: -0.8px;
+}
+
+.daily-tiffin-page p {
+  color: #637167;
+  line-height: 1.8;
+}
+
+/* Hero */
+.daily-tiffin-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 500px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(18, 60, 46, 0.93), rgba(18, 60, 46, 0.57)),
+    url("/images/t3.jpg") center 55% / cover no-repeat;
+}
+
+.daily-tiffin-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    rgba(18, 60, 46, 0.35),
+    transparent 70%
+  );
+}
+
+.daily-tiffin-hero-content {
+  position: relative;
+  z-index: 1;
+  padding-top: 75px;
+  padding-bottom: 75px;
+}
+
+.daily-tiffin-kicker,
+.daily-tiffin-section-label {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #4d8a3d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.daily-tiffin-kicker {
+  color: #c5ff83;
+}
+
+.daily-tiffin-hero h1 {
+  max-width: 720px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: clamp(38px, 5vw, 60px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -1.5px;
+}
+
+.daily-tiffin-hero h1 span {
+  color: #c5ff83;
+}
+
+.daily-tiffin-hero-content > p {
+  max-width: 600px;
+  margin-bottom: 28px;
+  color: #f0f4ed;
+  font-size: 17px;
+}
+
+.daily-tiffin-hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.daily-tiffin-primary-btn,
+.daily-tiffin-secondary-btn,
+.daily-tiffin-order-btn,
+.daily-tiffin-view-all,
+.daily-tiffin-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.daily-tiffin-primary-btn {
+  padding: 14px 20px;
+  border-radius: 9px;
+  background: #a8f52b;
+  color: #123c2e;
+  font-weight: 750;
+}
+
+.daily-tiffin-primary-btn:hover {
+  background: #c0ff65;
+  color: #123c2e;
+  transform: translateY(-2px);
+}
+
+.daily-tiffin-secondary-btn {
+  padding: 13px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 9px;
+  color: #ffffff;
+  font-weight: 650;
+}
+
+.daily-tiffin-secondary-btn:hover {
+  background: #ffffff;
+  color: #123c2e;
+}
+
+.daily-tiffin-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 35px;
+}
+
+.daily-tiffin-highlights span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.daily-tiffin-highlights i {
+  color: #c5ff83;
+  font-size: 17px;
+}
+
+/* Intro */
+.daily-tiffin-intro {
+  padding: 70px 0 55px;
+  text-align: center;
+}
+
+.daily-tiffin-intro .container {
+  max-width: 850px;
+}
+
+.daily-tiffin-intro h2 {
+  margin-bottom: 15px;
+}
+
+.daily-tiffin-intro h2 span {
+  color: #4d8a3d;
+}
+
+.daily-tiffin-intro p {
+  max-width: 740px;
+  margin: 0 auto;
+  font-size: 16px;
+}
+
+/* Meals */
+.daily-tiffin-meals {
+  padding: 65px 0 75px;
+  background: #fff5e4;
+  scroll-margin-top: 90px;
+}
+
+.daily-tiffin-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.daily-tiffin-section-heading h2 {
+  margin-bottom: 10px;
+}
+
+.daily-tiffin-section-heading p {
+  margin-bottom: 0;
+}
+
+.daily-tiffin-view-all {
+  flex-shrink: 0;
+  margin-bottom: 5px;
+  color: #285b3c;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.daily-tiffin-view-all:hover {
+  color: #e96b2c;
+}
+
+.daily-tiffin-card {
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #eee5d7;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 5px 20px rgba(18, 60, 46, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.daily-tiffin-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(18, 60, 46, 0.12);
+}
+
+.daily-tiffin-image-wrap {
+  position: relative;
+  height: 235px;
+  overflow: hidden;
+  background: #f2f6e8;
+}
+
+.daily-tiffin-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.daily-tiffin-card:hover .daily-tiffin-image {
+  transform: scale(1.05);
+}
+
+.daily-tiffin-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #a8f52b;
+  color: #123c2e;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.daily-tiffin-card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+}
+
+.daily-tiffin-card-category {
+  margin-bottom: 9px;
+  color: #4d8a3d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.daily-tiffin-card-body h3 {
+  margin-bottom: 10px;
+  color: #123c2e;
+  font-size: 21px;
+  font-weight: 750;
+}
+
+.daily-tiffin-card-body > p {
+  min-height: 78px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.daily-tiffin-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 17px;
+  border-top: 1px solid #eee9df;
+}
+
+.daily-tiffin-price-label,
+.daily-tiffin-price-note {
+  display: block;
+  color: #778177;
+  font-size: 11px;
+}
+
+.daily-tiffin-price {
+  display: inline-block;
+  margin: 3px 5px 2px 0;
+  color: #123c2e;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.daily-tiffin-order-btn {
+  padding: 11px 13px;
+  border-radius: 8px;
+  background: #123c2e;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.daily-tiffin-order-btn:hover {
+  background: #285b3c;
+  color: #ffffff;
+}
+
+.daily-tiffin-note {
+  margin: 25px 0 0;
+  font-size: 12px;
+}
+
+.daily-tiffin-note i {
+  margin-right: 6px;
+  color: #4d8a3d;
+}
+
+/* Benefits */
+.daily-tiffin-benefits {
+  padding: 75px 0;
+  background: #fffaf1;
+}
+
+.daily-tiffin-benefits-heading {
+  max-width: 680px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.daily-tiffin-benefits-heading h2 {
+  margin-bottom: 12px;
+}
+
+.daily-tiffin-benefit-card {
+  height: 100%;
+  padding: 27px 22px;
+  border: 1px solid #eae9d9;
+  border-radius: 15px;
+  background: #ffffff;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.daily-tiffin-benefit-card:hover {
+  transform: translateY(-5px);
+}
+
+.daily-tiffin-benefit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 18px;
+  border-radius: 16px;
+  background: #f2f6e8;
+  color: #285b3c;
+  font-size: 25px;
+}
+
+.daily-tiffin-benefit-card h3 {
+  margin-bottom: 10px;
+  color: #123c2e;
+  font-size: 17px;
+  font-weight: 750;
+}
+
+.daily-tiffin-benefit-card p {
+  margin-bottom: 0;
+  font-size: 13px;
+}
+
+/* CTA */
+.daily-tiffin-cta {
+  padding: 30px 0 75px;
+  background: #fffaf1;
+}
+
+.daily-tiffin-cta-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 42px;
+  border-radius: 20px;
+  background: #123c2e;
+}
+
+.daily-tiffin-cta-inner .daily-tiffin-section-label {
+  color: #c5ff83;
+}
+
+.daily-tiffin-cta-inner h2 {
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.daily-tiffin-cta-inner p {
+  margin-bottom: 0;
+  color: #e3eae2;
+}
+
+.daily-tiffin-cta-btn {
+  flex-shrink: 0;
+  padding: 14px 19px;
+  border-radius: 9px;
+  background: #a8f52b;
+  color: #123c2e;
+  font-weight: 750;
+}
+
+.daily-tiffin-cta-btn:hover {
+  background: #c0ff65;
+  color: #123c2e;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .daily-tiffin-hero {
+    min-height: 530px;
+  }
+
+  .daily-tiffin-hero-content {
+    padding-top: 60px;
+    padding-bottom: 55px;
+  }
+
+  .daily-tiffin-hero h1 {
+    font-size: 38px;
+  }
+
+  .daily-tiffin-highlights {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .daily-tiffin-intro {
+    padding: 50px 0 40px;
+  }
+
+  .daily-tiffin-meals,
+  .daily-tiffin-benefits {
+    padding: 50px 0;
+  }
+
+  .daily-tiffin-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .daily-tiffin-image-wrap {
+    height: 230px;
+  }
+
+  .daily-tiffin-cta {
+    padding-bottom: 50px;
+  }
+
+  .daily-tiffin-cta-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 28px 22px;
+  }
+
+  .daily-tiffin-cta-inner h2 {
+    font-size: 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .daily-tiffin-card,
+  .daily-tiffin-image,
+  .daily-tiffin-benefit-card {
+    transition: none;
+  }
+}

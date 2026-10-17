@@ -1,546 +1,397 @@
 
-/* ========================================
-   AAPLA DABBA - ABOUT PAGE
-   Theme: Green, Cream, White and Lime
-======================================== */
-
 .about-page {
-  --about-green: #123c2e;
-  --about-green-light: #1d5942;
-  --about-lime: #a8f52b;
-  --about-cream: #fff5e4;
-  --about-white: #fffaf1;
-  --about-text: #56635b;
-
-  background: var(--about-white);
-  color: var(--about-green);
+  background: #fffaf1;
+  color: #123c2e;
   overflow: hidden;
 }
 
-.about-page * {
-  box-sizing: border-box;
-}
-
-.about-page section {
+.about-page section[id] {
   scroll-margin-top: 100px;
 }
 
-.about-page img {
-  display: block;
-  max-width: 100%;
+.about-hero {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 55px;
+  padding: 75px 7%;
+  background: #fff5e4;
 }
 
-.about-page h1,
-.about-page h2,
-.about-page h3 {
-  font-family: inherit;
-  font-weight: 800;
-  line-height: 1.25;
-}
-
-.about-page p {
-  color: var(--about-text);
-  font-size: 16px;
-  line-height: 1.85;
-}
-
-.about-page h1 span,
-.about-page h2 span {
-  color: var(--about-green-light);
+.about-hero-content {
+  max-width: 650px;
 }
 
 .about-label {
   display: inline-block;
-  margin-bottom: 16px;
-  color: var(--about-green-light);
+  margin-bottom: 18px;
+  color: #e96b2c;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.about-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 13px 25px;
-  border: 1px solid var(--about-green);
-  border-radius: 7px;
-  background: var(--about-green);
-  color: #ffffff;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.about-button:hover {
-  background: var(--about-green-light);
-  border-color: var(--about-green-light);
-  color: #ffffff;
-}
-
-.about-button-light {
-  background: var(--about-cream);
-  border-color: var(--about-cream);
-  color: var(--about-green);
-}
-
-.about-button-light:hover {
-  background: #ffffff;
-  border-color: #ffffff;
-  color: var(--about-green);
-}
-
-/* ========================================
-   1. HERO SECTION - CREAM BACKGROUND
-======================================== */
-
-.about-hero {
-  padding: 80px 0;
-  background: var(--about-cream);
 }
 
 .about-hero h1 {
   margin-bottom: 22px;
-  color: var(--about-green);
-  font-size: clamp(36px, 5vw, 60px);
+  font-size: clamp(38px, 4.5vw, 62px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -1.5px;
 }
 
 .about-hero h1 span {
   display: block;
+  color: #e96b2c;
 }
 
-.about-hero p {
-  max-width: 540px;
-  margin-bottom: 28px;
+.about-hero-content > p,
+.about-story-content p,
+.about-heading > p,
+.about-cta > p {
+  color: #5e6b60;
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.about-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.about-btn-primary,
+.about-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 13px 23px;
+  border: 2px solid #123c2e;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.about-btn-primary {
+  border-color: #a8f52b;
+  background: #a8f52b;
+  color: #123c2e;
+}
+
+.about-btn-primary:hover {
+  border-color: #123c2e;
+  background: #123c2e;
+  color: #fffaf1;
+  transform: translateY(-2px);
+}
+
+.about-btn-secondary {
+  background: transparent;
+  color: #123c2e;
+}
+
+.about-btn-secondary:hover {
+  background: #123c2e;
+  color: #fffaf1;
 }
 
 .about-hero-image {
-  overflow: hidden;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 12px 35px rgba(18, 60, 46, 0.1);
+  position: relative;
+  min-width: 0;
 }
 
-.about-hero-image img {
+.about-hero-image > img {
+  display: block;
   width: 100%;
-  height: 400px;
+  height: 430px;
+  border-radius: 18px;
   object-fit: cover;
-  object-position: center;
 }
 
-/* ========================================
-   2. OUR STORY - FOOD IMAGE BACKGROUND
-======================================== */
+.about-image-caption {
+  position: absolute;
+  right: -15px;
+  bottom: 22px;
+  max-width: 260px;
+  padding: 19px 23px;
+  border-radius: 10px;
+  background: #123c2e;
+  color: #fffaf1;
+  box-shadow: 0 12px 30px rgb(18 60 46 / 18%);
+}
+
+.about-image-caption span {
+  color: #a8f52b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.about-image-caption h3 {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
 
 .about-story {
-  position: relative;
-  padding: 90px 0;
-  background:
-    linear-gradient(
-      rgba(18, 60, 46, 0.86),
-      rgba(18, 60, 46, 0.86)
-    ),
-    url("/images/tiffin2.jpg") center / cover no-repeat;
+  display: grid;
+  grid-template-columns: 0.9fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding: 90px 8%;
 }
 
-.about-content {
-  max-width: 820px;
-  margin: 0 auto;
-  text-align: center;
+.about-story-image img {
+  display: block;
+  width: 100%;
+  height: 440px;
+  border-radius: 16px;
+  object-fit: cover;
 }
 
-.about-story .about-label {
-  color: var(--about-lime);
+.about-story-content h2,
+.about-heading h2,
+.about-cta h2 {
+  margin-bottom: 20px;
+  font-size: clamp(30px, 3.3vw, 43px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.8px;
 }
 
-.about-story h2 {
-  margin-bottom: 24px;
-  color: #ffffff;
-  font-size: clamp(30px, 4vw, 45px);
+.about-story-content p {
+  margin-bottom: 15px;
 }
 
-.about-story h2 span {
-  color: var(--about-lime);
+.about-text-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #285b3c;
+  font-weight: 800;
+  text-decoration: none;
 }
 
-.about-story p {
-  color: #f4f7f4;
+.about-text-link span {
+  color: #e96b2c;
 }
 
-.about-mission {
-  max-width: 680px;
-  margin: 30px auto 0;
-  padding: 25px;
-  border-left: 4px solid var(--about-lime);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  text-align: left;
+.about-text-link:hover {
+  color: #e96b2c;
 }
 
-.about-mission h3 {
-  margin-bottom: 12px;
-  color: var(--about-lime);
-  font-size: 23px;
-}
-
-.about-mission p {
-  margin-bottom: 0;
-}
-
-/* ========================================
-   3. FOOD GALLERY - WHITE BACKGROUND
-======================================== */
-
-.about-gallery {
-  padding: 85px 0;
-  background: #ffffff;
+.about-why {
+  padding: 85px 7%;
+  background: #f2f6e8;
 }
 
 .about-heading {
   max-width: 720px;
-  margin: 0 auto 38px;
+  margin: 0 auto 42px;
   text-align: center;
 }
 
 .about-heading h2 {
-  margin-bottom: 16px;
-  color: var(--about-green);
-  font-size: clamp(30px, 4vw, 44px);
+  margin-bottom: 15px;
 }
 
-.about-heading p {
+.about-features {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.about-feature-card {
+  padding: 28px 24px;
+  border: 1px solid #e3e9d8;
+  border-radius: 12px;
+  background: #fffaf1;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.about-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgb(18 60 46 / 9%);
+}
+
+.about-feature-number {
+  display: block;
+  margin-bottom: 23px;
+  color: #e96b2c;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.about-feature-card h3 {
+  margin-bottom: 12px;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.about-feature-card p {
   margin-bottom: 0;
+  color: #687268;
+  font-size: 14px;
+  line-height: 1.8;
 }
 
-/* Slider container */
-
-.about-slider {
-  position: relative;
-  width: 100%;
-  max-width: 850px;
-  margin: 0 auto;
-  padding-bottom: 40px;
+.about-kitchen {
+  padding: 85px 7%;
 }
 
-/* Fixed image frame */
+.about-gallery {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-template-rows: repeat(2, 190px);
+  gap: 18px;
+}
 
-.about-slider-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 420px;
+.about-gallery-item {
   overflow: hidden;
-  border-radius: 16px;
-  background: var(--about-cream);
+  border-radius: 12px;
+  background: #fff5e4;
 }
 
-/* No zoom, scale or animation */
-
-.about-slider-image img {
+.about-gallery-item img {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: center;
-  transform: none !important;
-  animation: none !important;
-  transition: none !important;
-}
-
-/* Slider arrows */
-
-.about-arrow {
-  position: absolute;
-  top: 42%;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: var(--about-green);
-  color: #ffffff;
-  font-size: 17px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.about-arrow:hover {
-  background: var(--about-green-light);
-}
-
-.about-prev {
-  left: 14px;
-}
-
-.about-next {
-  right: 14px;
-}
-
-/* Slider dots */
-
-.about-dots {
-  position: absolute;
-  right: 0;
-  bottom: 5px;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-}
-
-.about-dots button {
-  width: 10px;
-  height: 10px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: #c7d1c9;
-  cursor: pointer;
-}
-
-.about-dots button.active {
-  width: 25px;
-  border-radius: 10px;
-  background: var(--about-green);
-}
-
-/* ========================================
-   4. WHY CHOOSE US - LIGHT GREEN/CREAM
-======================================== */
-
-.about-why {
-  padding: 85px 0;
-  background: #f1f5e9;
-}
-
-.about-why .about-heading h2 {
-  color: var(--about-green);
-}
-
-.about-card {
-  height: 100%;
-  padding: 30px 22px;
-  border: 1px solid #e0e8d9;
-  border-radius: 15px;
-  background: #ffffff;
-  text-align: center;
-  transition: border-color 0.2s ease;
-}
-
-.about-card:hover {
-  border-color: var(--about-green-light);
-}
-
-.about-card i {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 62px;
-  height: 62px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  background: var(--about-green);
-  color: var(--about-lime);
-  font-size: 25px;
-}
-
-.about-card h3 {
-  margin-bottom: 13px;
-  color: var(--about-green);
-  font-size: 19px;
-}
-
-.about-card p {
-  margin-bottom: 0;
-  font-size: 14px;
-}
-
-/* ========================================
-   5. FOUNDER - WHITE BACKGROUND
-======================================== */
-
-.about-founder {
-  padding: 85px 0;
-  background: #ffffff;
-}
-
-.about-founder-image {
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 10px;
-  border-radius: 18px;
-  background: var(--about-lime);
-}
-
-.about-founder-image img {
-  width: 100%;
-  height: 390px;
   object-fit: cover;
-  object-position: center;
-  border-radius: 12px;
+  transition: transform 0.4s ease;
 }
 
-.about-founder h2 {
-  margin-bottom: 22px;
-  color: var(--about-green);
-  font-size: clamp(30px, 4vw, 43px);
+.about-gallery-item:hover img {
+  transform: scale(1.05);
 }
 
-/* ========================================
-   6. OUR KITCHEN - IMAGE BACKGROUND
-======================================== */
-
-.about-kitchen {
-  padding: 90px 0;
-  background:
-    linear-gradient(
-      rgba(29, 89, 66, 0.86),
-      rgba(18, 60, 46, 0.88)
-    ),
-    url("/images/vegthali.jpg") center / cover no-repeat;
+.about-gallery-large {
+  grid-row: span 2;
 }
-
-.about-kitchen .about-label {
-  color: var(--about-lime);
-}
-
-.about-kitchen h2 {
-  margin-bottom: 24px;
-  color: #ffffff;
-  font-size: clamp(30px, 4vw, 45px);
-}
-
-.about-kitchen h2 span {
-  color: var(--about-lime);
-}
-
-.about-kitchen p {
-  color: #f4f7f4;
-}
-
-.about-kitchen .about-button {
-  margin-top: 15px;
-}
-
-/* ========================================
-   7. BOTTOM CTA - LIME BACKGROUND
-======================================== */
 
 .about-cta {
-  padding: 65px 20px;
-  background: var(--about-lime);
+  padding: 75px 7%;
+  background: #123c2e;
+  color: #fffaf1;
   text-align: center;
+}
+
+.about-cta .about-label {
+  color: #a8f52b;
 }
 
 .about-cta h2 {
-  margin-bottom: 15px;
-  color: var(--about-green);
-  font-size: clamp(27px, 4vw, 40px);
+  max-width: 760px;
+  margin: 0 auto 18px;
 }
 
-.about-cta p {
-  margin-bottom: 25px;
-  color: var(--about-green);
+.about-cta > p {
+  max-width: 650px;
+  margin: 0 auto 28px;
+  color: #d4dfd4;
 }
 
-.about-cta .about-button {
-  background: var(--about-green);
-  border-color: var(--about-green);
-  color: #ffffff;
-}
-
-.about-cta .about-button:hover {
-  background: var(--about-green-light);
-  border-color: var(--about-green-light);
-}
-
-/* ========================================
-   TABLET RESPONSIVE
-======================================== */
-
-@media (max-width: 991px) {
+@media (max-width: 992px) {
   .about-hero {
-    padding: 60px 0;
+    gap: 30px;
+    padding: 60px 5%;
   }
 
-  .about-hero-image img {
-    height: 340px;
+  .about-hero-image > img {
+    height: 370px;
   }
 
-  .about-slider-image {
-    height: 350px;
+  .about-story {
+    gap: 35px;
+    padding: 70px 5%;
+  }
+
+  .about-features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .about-gallery {
+    grid-template-rows: repeat(2, 160px);
   }
 }
 
-/* ========================================
-   MOBILE RESPONSIVE
-======================================== */
-
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .about-hero,
-  .about-story,
-  .about-gallery,
-  .about-why,
-  .about-founder,
-  .about-kitchen {
-    padding: 55px 0;
+  .about-story {
+    grid-template-columns: 1fr;
   }
 
+  .about-hero {
+    padding: 48px 6%;
+  }
+
+  .about-hero h1 {
+    font-size: 42px;
+  }
+
+  .about-hero-image > img {
+    height: 330px;
+  }
+
+  .about-image-caption {
+    right: 10px;
+    bottom: 12px;
+  }
+
+  .about-story {
+    gap: 30px;
+    padding: 60px 6%;
+  }
+
+  .about-story-image img {
+    height: 320px;
+  }
+
+  .about-why,
+  .about-kitchen {
+    padding: 60px 6%;
+  }
+
+  .about-heading h2,
+  .about-story-content h2,
+  .about-cta h2 {
+    font-size: 32px;
+  }
+
+  .about-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, 150px);
+  }
+
+  .about-gallery-large {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 480px) {
   .about-hero h1 {
     font-size: 36px;
   }
 
-  .about-hero-image img {
-    height: 270px;
+  .about-buttons {
+    flex-direction: column;
   }
 
-  .about-slider-image {
-    height: 260px;
+  .about-btn-primary,
+  .about-btn-secondary {
+    width: 100%;
   }
 
-  .about-arrow {
-    top: 36%;
-    width: 36px;
-    height: 36px;
-    font-size: 14px;
+  .about-features {
+    grid-template-columns: 1fr;
   }
 
-  .about-prev {
-    left: 8px;
-  }
-
-  .about-next {
-    right: 8px;
-  }
-
-  .about-founder-image img {
-    height: 310px;
-  }
-
-  .about-mission {
-    padding: 18px;
+  .about-gallery {
+    grid-template-rows: repeat(3, 125px);
+    gap: 10px;
   }
 
   .about-cta {
-    padding: 50px 18px;
-  }
-}
-
-/* Accessibility */
-
-@media (prefers-reduced-motion: reduce) {
-  .about-page *,
-  .about-page *::before,
-  .about-page *::after {
-    scroll-behavior: auto !important;
-    animation: none !important;
-    transition: none !important;
+    padding: 55px 6%;
   }
 }
