@@ -1,0 +1,15 @@
+{
+  "navbar": {
+    "home": "Home",
+    "about": "About Us",
+    "menu": "Our Menu",
+    "mealPlans": "Meal Plans",
+    "contact": "Contact Us"
+  },
+  "home": {
+    "title": "Homemade Taste, Every Single Day!",
+    "description": "Enjoy fresh, homemade meals delivered to your doorstep.",
+    "exploreMenu": "Explore Menu",
+    "viewPlans": "View Meal Plans"
+  }
+}

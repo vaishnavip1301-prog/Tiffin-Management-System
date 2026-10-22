@@ -1,0 +1,145 @@
+
+.menu-categories-page {
+  min-height: 100vh;
+  background: #f5f7f5;
+  color: #26372f;
+}
+
+.menu-page-title {
+  color: #203b2e;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.category-section-title {
+  color: #203b2e;
+  font-weight: 650;
+}
+
+.category-card {
+  border: 1px solid #e3eae4;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 18px rgba(30, 60, 42, 0.045);
+  overflow: hidden;
+}
+
+.category-primary-btn {
+  color: #ffffff;
+  background: #315c46;
+  border: 1px solid #315c46;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.category-primary-btn:hover,
+.category-primary-btn:focus {
+  background: #254735;
+  border-color: #254735;
+  color: #ffffff;
+}
+
+.category-primary-btn:active {
+  transform: translateY(1px);
+}
+
+.menu-categories-page .form-label {
+  color: #34483b;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.menu-categories-page .form-control {
+  border: 1px solid #d8e1da;
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: #27372d;
+  background-color: #ffffff;
+}
+
+.menu-categories-page .form-control:focus {
+  border-color: #719b7f;
+  box-shadow: 0 0 0 3px rgba(80, 135, 99, 0.12);
+}
+
+.menu-categories-page textarea.form-control {
+  resize: vertical;
+  min-height: 95px;
+}
+
+.required-star {
+  color: #c43c3c;
+}
+
+.menu-categories-page .form-check-input {
+  cursor: pointer;
+}
+
+.menu-categories-page .form-check-input:checked {
+  background-color: #315c46;
+  border-color: #315c46;
+}
+
+.menu-categories-page .table {
+  color: #34483b;
+}
+
+.menu-categories-page .table thead th {
+  padding: 15px 16px;
+  background: #edf3ee;
+  color: #294735;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  border-bottom: 1px solid #dfe8e0;
+}
+
+.menu-categories-page .table tbody td {
+  padding: 15px 16px;
+  border-color: #edf1ed;
+}
+
+.menu-categories-page .table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.category-active-badge {
+  background: #dcefe2;
+  color: #28633e;
+}
+
+.category-kitchen-id {
+  min-width: 180px;
+  max-width: 260px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.category-spinner {
+  color: #315c46;
+}
+
+.menu-categories-page .alert {
+  border-radius: 10px;
+}
+
+@media (max-width: 767px) {
+  .menu-categories-page {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .menu-categories-page .card-body {
+    padding: 18px !important;
+  }
+
+  .menu-page-title {
+    font-size: 23px;
+  }
+
+  .category-primary-btn {
+    padding: 9px 13px;
+  }
+}

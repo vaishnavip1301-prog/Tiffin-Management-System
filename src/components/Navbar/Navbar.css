@@ -1,7 +1,7 @@
 
 /* ========================================
    AAPLA DABBA - NAVBAR
-   ======================================== */
+======================================== */
 
 .aapla-navbar {
   width: 100%;
@@ -12,7 +12,14 @@
   z-index: 1050;
 }
 
-/* Brand and Logo */
+.aapla-navbar .container {
+  max-width: 1440px;
+}
+
+/* ========================================
+   BRAND AND LOGO - UPDATED
+======================================== */
+
 .aapla-navbar .aapla-brand {
   display: flex;
   align-items: center;
@@ -20,16 +27,26 @@
   margin-right: 24px;
   padding: 0;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
+/* Logo image: proper circular shape */
 .aapla-navbar .aapla-logo {
+  display: block;
   width: 60px;
   height: 60px;
-  object-fit: contain;
+  min-width: 60px;
+  min-height: 60px;
+  object-fit: cover;
+  object-position: left center;
   flex-shrink: 0;
   border-radius: 50%;
   background-color: #ffffff;
-  border: 2px solid #a8f52b;
+  border: 3px solid #a8f52b;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .aapla-navbar .brand-text {
@@ -56,7 +73,10 @@
   white-space: nowrap;
 }
 
-/* Main Navigation */
+/* ========================================
+   MAIN NAVIGATION
+======================================== */
+
 .aapla-navbar .aapla-nav {
   align-items: center;
   gap: 7px;
@@ -77,7 +97,7 @@
   line-height: 1.4;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .aapla-navbar .aapla-nav .nav-link:hover,
@@ -101,16 +121,13 @@
 }
 
 /* ========================================
-   COMMON DROPDOWN STYLING
-   Same style for About Us, Our Menu,
-   and Meal Plans
-   ======================================== */
+   DROPDOWNS
+======================================== */
 
 .aapla-navbar .aapla-dropdown {
   position: relative;
 }
 
-/* Space between the dropdown trigger and menu */
 .aapla-navbar .aapla-dropdown::after {
   content: "";
   position: absolute;
@@ -120,7 +137,6 @@
   height: 9px;
 }
 
-/* Dropdown Arrow Button */
 .aapla-navbar .aapla-dropdown-toggle {
   display: inline-flex;
   align-items: center;
@@ -154,13 +170,11 @@
   line-height: 1;
 }
 
-/* Meal Plans button should match the other nav links */
 .aapla-navbar .aapla-plans-toggle {
   padding-right: 11px;
   padding-left: 11px;
 }
 
-/* Same dropdown panel for all three menus */
 .aapla-navbar .aapla-dropdown-menu {
   display: none;
   position: absolute;
@@ -177,16 +191,13 @@
   z-index: 1060;
 }
 
-/* Show the dropdown when its state is active */
 .aapla-navbar .aapla-dropdown-menu.show {
   display: block;
 }
 
-/* Same item styling in every dropdown */
 .aapla-navbar .aapla-dropdown-menu .dropdown-item {
   display: flex;
   align-items: center;
-  gap: 0;
   width: 100%;
   min-height: 36px;
   margin: 0 0 2px;
@@ -201,16 +212,13 @@
   text-align: left;
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .aapla-navbar .aapla-dropdown-menu li:last-child .dropdown-item {
   margin-bottom: 0;
 }
 
-/* Identical hover and selected colors */
 .aapla-navbar .aapla-dropdown-menu .dropdown-item:hover,
 .aapla-navbar .aapla-dropdown-menu .dropdown-item:focus,
 .aapla-navbar .aapla-dropdown-menu .dropdown-item.active,
@@ -220,27 +228,102 @@
   box-shadow: none;
 }
 
-/* Dropdown icons */
 .aapla-navbar .aapla-dropdown-menu .dropdown-item i {
   flex-shrink: 0;
   color: #4d8a3d;
   font-size: 14px;
 }
 
-/* Remove Bootstrap focus outline from dropdown arrows */
 .aapla-navbar .aapla-dropdown-toggle:focus-visible {
   outline: 2px solid #a8f52b;
   outline-offset: 2px;
 }
 
 /* ========================================
+   LOGIN BUTTON
+======================================== */
+
+.aapla-navbar .aapla-nav .nav-link.aapla-login-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 10px 11px;
+  margin: 0;
+  background: transparent !important;
+  color: #fffaf1 !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.aapla-navbar .aapla-nav .nav-link.aapla-login-link:hover,
+.aapla-navbar .aapla-nav .nav-link.aapla-login-link:focus-visible {
+  background-color: #a8f52b !important;
+  color: #123c2e !important;
+  border-color: #a8f52b !important;
+}
+
+.aapla-navbar .aapla-login-link i {
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* ========================================
+   LANGUAGE SWITCH
+======================================== */
+
+.aapla-navbar .aapla-language-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin: 0 10px;
+  padding: 4px;
+  border: 1px solid rgba(255, 250, 241, 0.35);
+  border-radius: 30px;
+}
+
+.aapla-navbar .aapla-language-switch button {
+  padding: 8px 11px;
+  border: none;
+  border-radius: 22px;
+  background: transparent;
+  color: #fffaf1;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.aapla-navbar .aapla-language-switch button.active {
+  background-color: #a8f52b;
+  color: #123c2e;
+}
+
+.aapla-navbar .aapla-language-switch button:hover {
+  opacity: 0.9;
+}
+
+/* ========================================
    ORDER BUTTON
-   ======================================== */
+======================================== */
 
 .aapla-navbar .order-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   min-height: 48px;
   padding: 12px 24px;
   margin-left: 20px;
@@ -254,9 +337,8 @@
   text-decoration: none;
   white-space: nowrap;
   box-shadow: none;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .aapla-navbar .order-btn:hover,
@@ -268,7 +350,7 @@
 
 /* ========================================
    MOBILE NAVBAR TOGGLE
-   ======================================== */
+======================================== */
 
 .aapla-navbar .aapla-toggler {
   padding: 7px 10px;
@@ -286,51 +368,273 @@
 }
 
 /* ========================================
-   RESPONSIVE NAVBAR
-   ======================================== */
+   LOGIN POPUP OVERLAY
+======================================== */
 
-@media (min-width: 992px) {
-  .aapla-navbar .navbar-collapse {
-    align-items: center;
+.admin-login-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-sizing: border-box;
+}
+
+/* ========================================
+   LOGIN POPUP CARD
+======================================== */
+
+.admin-login-modal-backdrop .login-form-card {
+  position: relative !important;
+  inset: auto !important;
+  display: block;
+  flex: 0 1 430px;
+  width: 100%;
+  max-width: 430px;
+  max-height: calc(100vh - 40px);
+  max-height: calc(100dvh - 40px);
+  margin: auto !important;
+  padding: 35px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: aaplaLoginPopup 0.25s ease-out;
+  box-sizing: border-box;
+}
+
+@keyframes aaplaLoginPopup {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
   }
-
-  .aapla-navbar .aapla-dropdown-menu {
-    top: calc(100% + 8px);
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
+
+/* Login close button */
+
+.admin-login-modal-backdrop .login-form-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: #f1f3f2;
+  color: #123c2e;
+  font-size: 25px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-login-modal-backdrop .login-form-close:hover {
+  background-color: #123c2e;
+  color: #ffffff;
+}
+
+/* Login header */
+
+.admin-login-modal-backdrop .login-form-brand {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.admin-login-modal-backdrop .login-form-brand h2 {
+  margin: 12px 0 8px;
+  color: #123c2e;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.admin-login-modal-backdrop .login-form-brand p {
+  margin: 0;
+  color: #727772;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.admin-login-modal-backdrop .login-form-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 65px;
+  height: 65px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background-color: #123c2e;
+  color: #a8f52b;
+  font-size: 30px;
+}
+
+/* Login form fields */
+
+.admin-login-modal-backdrop .login-form-card label {
+  display: block;
+  margin-bottom: 7px;
+  color: #26372d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-login-modal-backdrop .login-form-card input {
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 13px;
+  border: 1px solid #dce3dd;
+  border-radius: 9px;
+  background-color: #f7f9f7;
+  color: #26372d;
+  font-size: 14px;
+  outline: none;
+  box-shadow: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-login-modal-backdrop .login-form-card input:focus {
+  border-color: #4d8a3d;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(168, 245, 43, 0.18);
+}
+
+.admin-login-modal-backdrop .login-form-card .password-input-wrapper {
+  position: relative;
+}
+
+/* Login submit button */
+
+.admin-login-modal-backdrop .login-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 20px;
+  padding: 12px 18px;
+  border: 1px solid #123c2e;
+  border-radius: 9px;
+  background-color: #123c2e;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-login-modal-backdrop .login-submit-btn:hover {
+  border-color: #a8f52b;
+  background-color: #a8f52b;
+  color: #123c2e;
+}
+
+.admin-login-modal-backdrop .login-form-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #f2c6c6;
+  border-radius: 8px;
+  background-color: #fff0f0;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.admin-login-modal-backdrop .login-form-footer {
+  margin-top: 20px;
+  color: #7b827c;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ========================================
+   TABLET RESPONSIVE
+======================================== */
 
 @media (max-width: 1199.98px) and (min-width: 992px) {
   .aapla-navbar .aapla-brand {
     margin-right: 10px;
+    gap: 7px;
+  }
+
+  .aapla-navbar .aapla-logo {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .aapla-navbar .brand-text {
+    font-size: 18px;
+  }
+
+  .aapla-navbar .brand-text small {
+    font-size: 6px;
   }
 
   .aapla-navbar .aapla-nav {
     gap: 0;
   }
 
-  .aapla-navbar .aapla-nav .nav-link {
-    padding-right: 8px;
-    padding-left: 8px;
+  .aapla-navbar .aapla-nav .nav-link,
+  .aapla-navbar .aapla-dropdown-toggle {
+    padding-right: 7px;
+    padding-left: 7px;
     font-size: 12px;
   }
 
   .aapla-navbar .order-btn {
-    padding-right: 14px;
-    padding-left: 14px;
-    margin-left: 10px;
+    margin-left: 8px;
+    padding-right: 13px;
+    padding-left: 13px;
     font-size: 12px;
+  }
+
+  .aapla-navbar .aapla-language-switch {
+    margin-right: 5px;
+    margin-left: 5px;
   }
 }
 
+/* ========================================
+   MOBILE AND TABLET
+======================================== */
+
 @media (max-width: 991.98px) {
   .aapla-navbar {
-    min-height: 78px;
-    padding: 10px 0;
+    min-height: 76px;
+    padding: 9px 0;
+  }
+
+  .aapla-navbar .aapla-brand {
+    margin-right: 0;
+    gap: 9px;
   }
 
   .aapla-navbar .aapla-logo {
     width: 52px;
     height: 52px;
+    min-width: 52px;
+    min-height: 52px;
   }
 
   .aapla-navbar .brand-text {
@@ -339,13 +643,16 @@
 
   .aapla-navbar .navbar-collapse {
     width: 100%;
-    padding: 12px 0 5px;
+    margin-top: 12px;
+    padding: 12px;
+    background-color: #194535;
+    border-radius: 10px;
   }
 
   .aapla-navbar .aapla-nav {
     width: 100%;
     align-items: stretch;
-    gap: 2px;
+    gap: 3px;
   }
 
   .aapla-navbar .aapla-nav > .nav-item {
@@ -353,30 +660,27 @@
   }
 
   .aapla-navbar .aapla-nav .nav-link {
+    width: 100%;
     min-height: 42px;
+    justify-content: flex-start;
     padding: 10px 12px;
-    font-size: 14px;
+    white-space: normal;
   }
 
   .aapla-navbar .aapla-nav .nav-link.active::after {
     right: auto;
     bottom: 3px;
     left: 12px;
-    width: 35px;
+    width: 32px;
   }
 
-  .aapla-navbar .aapla-dropdown > div.d-flex {
-    width: 100%;
-  }
-
-  .aapla-navbar .aapla-dropdown > div.d-flex > .nav-link:first-child {
-    flex: 1;
+  .aapla-navbar .aapla-nav .nav-link.aapla-login-link {
     justify-content: flex-start;
+    margin: 0;
   }
 
-  .aapla-navbar .aapla-dropdown-toggle {
-    min-width: 42px;
-    justify-content: center;
+  .aapla-navbar .aapla-dropdown {
+    width: 100%;
   }
 
   .aapla-navbar .aapla-dropdown::after {
@@ -388,9 +692,8 @@
     float: none;
     width: 100%;
     min-width: 0;
-    margin: 0 !important;
+    margin: 4px 0 8px !important;
     padding: 8px !important;
-    border-radius: 10px !important;
     box-shadow: none !important;
   }
 
@@ -400,27 +703,106 @@
     font-size: 13px;
   }
 
+  .aapla-navbar .aapla-language-switch {
+    width: fit-content;
+    margin: 12px 0;
+  }
+
   .aapla-navbar .order-btn {
     display: flex;
     width: 100%;
-    min-height: 46px;
-    margin: 12px 0 0;
-    padding: 12px 18px;
+    min-height: 44px;
+    margin: 10px 0 0;
+    padding: 11px 16px;
   }
 }
 
-@media (max-width: 380px) {
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 480px) {
+  .aapla-navbar .container {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .aapla-navbar .aapla-logo {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
   .aapla-navbar .aapla-brand {
     gap: 7px;
   }
 
+  .aapla-navbar .brand-text {
+    font-size: 17px;
+  }
+
+  .aapla-navbar .brand-text small {
+    font-size: 6px;
+    letter-spacing: 0.2px;
+  }
+
+  .aapla-navbar .aapla-toggler {
+    padding: 5px 8px;
+    font-size: 23px;
+  }
+
+  .aapla-navbar .navbar-collapse {
+    padding: 9px;
+  }
+
+  .aapla-navbar .order-btn {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .admin-login-modal-backdrop {
+    padding: 12px;
+  }
+
+  .admin-login-modal-backdrop .login-form-card {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 24px);
+    padding: 28px 20px;
+    overflow-y: auto;
+  }
+
+  .admin-login-modal-backdrop .login-form-brand h2 {
+    font-size: 23px;
+  }
+
+  .admin-login-modal-backdrop .login-form-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 26px;
+  }
+}
+
+/* ========================================
+   EXTRA-SMALL SCREENS
+======================================== */
+
+@media (max-width: 380px) {
+  .aapla-navbar .aapla-brand {
+    gap: 7px;
+    margin-right: 5px;
+  }
+
   .aapla-navbar .aapla-logo {
-    width: 45px;
-    height: 45px;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
   }
 
   .aapla-navbar .brand-text {
-    font-size: 17px;
+    font-size: 16px;
   }
 
   .aapla-navbar .brand-text small {

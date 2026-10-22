@@ -1,0 +1,341 @@
+
+.weekly-plan-page {
+  background: #fffaf1;
+  color: #183d30;
+}
+
+.weekly-plan-hero {
+  display: flex;
+  align-items: center;
+  min-height: 485px;
+  padding: 75px 0;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(35, 29, 24, 0.9),
+      rgba(35, 29, 24, 0.48)
+    ),
+    url("/images/tiffin1.jpg") center / cover no-repeat;
+  color: #fffaf1;
+}
+
+.weekly-plan-hero-content {
+  max-width: 760px;
+}
+
+.weekly-plan-eyebrow {
+  display: inline-block;
+  margin-bottom: 17px;
+  color: #a8f52b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.weekly-plan-hero h1 {
+  margin-bottom: 20px;
+  color: #ffffff;
+  font-size: clamp(38px, 5vw, 62px);
+  font-weight: 800;
+  line-height: 1.12;
+}
+
+.weekly-plan-hero h1 span {
+  color: #ffffff;
+}
+
+.weekly-plan-hero-content > p {
+  max-width: 620px;
+  margin-bottom: 28px;
+  color: #f5f5ed;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.weekly-plan-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 22px;
+  border: 0;
+  border-radius: 10px;
+  background: #a8f52b;
+  color: #173b2d;
+  font-weight: 750;
+  text-decoration: none;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.weekly-plan-btn:hover {
+  background: #c0ff63;
+  color: #173b2d;
+  transform: translateY(-3px);
+}
+
+.weekly-plan-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 30px;
+}
+
+.weekly-plan-highlights span {
+  color: #fffaf1;
+  font-size: 13px;
+}
+
+.weekly-plan-highlights i {
+  margin-right: 7px;
+  color: #a8f52b;
+}
+
+.weekly-meals-section {
+  padding: 75px 0 65px;
+}
+
+.weekly-section-heading {
+  max-width: 680px;
+  margin: 0 auto 42px;
+}
+
+.weekly-section-heading h2 {
+  margin-bottom: 14px;
+  color: #173b2d;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+}
+
+.weekly-section-heading > p {
+  color: #6b756d;
+  line-height: 1.8;
+}
+
+.weekly-meal-card {
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #e9e4d8;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 28px rgba(24, 61, 48, 0.07);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.weekly-meal-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(24, 61, 48, 0.13);
+}
+
+.weekly-meal-image-wrap {
+  position: relative;
+  height: 235px;
+  overflow: hidden;
+  background: #eee8dc;
+}
+
+.weekly-meal-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.weekly-meal-card:hover .weekly-meal-image-wrap img {
+  transform: scale(1.05);
+}
+
+.weekly-meal-tag {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  padding: 8px 12px;
+  border-radius: 30px;
+  background: #a8f52b;
+  color: #173b2d;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.weekly-meal-content {
+  display: flex;
+  flex-direction: column;
+  padding: 23px;
+}
+
+.weekly-meal-content h3 {
+  margin-bottom: 10px;
+  color: #173b2d;
+  font-size: 21px;
+  font-weight: 750;
+}
+
+.weekly-meal-content > p {
+  min-height: 100px;
+  margin-bottom: 22px;
+  color: #68746b;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.weekly-meal-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 17px;
+  border-top: 1px solid #eee9df;
+}
+
+.weekly-meal-price strong {
+  color: #173b2d;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.weekly-meal-price span {
+  color: #7a8179;
+  font-size: 12px;
+}
+
+.weekly-meal-order-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 13px;
+  border-radius: 8px;
+  background: #173b2d;
+  color: #fffaf1;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.25s ease;
+}
+
+.weekly-meal-order-btn:hover {
+  background: #2b6049;
+  color: #ffffff;
+}
+
+.weekly-plan-note {
+  margin-top: 24px;
+  color: #77786f;
+  font-size: 12px;
+  text-align: center;
+}
+
+.weekly-benefits-section {
+  padding: 70px 0;
+  background: #f5f0e5;
+}
+
+.weekly-benefit-card {
+  height: 100%;
+  padding: 30px 24px;
+  border: 1px solid #e8e0d1;
+  border-radius: 16px;
+  background: #fffaf1;
+  text-align: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.weekly-benefit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(24, 61, 48, 0.09);
+}
+
+.weekly-benefit-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #a8f52b;
+  color: #173b2d;
+  font-size: 25px;
+}
+
+.weekly-benefit-card h3 {
+  margin-bottom: 12px;
+  color: #173b2d;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.weekly-benefit-card p {
+  margin-bottom: 0;
+  color: #68746b;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.weekly-plan-cta {
+  padding: 55px 0;
+  background: #173b2d;
+  color: #fffaf1;
+}
+
+.weekly-plan-cta-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.weekly-plan-cta h2 {
+  margin-bottom: 14px;
+  color: #fffaf1;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+}
+
+.weekly-plan-cta p {
+  margin-bottom: 0;
+  color: #e0e9df;
+  line-height: 1.8;
+}
+
+@media (max-width: 767px) {
+  .weekly-plan-hero {
+    min-height: 440px;
+    padding: 55px 0;
+  }
+
+  .weekly-plan-hero h1 {
+    font-size: 39px;
+  }
+
+  .weekly-plan-hero-content > p {
+    font-size: 15px;
+  }
+
+  .weekly-plan-highlights {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .weekly-meals-section,
+  .weekly-benefits-section {
+    padding: 55px 0;
+  }
+
+  .weekly-meal-image-wrap {
+    height: 230px;
+  }
+
+  .weekly-meal-content > p {
+    min-height: auto;
+  }
+
+  .weekly-plan-cta-content {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

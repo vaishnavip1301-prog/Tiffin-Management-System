@@ -1,0 +1,84 @@
+
+.menu-item-management {
+  min-height: 100vh;
+  background: #f5f7f6;
+}
+
+.menu-item-management .card {
+  overflow: hidden;
+}
+
+.menu-item-management .form-control,
+.menu-item-management .form-select {
+  min-height: 44px;
+  border-color: #dce4df;
+  border-radius: 8px;
+}
+
+.menu-item-management textarea.form-control {
+  min-height: auto;
+}
+
+.menu-item-management .form-control:focus,
+.menu-item-management .form-select:focus {
+  border-color: #62a98b;
+  box-shadow: 0 0 0 0.2rem rgb(46 125 91 / 12%);
+}
+
+.menu-item-management .btn-success {
+  background-color: #286b50;
+  border-color: #286b50;
+}
+
+.menu-item-management .btn-success:hover {
+  background-color: #20543f;
+  border-color: #20543f;
+}
+
+.menu-item-management .table th {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #46554c;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.menu-item-management .table td {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.menu-item-thumbnail,
+.menu-item-placeholder {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.menu-item-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e6f0ea;
+  color: #286b50;
+  font-size: 1.35rem;
+}
+
+.menu-item-management .form-check-input:checked {
+  background-color: #286b50;
+  border-color: #286b50;
+}
+
+@media (max-width: 767px) {
+  .menu-item-management {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .menu-item-management .table {
+    min-width: 850px;
+  }
+}

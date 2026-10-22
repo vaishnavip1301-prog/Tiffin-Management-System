@@ -1,0 +1,211 @@
+
+/* ========================================
+   AAPLA DABBA - KITCHEN MANAGEMENT
+   ======================================== */
+
+.kitchen-management {
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  color: #24352d;
+}
+
+/* Page heading */
+.kitchen-management h2 {
+  color: #193f30;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+}
+
+.kitchen-management .text-secondary {
+  color: #78867e !important;
+}
+
+/* Buttons */
+.kitchen-management .btn-success {
+  background-color: #347653;
+  border-color: #347653;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.kitchen-management .btn-success:hover {
+  background-color: #285e40;
+  border-color: #285e40;
+  transform: translateY(-1px);
+}
+
+.kitchen-management .btn-outline-success {
+  color: #347653;
+  border-color: #a9c9b3;
+  border-radius: 8px;
+}
+
+.kitchen-management .btn-outline-success:hover {
+  color: #fff;
+  background-color: #347653;
+  border-color: #347653;
+}
+
+.kitchen-management .btn-outline-secondary {
+  border-radius: 8px;
+}
+
+/* Form and table cards */
+.kitchen-management .card {
+  border: 1px solid #e8eee9 !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.kitchen-management .card-header {
+  background-color: #fff;
+}
+
+.kitchen-management .card-header h5 {
+  color: #234b36;
+  font-size: 19px;
+}
+
+/* Compact centered form */
+.kitchen-management .kitchen-form-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 24px;
+}
+
+.kitchen-management .kitchen-form-wrapper .card-body {
+  padding: 28px !important;
+}
+
+/* Form labels */
+.kitchen-management .form-label {
+  color: #344b3c;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* Inputs */
+.kitchen-management .form-control,
+.kitchen-management .form-select {
+  min-height: 44px;
+  padding: 10px 13px;
+  color: #263a2e;
+  background-color: #fbfcfb;
+  border: 1px solid #dce6de;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kitchen-management textarea.form-control {
+  min-height: auto;
+  resize: vertical;
+}
+
+.kitchen-management .form-control::placeholder {
+  color: #a0aaa3;
+}
+
+.kitchen-management .form-control:focus,
+.kitchen-management .form-select:focus {
+  border-color: #6da783;
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(52, 118, 83, 0.12);
+}
+
+/* Table */
+.kitchen-management .table-responsive {
+  border-radius: 0 0 16px 16px;
+}
+
+.kitchen-management .table {
+  font-size: 14px;
+}
+
+.kitchen-management .table thead th {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  color: #53665a;
+  background-color: #f5f8f5;
+  border-bottom: 1px solid #e6ece7;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.kitchen-management .table tbody td {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-color: #edf1ee;
+  color: #405147;
+}
+
+.kitchen-management .table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.kitchen-management .table tbody tr:hover > * {
+  background-color: #f8fbf8;
+}
+
+.kitchen-management .table tbody td .fw-semibold {
+  color: #294b36;
+}
+
+/* Alerts */
+.kitchen-management .alert {
+  border: 0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+/* Loading spinner */
+.kitchen-management .spinner-border {
+  width: 28px;
+  height: 28px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .kitchen-management {
+    padding: 16px 12px;
+  }
+
+  .kitchen-management h2 {
+    font-size: 23px;
+  }
+
+  .kitchen-management .kitchen-form-wrapper .card-body {
+    padding: 20px !important;
+  }
+
+  .kitchen-management .card-header {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .kitchen-management .table thead th,
+  .kitchen-management .table tbody td {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .kitchen-management {
+    padding: 12px 8px;
+  }
+
+  .kitchen-management h2 {
+    font-size: 21px;
+  }
+
+  .kitchen-management .kitchen-form-wrapper .card-body {
+    padding: 16px !important;
+  }
+}
