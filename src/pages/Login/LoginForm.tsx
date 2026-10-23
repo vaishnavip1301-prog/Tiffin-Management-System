@@ -1,33 +1,53 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 interface LoginFormProps {
   onClose: () => void;
   onLoginSuccess: () => void;
+  mode?: "admin" | "customer";
 }
 
 function LoginForm({
   onClose,
   onLoginSuccess,
+  mode = "admin",
 }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
-    if (
-      email.trim().toLowerCase() === "admin123@gmail.com" &&
-      password === "Admin@123"
-    ) {
-      sessionStorage.setItem("adminLoggedIn", "true");
+    if (mode === "admin") {
+      if (
+        email.trim().toLowerCase() === "admin123@gmail.com" &&
+        password === "Admin@123"
+      ) {
+        sessionStorage.setItem("adminLoggedIn", "true");
+        onLoginSuccess();
+        navigate("/admin/dashboard");
+      } else {
+        setError("Invalid email or password. Please try again.");
+      }
+
+      return;
+    }
+
+    // Temporary customer login until the backend API is connected.
+    if (email.trim() && password.length > 0) {
+      sessionStorage.setItem("customerLoggedIn", "true");
+      sessionStorage.setItem("customerEmail", email.trim());
+
       onLoginSuccess();
+      navigate("/order");
     } else {
-      setError("Invalid email or password. Please try again.");
+      setError("Please enter your email and password.");
     }
   };
 
@@ -47,15 +67,17 @@ function LoginForm({
           <i className="bi bi-person-circle"></i>
         </div>
 
-        <h2>Welcome Back!</h2>
+        <h2>Login</h2>
         <p>Login to continue to Aapla Dabba</p>
       </div>
 
       <form onSubmit={handleLogin}>
         <div className="login-form-field">
           <label htmlFor="login-email">Email Address</label>
+
           <div className="login-input-wrapper">
             <i className="bi bi-envelope"></i>
+
             <input
               id="login-email"
               type="email"
@@ -70,8 +92,10 @@ function LoginForm({
 
         <div className="login-form-field">
           <label htmlFor="login-password">Password</label>
+
           <div className="login-input-wrapper">
             <i className="bi bi-lock"></i>
+
             <input
               id="login-password"
               type={showPassword ? "text" : "password"}
@@ -81,13 +105,18 @@ function LoginForm({
               autoComplete="current-password"
               required
             />
+
             <button
               type="button"
               className="login-password-toggle"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+              <i
+                className={`bi ${
+                  showPassword ? "bi-eye-slash" : "bi-eye"
+                }`}
+              ></i>
             </button>
           </div>
         </div>

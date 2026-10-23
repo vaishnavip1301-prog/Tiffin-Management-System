@@ -1,3 +1,8 @@
+
+/* ========================================
+   AAPLA DABBA - MAIN LAYOUT
+======================================== */
+
 .app-layout {
   min-height: 100vh;
   width: 100%;
@@ -12,4 +17,266 @@
   max-width: none;
   margin: 0;
   padding: 0;
+}
+
+/* ========================================
+   FLOATING ACTION BUTTONS
+======================================== */
+
+.floating-actions {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* ========================================
+   WHATSAPP FLOATING BUTTON
+======================================== */
+
+.floating-whatsapp {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+
+  background-color: #25d366;
+  color: #ffffff;
+  font-size: 29px;
+  text-decoration: none;
+
+  box-shadow: 0 5px 18px rgba(37, 211, 102, 0.3);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+
+  animation: whatsappGlow 2.5s ease-in-out infinite;
+}
+
+/* Moving shine on WhatsApp */
+
+.floating-whatsapp::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+
+  width: 65%;
+  height: 100%;
+
+  background: linear-gradient(
+    110deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+
+  transform: skewX(-25deg);
+  animation: whatsappShine 3s ease-in-out infinite;
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+.floating-whatsapp:hover {
+  color: #ffffff;
+  background-color: #1fba59;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+}
+
+.floating-whatsapp:focus-visible {
+  outline: 3px solid #123c2e;
+  outline-offset: 3px;
+}
+
+/* WhatsApp glow animation */
+
+@keyframes whatsappGlow {
+  0%,
+  100% {
+    box-shadow: 0 5px 18px rgba(37, 211, 102, 0.25);
+  }
+
+  50% {
+    box-shadow: 0 5px 25px rgba(37, 211, 102, 0.65);
+  }
+}
+
+/* WhatsApp shine animation */
+
+@keyframes whatsappShine {
+  0%,
+  15% {
+    left: -120%;
+  }
+
+  65%,
+  100% {
+    left: 160%;
+  }
+}
+
+/* ========================================
+   ORDER NOW FLOATING BUTTON
+======================================== */
+
+.floating-order-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  min-height: 50px;
+  padding: 13px 20px;
+
+  border: 1px solid #ffb347;
+  border-radius: 30px;
+
+  background: linear-gradient(135deg, #ffb347, #ff8c42);
+  color: #123c2e;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+
+  box-shadow: 0 5px 18px rgba(255, 140, 66, 0.3);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+
+  animation: orderGlow 2.5s ease-in-out infinite;
+}
+
+/* Moving shine on Order Now */
+
+.floating-order-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+
+  width: 65%;
+  height: 100%;
+
+  background: linear-gradient(
+    110deg,
+    transparent,
+    rgba(255, 255, 255, 0.75),
+    transparent
+  );
+
+  transform: skewX(-25deg);
+  animation: orderShine 2.5s ease-in-out infinite;
+
+  pointer-events: none;
+  z-index: -1;
+}
+
+.floating-order-btn:hover {
+  background: linear-gradient(135deg, #ffc56e, #ffa05f);
+  border-color: #ffc56e;
+  color: #123c2e;
+
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 140, 66, 0.4);
+}
+
+.floating-order-btn:focus-visible {
+  outline: 3px solid #123c2e;
+  outline-offset: 3px;
+}
+
+.floating-order-btn i {
+  font-size: 16px;
+}
+
+/* Order Now glow animation */
+
+@keyframes orderGlow {
+  0%,
+  100% {
+    box-shadow: 0 5px 18px rgba(255, 140, 66, 0.25);
+  }
+
+  50% {
+    box-shadow: 0 5px 24px rgba(255, 179, 71, 0.55);
+  }
+}
+
+/* Order Now shine animation */
+
+@keyframes orderShine {
+  0%,
+  15% {
+    left: -120%;
+  }
+
+  65%,
+  100% {
+    left: 160%;
+  }
+}
+
+/* ========================================
+   MOBILE RESPONSIVE
+======================================== */
+
+@media (max-width: 576px) {
+  .floating-actions {
+    right: 14px;
+    bottom: 16px;
+    gap: 10px;
+  }
+
+  .floating-whatsapp {
+    width: 48px;
+    height: 48px;
+    font-size: 26px;
+  }
+
+  .floating-order-btn {
+    min-height: 46px;
+    padding: 11px 16px;
+    gap: 7px;
+    font-size: 13px;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY - REDUCED MOTION
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-whatsapp,
+  .floating-order-btn {
+    transition: none;
+    animation: none;
+  }
+
+  .floating-whatsapp::before,
+  .floating-order-btn::before {
+    animation: none;
+  }
 }

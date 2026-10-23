@@ -1,7 +1,8 @@
 
 /* ==========================================
    AAPLA DABBA - ADMIN LAYOUT
-========================================== */
+   Desktop + Mobile Responsive
+   ========================================== */
 
 .admin-layout {
   --admin-green: #153e2d;
@@ -19,7 +20,21 @@
   font-family: Inter, "Segoe UI", Arial, sans-serif;
 }
 
-/* Sidebar */
+.admin-layout *,
+.admin-layout *::before,
+.admin-layout *::after {
+  box-sizing: border-box;
+}
+
+.admin-mobile-topbar,
+.admin-mobile-overlay,
+.admin-sidebar-close {
+  display: none;
+}
+
+/* ==========================================
+   SIDEBAR
+   ========================================== */
 
 .admin-layout .admin-sidebar {
   position: fixed;
@@ -30,11 +45,12 @@
   width: 260px;
   height: 100vh;
   padding: 27px 18px 18px;
+  overflow-x: hidden;
   overflow-y: auto;
   background:
     radial-gradient(
       circle at top left,
-      rgba(81, 143, 101, 0.20),
+      rgba(81, 143, 101, 0.2),
       transparent 35%
     ),
     linear-gradient(180deg, #173f2e 0%, #102f23 100%);
@@ -70,6 +86,7 @@
 }
 
 .admin-brand-text {
+  flex: 1;
   min-width: 0;
 }
 
@@ -89,7 +106,7 @@
   letter-spacing: 1.8px;
 }
 
-/* Sidebar Section Label */
+/* Sidebar Label */
 
 .admin-sidebar-label {
   margin: 29px 11px 13px;
@@ -178,7 +195,7 @@
 .admin-help-card {
   padding: 16px;
   margin-bottom: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 13px;
   background: rgba(255, 255, 255, 0.055);
 }
@@ -226,7 +243,9 @@
   font-weight: 550;
   text-align: left;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .admin-logout i {
@@ -254,10 +273,12 @@
   height: 8px;
   border-radius: 50%;
   background: #76d79b;
-  box-shadow: 0 0 0 4px rgba(118, 215, 155, 0.10);
+  box-shadow: 0 0 0 4px rgba(118, 215, 155, 0.1);
 }
 
-/* Main Area */
+/* ==========================================
+   MAIN AREA
+   ========================================== */
 
 .admin-layout .admin-main {
   display: flex;
@@ -269,7 +290,7 @@
   padding: 0 30px;
 }
 
-/* Topbar */
+/* Desktop Header */
 
 .admin-layout .admin-topbar {
   display: flex;
@@ -367,7 +388,7 @@
   font-size: 10px;
 }
 
-/* Routed Page Content */
+/* Page Content */
 
 .admin-page-content {
   flex: 1;
@@ -390,7 +411,9 @@
   font-size: 11px;
 }
 
-/* Responsive */
+/* ==========================================
+   TABLET
+   ========================================== */
 
 @media (max-width: 1200px) {
   .admin-layout .admin-sidebar {
@@ -413,118 +436,352 @@
   }
 }
 
+/* ==========================================
+   MOBILE SIDEBAR + TOPBAR
+   ========================================== */
+
 @media (max-width: 768px) {
   .admin-layout {
     display: block;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: clip;
   }
 
+  /* Sidebar becomes an off-canvas drawer */
+
   .admin-layout .admin-sidebar {
-    position: relative;
-    inset: auto;
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    width: min(290px, 85vw);
+    height: 100dvh;
+    min-height: 0;
+    padding: 22px 16px 18px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 0 18px 18px 0;
+    box-shadow: 12px 0 35px rgba(0, 0, 0, 0.2);
+    transform: translateX(-105%);
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      transform 0.28s ease,
+      visibility 0.28s ease;
+  }
+
+  .admin-layout .admin-sidebar.admin-sidebar-open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  /* Dark overlay behind drawer */
+
+  .admin-layout .admin-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1190;
+    display: block;
     width: 100%;
-    height: auto;
-    min-height: auto;
-    padding: 18px;
-    overflow: visible;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: rgba(10, 28, 19, 0.55);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .admin-sidebar-brand {
-    padding-bottom: 18px;
+    gap: 10px;
+    padding: 0 4px 20px;
+  }
+
+  .admin-brand-logo {
+    flex-basis: 43px;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    font-size: 22px;
+  }
+
+  .admin-brand-text h2 {
+    font-size: 17px;
+  }
+
+  .admin-sidebar-close {
+    display: flex;
+    flex: 0 0 34px;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .admin-sidebar-close:hover {
+    background: rgba(255, 255, 255, 0.16);
   }
 
   .admin-sidebar-label {
-    margin-top: 20px;
+    margin: 23px 10px 12px;
   }
 
   .admin-sidebar-nav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 7px;
   }
 
   .admin-sidebar-nav .admin-nav-link {
-    gap: 9px;
-    padding: 11px 9px;
-    font-size: 12px;
+    gap: 12px;
+    min-height: 47px;
+    padding: 11px 12px;
+    font-size: 13px;
   }
 
   .admin-nav-arrow {
-    display: none;
+    display: block;
   }
 
   .admin-sidebar-bottom {
-    padding-top: 18px;
+    margin-top: auto;
+    padding-top: 22px;
   }
 
   .admin-help-card {
-    display: none;
+    display: block;
+    padding: 13px;
+    margin-bottom: 14px;
+  }
+
+  .admin-help-icon {
+    margin-bottom: 9px;
   }
 
   .admin-sidebar-footer {
-    padding-top: 14px;
+    padding-top: 15px;
   }
+
+  /* Mobile Topbar */
 
   .admin-layout .admin-main {
+    display: flex;
     width: 100%;
-    min-height: auto;
-    margin-left: 0;
-    padding: 0 18px;
+    min-width: 0;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0 16px;
   }
 
-  .admin-layout .admin-topbar {
-    align-items: flex-start;
-    min-height: auto;
-    padding: 22px 0;
-    margin-bottom: 22px;
+  .admin-mobile-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: calc(100% + 32px);
+    min-height: 70px;
+    padding: 11px 16px;
+    margin: 0 -16px 18px;
+    border-bottom: 1px solid #e1eae3;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(21, 62, 45, 0.04);
   }
 
-  .admin-topbar-heading h1 {
+  .admin-mobile-back,
+  .admin-mobile-menu {
+    display: flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #dce8df;
+    border-radius: 11px;
+    background: #fff;
+    color: #24533a;
+    font-size: 21px;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .admin-mobile-back:hover,
+  .admin-mobile-menu:hover,
+  .admin-mobile-menu.is-open {
+    border-color: #286b50;
+    background: #286b50;
+    color: #fff;
+  }
+
+  .admin-mobile-brand {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+  }
+
+  .admin-mobile-brand-icon {
+    display: flex;
+    flex: 0 0 39px;
+    align-items: center;
+    justify-content: center;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    background: #e4f2e8;
+    color: #20563a;
     font-size: 21px;
   }
 
-  .admin-topbar-heading p {
-    max-width: 300px;
+  .admin-mobile-brand strong {
+    display: block;
+    overflow: hidden;
+    color: #193f2d;
+    font-size: 14px;
+    font-weight: 750;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .admin-user {
-    padding-left: 12px;
+  .admin-mobile-brand span {
+    display: block;
+    margin-top: 3px;
+    color: #819086;
+    font-size: 10px;
   }
 
-  .admin-user-info {
+  /* Hide large desktop heading on mobile */
+
+  .admin-layout .admin-topbar {
     display: none;
   }
 
-  .admin-user-avatar {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-@media (max-width: 480px) {
-  .admin-sidebar-nav {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-layout .admin-main {
-    padding-right: 14px;
-    padding-left: 14px;
-  }
-
-  .admin-layout .admin-topbar {
-    gap: 10px;
-  }
-
-  .admin-topbar-eyebrow {
-    font-size: 8px;
-    letter-spacing: 1px;
-  }
-
-  .admin-topbar-heading h1 {
-    font-size: 19px;
+  .admin-page-content {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding-bottom: 22px;
   }
 
   .admin-content-footer {
     align-items: flex-start;
     flex-direction: column;
+    gap: 7px;
+    padding: 16px 0;
+    font-size: 10px;
+  }
+}
+
+/* ==========================================
+   SMALL MOBILE
+   ========================================== */
+
+@media (max-width: 480px) {
+  .admin-layout .admin-main {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .admin-mobile-topbar {
+    width: calc(100% + 24px);
+    min-height: 64px;
+    padding: 9px 12px;
+    margin-right: -12px;
+    margin-bottom: 15px;
+    margin-left: -12px;
+    gap: 8px;
+  }
+
+  .admin-mobile-back,
+  .admin-mobile-menu {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    font-size: 19px;
+  }
+
+  .admin-mobile-brand {
+    gap: 7px;
+  }
+
+  .admin-mobile-brand-icon {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 18px;
+  }
+
+  .admin-mobile-brand strong {
+    font-size: 12px;
+  }
+
+  .admin-mobile-brand span {
+    font-size: 9px;
+  }
+
+  .admin-sidebar-bottom {
+    padding-top: 18px;
+  }
+}
+
+/* Respect reduced motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-layout .admin-sidebar,
+  .admin-sidebar-nav .admin-nav-link,
+  .admin-mobile-back,
+  .admin-mobile-menu {
+    transition: none;
+  }
+}
+/* Desktop Back to Home Button */
+.admin-desktop-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border: 1px solid #d9e4dd;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #123c2e;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.admin-desktop-home i {
+  font-size: 16px;
+}
+
+.admin-desktop-home:hover {
+  background-color: #123c2e;
+  color: #ffffff;
+  border-color: #123c2e;
+}
+
+/* Responsive Layout */
+@media (max-width: 767px) {
+  .admin-desktop-home {
+    display: none;
   }
 }

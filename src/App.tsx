@@ -27,6 +27,7 @@ import Kitchen from "./pages/Admin/Kitchen";
 import MenuCategories from "./pages/Admin/MenuCategories";
 import MenuItemPage from "./pages/Admin/MenuItem";
 
+import Order from "./pages/Order/Order";
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
           <Route path="/mealplans/monthlyplan" element={<MonthlyPlan />} />
 
           <Route path="/contact" element={<Contact />} />
+          <Route path="/order" element={<Order />} />
         </Route>
 
         {/* Protected Admin Routes */}

@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 const API_URL = "https://tiffinapis.ysaasinfotech.com";
@@ -6,117 +5,169 @@ const API_URL = "https://tiffinapis.ysaasinfotech.com";
 export interface MenuItem {
   id: string;
   kitchenId: string;
-  menuCategoryId: string | null;
+  kitchenName?: string;
+  menuCategoryId: string;
   categoryName?: string;
+  menuSubCategoryId?: string;
+  subCategoryName?: string;
+  mealTypeId?: string;
+  mealTypeName?: string;
+  foodTypeId?: string;
+  foodTypeName?: string;
   name: string;
-  description: string | null;
-  mealType: number;
+  description: string;
   price: number;
-  currencyCode?: string;
+  currencyCode: string;
   isAvailable: boolean;
   preparationTimeMinutes: number;
   imageUrl: string | null;
   isActive?: boolean;
 }
 
-export interface MenuItemsResponse {
-  pageNumber: number;
-  pageSize: number;
-  totalRecords: number;
-  items: MenuItem[];
+export interface MenuItemInput {
+  kitchenId: string;
+  menuCategoryId: string;
+  menuSubCategoryId: string;
+  mealTypeId: string;
+  foodTypeId: string;
+  name: string;
+  description: string;
+  price: number;
+  currencyCode: string;
+  isAvailable: boolean;
+  preparationTimeMinutes: number;
+  imageUrl: string;
 }
 
-export type MenuItemInput = Omit<MenuItem, "id">;
+interface MenuItemApiResponse {
+  items?: MenuItem[];
+  data?: MenuItem[];
+  records?: MenuItem[];
+  totalRecords?: number;
+  totalPages?: number;
+  pageNumber?: number;
+  pageSize?: number;
+}
 
-export type UpdateMenuItemInput = Omit<MenuItem, "kitchenId">;
+const MENU_ITEM_ENDPOINT = `${API_URL}/GetMenuItems`;
 
-// GET: Menu items with pagination
-export const getMenuItems = async (
-  pageNumber: number = 1,
-  pageSize: number = 10
-): Promise<MenuItemsResponse> => {
-  const response = await axios.get<MenuItemsResponse | MenuItem[]>(
-    `${API_URL}/GetMenuItems`,
-    {
-      params: {
-        pageNumber,
-        pageSize,
-      },
-    }
-  );
+function normalizeResponse(response: unknown): {
+  items: MenuItem[];
+  totalRecords: number;
+  totalPages: number;
+} {
+  if (Array.isArray(response)) {
+    return {
+      items: response as MenuItem[],
+      totalRecords: response.length,
+      totalPages: 1,
+    };
+  }
+
+  const result = (response ?? {}) as MenuItemApiResponse;
+  const items = result.items ?? result.data ?? result.records ?? [];
+
+  return {
+    items,
+    totalRecords: result.totalRecords ?? items.length,
+    totalPages:
+      result.totalPages ??
+      (items.length > 0 ? 1 : 0),
+  };
+}
+
+// GET: Get Menu Items
+export async function getMenuItems(
+  pageNumber = 1,
+  pageSize = 10
+): Promise<{
+  items: MenuItem[];
+  totalRecords: number;
+  totalPages: number;
+}> {
+  const response = await axios.get(MENU_ITEM_ENDPOINT, {
+    params: {
+      pageNumber,
+      pageSize,
+    },
+  });
 
   console.log("Menu Items API response:", response.data);
 
-  const data = response.data;
+  return normalizeResponse(response.data);
+}
 
-  // API returns a direct array
-  if (Array.isArray(data)) {
-    return {
-      pageNumber,
-      pageSize,
-      totalRecords: data.length,
-      items: data,
-    };
+// GET: Get All Menu Items
+export async function getAllMenuItems(): Promise<MenuItem[]> {
+  const firstPage = await getMenuItems(1, 100);
+  const allItems = [...firstPage.items];
+
+  if (
+    firstPage.totalPages <= 1 ||
+    allItems.length >= firstPage.totalRecords
+  ) {
+    return allItems;
   }
 
-  // API returns paginated data
-  if (data && Array.isArray(data.items)) {
-    return {
-      pageNumber: data.pageNumber ?? pageNumber,
-      pageSize: data.pageSize ?? pageSize,
-      totalRecords: data.totalRecords ?? data.items.length,
-      items: data.items,
-    };
+  for (let page = 2; page <= firstPage.totalPages; page += 1) {
+    const result = await getMenuItems(page, 100);
+
+    allItems.push(...result.items);
+
+    if (result.items.length === 0) {
+      break;
+    }
   }
 
-  return {
-    pageNumber,
-    pageSize,
-    totalRecords: 0,
-    items: [],
-  };
-};
+  return allItems;
+}
 
-// GET: Menu item by ID
-export const getMenuItemById = async (
+// GET: Get Menu Item By ID
+export async function getMenuItemById(
   id: string
-): Promise<MenuItem> => {
-  const response = await axios.get<MenuItem>(
-    `${API_URL}/GetMenuItem/${encodeURIComponent(id)}`
+): Promise<MenuItem> {
+  const response = await axios.get(
+    `${API_URL}/GetMenuItem/${id}`
   );
 
   return response.data;
-};
+}
 
-// POST: Create menu item
-export const createMenuItem = async (
+// CREATE: Create Menu Item
+export async function createMenuItem(
   data: MenuItemInput
-): Promise<MenuItem> => {
-  const response = await axios.post<MenuItem>(
+): Promise<unknown> {
+  const response = await axios.post(
     `${API_URL}/CreateMenuItem`,
     data
   );
 
   return response.data;
-};
+}
 
-// PUT: Update menu item
-export const updateMenuItem = async (
-  data: UpdateMenuItemInput
-): Promise<MenuItem> => {
-  const response = await axios.put<MenuItem>(
+// UPDATE: Update Menu Item using ID
+export async function updateMenuItem(
+  id: string,
+  data: MenuItemInput
+): Promise<unknown> {
+  const response = await axios.put(
     `${API_URL}/UpdateMenuItem`,
-    data
+    {
+      ...data,
+      id,
+    }
   );
 
   return response.data;
-};
+}
 
-// DELETE: Delete menu item by ID
-export const deleteMenuItem = async (
+// DELETE: Delete Menu Item using ID
+export async function deleteMenuItem(
   id: string
-): Promise<void> => {
-  await axios.delete(
-    `${API_URL}/DeleteMenuItem/${encodeURIComponent(id)}`
+): Promise<unknown> {
+  const response = await axios.delete(
+    `${API_URL}/DeleteMenuItem/${id}`
   );
-};
+
+  return response.data;
+}

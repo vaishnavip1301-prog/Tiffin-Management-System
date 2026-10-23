@@ -528,7 +528,7 @@ function Kitchen() {
                       <td className="text-end px-4">
                         <button
                           type="button"
-                          className="btn btn-sm btn-outline-success"
+                          className="btn btn-sm btn-outline-primary kitchen-edit-btn"
                           onClick={() => handleEdit(kitchen)}
                         >
                           <i className="bi bi-pencil-square me-1" />

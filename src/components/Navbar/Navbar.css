@@ -1,6 +1,7 @@
 
 /* ========================================
    AAPLA DABBA - NAVBAR
+   Theme: Dark Green + Lime Green
 ======================================== */
 
 .aapla-navbar {
@@ -12,12 +13,13 @@
   z-index: 1050;
 }
 
-.aapla-navbar .container {
-  max-width: 1440px;
+.aapla-navbar .container,
+.aapla-navbar .container-fluid {
+  max-width: 100%;
 }
 
 /* ========================================
-   BRAND AND LOGO - UPDATED
+   BRAND AND LOGO
 ======================================== */
 
 .aapla-navbar .aapla-brand {
@@ -30,7 +32,6 @@
   flex-shrink: 0;
 }
 
-/* Logo image: proper circular shape */
 .aapla-navbar .aapla-logo {
   display: block;
   width: 60px;
@@ -78,6 +79,7 @@
 ======================================== */
 
 .aapla-navbar .aapla-nav {
+  display: flex;
   align-items: center;
   gap: 7px;
 }
@@ -91,17 +93,19 @@
   color: #fffaf1;
   background: transparent;
   border: none;
-  border-radius: 0;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.4;
   text-decoration: none;
   white-space: nowrap;
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .aapla-navbar .aapla-nav .nav-link:hover,
-.aapla-navbar .aapla-nav .nav-link:focus {
+.aapla-navbar .aapla-nav .nav-link:focus-visible {
   color: #a8f52b;
 }
 
@@ -118,6 +122,7 @@
   left: 10px;
   height: 2px;
   background-color: #a8f52b;
+  border-radius: 2px;
 }
 
 /* ========================================
@@ -147,7 +152,7 @@
   color: #fffaf1;
   background: transparent;
   border: none;
-  border-radius: 0;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.4;
@@ -186,7 +191,7 @@
   background-color: #ffffff !important;
   border: none !important;
   border-radius: 12px !important;
-  box-shadow: 0 8px 24px rgba(18, 60, 46, 0.14) !important;
+  box-shadow: 0 8px 24px rgba(18, 60, 46, 0.16) !important;
   list-style: none;
   z-index: 1060;
 }
@@ -199,7 +204,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  min-height: 36px;
+  min-height: 38px;
   margin: 0 0 2px;
   padding: 10px 12px !important;
   border: none;
@@ -212,7 +217,9 @@
   text-align: left;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .aapla-navbar .aapla-dropdown-menu li:last-child .dropdown-item {
@@ -240,7 +247,7 @@
 }
 
 /* ========================================
-   LOGIN BUTTON
+   LOGIN LINK INSIDE NAVIGATION
 ======================================== */
 
 .aapla-navbar .aapla-nav .nav-link.aapla-login-link {
@@ -262,9 +269,9 @@
   white-space: nowrap;
   cursor: pointer;
   box-shadow: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .aapla-navbar .aapla-nav .nav-link.aapla-login-link:hover,
@@ -277,6 +284,47 @@
 .aapla-navbar .aapla-login-link i {
   font-size: 14px;
   line-height: 1;
+}
+
+/* ========================================
+   LOGIN BUTTON AT FORMER ORDER BUTTON
+======================================== */
+
+.aapla-navbar .order-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-height: 48px;
+  padding: 12px 24px;
+  margin-left: 20px;
+  color: #123c2e;
+  background-color: #a8f52b;
+  border: 1px solid #a8f52b;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.aapla-navbar .order-btn:hover,
+.aapla-navbar .order-btn:focus-visible {
+  color: #123c2e;
+  background-color: #95e51d;
+  border-color: #95e51d;
+}
+
+.aapla-navbar .order-btn:active {
+  transform: scale(0.98);
 }
 
 /* ========================================
@@ -295,6 +343,11 @@
 }
 
 .aapla-navbar .aapla-language-switch button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 34px;
   padding: 8px 11px;
   border: none;
   border-radius: 22px;
@@ -303,7 +356,9 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .aapla-navbar .aapla-language-switch button.active {
@@ -313,39 +368,6 @@
 
 .aapla-navbar .aapla-language-switch button:hover {
   opacity: 0.9;
-}
-
-/* ========================================
-   ORDER BUTTON
-======================================== */
-
-.aapla-navbar .order-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  min-height: 48px;
-  padding: 12px 24px;
-  margin-left: 20px;
-  color: #123c2e;
-  background-color: #a8f52b;
-  border: 1px solid #a8f52b;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.4;
-  text-decoration: none;
-  white-space: nowrap;
-  box-shadow: none;
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.aapla-navbar .order-btn:hover,
-.aapla-navbar .order-btn:focus {
-  color: #123c2e;
-  background-color: #95e51d;
-  border-color: #95e51d;
 }
 
 /* ========================================
@@ -362,9 +384,14 @@
   box-shadow: none;
 }
 
+.aapla-navbar .aapla-toggler:hover {
+  background-color: rgba(168, 245, 43, 0.08);
+}
+
 .aapla-navbar .aapla-toggler:focus {
   box-shadow: none;
-  outline: none;
+  outline: 2px solid #a8f52b;
+  outline-offset: 2px;
 }
 
 /* ========================================
@@ -419,6 +446,7 @@
     opacity: 0;
     transform: translateY(18px) scale(0.97);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -445,7 +473,9 @@
   font-size: 25px;
   line-height: 1;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .admin-login-modal-backdrop .login-form-close:hover {
@@ -509,7 +539,9 @@
   outline: none;
   box-shadow: none;
   box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .admin-login-modal-backdrop .login-form-card input:focus {
@@ -540,7 +572,10 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .admin-login-modal-backdrop .login-submit-btn:hover {
@@ -722,7 +757,8 @@
 ======================================== */
 
 @media (max-width: 480px) {
-  .aapla-navbar .container {
+  .aapla-navbar .container,
+  .aapla-navbar .container-fluid {
     padding-right: 12px;
     padding-left: 12px;
   }

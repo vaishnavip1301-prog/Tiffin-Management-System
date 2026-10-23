@@ -51,6 +51,27 @@
 .kitchen-management .btn-outline-secondary {
   border-radius: 8px;
 }
+/* Kitchen Edit Button - Blue Hover */
+.kitchen-management .kitchen-edit-btn {
+  color: #0d6efd;
+  background-color: #fff;
+  border: 1px solid #0d6efd;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+}
+
+.kitchen-management .kitchen-edit-btn:hover {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.kitchen-management .kitchen-edit-btn:focus-visible {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
 
 /* Form and table cards */
 .kitchen-management .card {

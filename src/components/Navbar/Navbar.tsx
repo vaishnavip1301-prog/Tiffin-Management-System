@@ -335,22 +335,6 @@ function Navbar() {
                 </NavLink>
               </li>
 
-              {/* Login */}
-              <li className="nav-item">
-                <button
-                  type="button"
-                  className="nav-link aapla-login-link"
-                  onClick={() => {
-                    setLoginOpen(true);
-                    closeMenu();
-                  }}
-                >
-                  <i className="bi bi-person-circle me-2" />
-                  Login
-                </button>
-              </li>
-            </ul>
-
             {/* Language Switch */}
             <div className="aapla-language-switch">
               <button
@@ -370,15 +354,21 @@ function Navbar() {
               </button>
             </div>
 
-            {/* Order Button */}
-            <Link
-              to="/plans"
-              className="btn order-btn"
-              onClick={closeMenu}
-            >
-              Order Your Dabba
-              <i className="bi bi-arrow-up-right ms-2" />
-            </Link>
+            {/* Login */}
+              <li className="nav-item">
+                <button
+                  type="button"
+                  className="nav-link aapla-login-link"
+                  onClick={() => {
+                    setLoginOpen(true);
+                    closeMenu();
+                  }}
+                >
+                  <i className="bi bi-person-circle me-2" />
+                  Login
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>
