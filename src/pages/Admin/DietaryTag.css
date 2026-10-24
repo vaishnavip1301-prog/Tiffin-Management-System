@@ -1,0 +1,647 @@
+/* =========================================
+   AAPLA DABBA - DIETARY TAG MANAGEMENT
+   ========================================= */
+
+.dietary-management {
+  width: 100%;
+  min-height: 100%;
+  padding: 24px;
+  color: #26352d;
+  background: #f7f9f7;
+  box-sizing: border-box;
+}
+
+.dietary-management *,
+.dietary-management *::before,
+.dietary-management *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================
+   PAGE HEADER
+   ========================================= */
+
+.dietary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.dietary-header h2 {
+  margin: 0 0 7px;
+  color: #203d2c;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.dietary-header p {
+  margin: 0;
+  color: #77847b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   COMMON BUTTONS
+   ========================================= */
+
+.dietary-primary-btn,
+.dietary-cancel-btn,
+.dietary-edit-btn,
+.dietary-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.dietary-primary-btn {
+  color: #ffffff;
+  background-color: #347653;
+  border-color: #347653;
+}
+
+.dietary-primary-btn:hover {
+  color: #ffffff;
+  background-color: #285d40;
+  border-color: #285d40;
+  box-shadow: 0 4px 10px rgba(52, 118, 83, 0.16);
+}
+
+.dietary-primary-btn:active {
+  transform: translateY(1px);
+}
+
+.dietary-primary-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.dietary-cancel-btn {
+  color: #425449;
+  background-color: #edf1ee;
+  border-color: #dfe6e0;
+}
+
+.dietary-cancel-btn:hover {
+  background-color: #dfe7e1;
+  border-color: #cfd9d1;
+}
+
+.dietary-cancel-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   SUCCESS AND ERROR MESSAGES
+   ========================================= */
+
+.dietary-message,
+.dietary-error {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 12px 15px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.dietary-message {
+  color: #24633d;
+  background-color: #eaf6ed;
+  border-color: #cce7d2;
+}
+
+.dietary-error {
+  color: #963737;
+  background-color: #fff0f0;
+  border-color: #f0cccc;
+}
+
+/* =========================================
+   CREATE AND UPDATE FORM
+   ========================================= */
+
+.dietary-form {
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #e4ebe5;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(26, 58, 40, 0.045);
+}
+
+.dietary-form h3 {
+  margin: 0 0 22px;
+  padding-bottom: 15px;
+  color: #284633;
+  border-bottom: 1px solid #edf1ee;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.dietary-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.dietary-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+}
+
+.dietary-field label {
+  color: #35463b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dietary-field input,
+.dietary-field textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 13px;
+  color: #29372e;
+  background-color: #ffffff;
+  border: 1px solid #d8e1da;
+  border-radius: 7px;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dietary-field input {
+  min-height: 43px;
+}
+
+.dietary-field textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.dietary-field input::placeholder,
+.dietary-field textarea::placeholder {
+  color: #a0aaa3;
+  opacity: 1;
+}
+
+.dietary-field input:focus,
+.dietary-field textarea:focus {
+  border-color: #347653;
+  box-shadow: 0 0 0 3px rgba(52, 118, 83, 0.11);
+}
+
+.dietary-field input:disabled,
+.dietary-field textarea:disabled {
+  background-color: #f3f5f3;
+  cursor: not-allowed;
+}
+
+.dietary-description-field {
+  grid-column: 1 / -1;
+}
+
+/* =========================================
+   FORM ACTIONS
+   ========================================= */
+
+.dietary-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid #edf1ee;
+}
+
+/* =========================================
+   DIETARY TAG TABLE CARD
+   ========================================= */
+
+.dietary-table-card {
+  width: 100%;
+  overflow: hidden;
+  background-color: #ffffff;
+  border: 1px solid #e4ebe5;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(26, 58, 40, 0.045);
+}
+
+.dietary-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #e8eee9;
+}
+
+.dietary-table-heading h3 {
+  margin: 0;
+  color: #284633;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.dietary-table-heading span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 55px;
+  padding: 6px 11px;
+  color: #2d6c46;
+  background-color: #eaf4ed;
+  border: 1px solid #d8eadc;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =========================================
+   TABLE LAYOUT
+   ========================================= */
+
+.dietary-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dietary-table {
+  width: 100%;
+  min-width: 800px;
+  margin: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.dietary-table thead th {
+  padding: 15px 18px;
+  color: #526258;
+  background-color: #f5f8f5;
+  border-bottom: 1px solid #e6ece7;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.dietary-table tbody td {
+  padding: 15px 18px;
+  color: #58665d;
+  border-bottom: 1px solid #edf1ee;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+.dietary-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.dietary-table tbody tr:hover {
+  background-color: #f7faf7;
+}
+
+.dietary-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dietary-table th:first-child,
+.dietary-table td:first-child {
+  padding-left: 22px;
+}
+
+.dietary-table th:last-child,
+.dietary-table td:last-child {
+  padding-right: 22px;
+}
+
+/* =========================================
+   TAG NAME
+   ========================================= */
+
+.dietary-tag-name {
+  color: #2f6848;
+  font-size: 13px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   ACTIVE / INACTIVE STATUS
+   ========================================= */
+
+.dietary-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.dietary-status.active {
+  color: #24633d;
+  background-color: #e8f5eb;
+  border-color: #d1ead7;
+}
+
+.dietary-status.inactive {
+  color: #8b4141;
+  background-color: #faeaea;
+  border-color: #f0d5d5;
+}
+
+/* =========================================
+   EDIT AND DELETE ACTIONS
+   Normal: Transparent
+   Hover: Filled color
+   ========================================= */
+
+.dietary-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Edit Button - Blue */
+
+.dietary-edit-btn {
+  min-height: 32px;
+  padding: 7px 12px;
+  color: #2878c7;
+  background-color: transparent;
+  border: 1px solid #2878c7;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dietary-edit-btn:hover {
+  color: #ffffff;
+  background-color: #2878c7;
+  border-color: #2878c7;
+  box-shadow: 0 3px 8px rgba(40, 120, 199, 0.16);
+}
+
+/* Delete Button - Red */
+
+.dietary-delete-btn {
+  min-height: 32px;
+  padding: 7px 12px;
+  color: #c74c4c;
+  background-color: transparent;
+  border: 1px solid #c74c4c;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dietary-delete-btn:hover {
+  color: #ffffff;
+  background-color: #c74c4c;
+  border-color: #c74c4c;
+  box-shadow: 0 3px 8px rgba(199, 76, 76, 0.15);
+}
+
+/* =========================================
+   LOADING AND EMPTY STATES
+   ========================================= */
+
+.dietary-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  margin: 0;
+  padding: 28px 20px;
+  color: #7a887e;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* =========================================
+   ACCESSIBILITY
+   ========================================= */
+
+.dietary-management button:focus-visible {
+  outline: 3px solid rgba(52, 118, 83, 0.3);
+  outline-offset: 2px;
+}
+
+.dietary-management input:focus-visible,
+.dietary-management textarea:focus-visible {
+  outline: none;
+}
+
+/* =========================================
+   TABLET RESPONSIVE
+   ========================================= */
+
+@media (max-width: 992px) {
+  .dietary-management {
+    padding: 20px;
+  }
+
+  .dietary-form {
+    padding: 20px;
+  }
+
+  .dietary-table-heading {
+    padding: 18px;
+  }
+
+  .dietary-table th,
+  .dietary-table td {
+    padding: 13px 14px;
+  }
+}
+
+/* =========================================
+   MOBILE RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+  .dietary-management {
+    padding: 15px;
+  }
+
+  .dietary-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .dietary-header h2 {
+    font-size: 23px;
+  }
+
+  .dietary-header p {
+    font-size: 13px;
+  }
+
+  .dietary-header .dietary-primary-btn {
+    width: 100%;
+  }
+
+  .dietary-form {
+    padding: 17px;
+    margin-bottom: 20px;
+  }
+
+  .dietary-form h3 {
+    margin-bottom: 18px;
+    font-size: 17px;
+  }
+
+  .dietary-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 17px;
+  }
+
+  .dietary-description-field {
+    grid-column: auto;
+  }
+
+  .dietary-form-actions {
+    gap: 9px;
+    margin-top: 20px;
+  }
+
+  .dietary-form-actions button {
+    flex: 1;
+  }
+
+  .dietary-table-heading {
+    padding: 16px;
+  }
+
+  .dietary-table-heading h3 {
+    font-size: 15px;
+  }
+
+  .dietary-table {
+    min-width: 760px;
+  }
+
+  .dietary-table th,
+  .dietary-table td {
+    padding: 12px;
+  }
+
+  .dietary-table th:first-child,
+  .dietary-table td:first-child {
+    padding-left: 15px;
+  }
+
+  .dietary-table th:last-child,
+  .dietary-table td:last-child {
+    padding-right: 15px;
+  }
+
+  .dietary-message,
+  .dietary-error {
+    padding: 11px 12px;
+    font-size: 12px;
+  }
+}
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 480px) {
+  .dietary-management {
+    padding: 12px;
+  }
+
+  .dietary-header h2 {
+    font-size: 21px;
+  }
+
+  .dietary-form {
+    padding: 14px;
+    border-radius: 9px;
+  }
+
+  .dietary-field input,
+  .dietary-field textarea {
+    font-size: 13px;
+  }
+
+  .dietary-table-card {
+    border-radius: 9px;
+  }
+
+  .dietary-table-heading {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .dietary-primary-btn,
+  .dietary-cancel-btn {
+    min-height: 40px;
+    font-size: 12px;
+  }
+
+  .dietary-edit-btn,
+  .dietary-delete-btn {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}

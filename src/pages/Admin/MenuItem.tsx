@@ -1,563 +1,495 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 
 import {
+  getMenuItems,
+  getMenuItemById,
   createMenuItem,
-  deleteMenuItem,
-  getAllMenuItems,
   updateMenuItem,
+  deleteMenuItem,
+  type MenuItem,
+  type MenuItemInput,
 } from "../../api/menuItemService";
 
-import type {
-  MenuItem,
-  MenuItemInput,
-} from "../../api/menuItemService";
+import {
+  getMenuCategories,
+  type MenuCategory,
+} from "../../api/menuCategoryService";
 
-import { getKitchen } from "../../api/kitchenService";
-import { getMenuCategories } from "../../api/menuCategoryService";
+import {
+  getMenuSubCategoriesByCategory,
+  type MenuSubCategory,
+} from "../../api/menuSubCategoryService";
 
 import "./MenuItem.css";
 
-interface Option {
-  id: string;
-  name: string;
-}
+const PAGE_SIZE = 10;
 
-type FormData = MenuItemInput;
-
-const emptyForm: FormData = {
+const emptyForm: MenuItemInput = {
   kitchenId: "",
   menuCategoryId: "",
   menuSubCategoryId: "",
-  mealTypeId: "",
-  foodTypeId: "",
   name: "",
   description: "",
+  mealTypeId: "",
+  foodTypeId: "",
+  dietaryTagIds: [],
   price: 0,
-  currencyCode: "INR",
   isAvailable: true,
-  preparationTimeMinutes: 30,
+  preparationTimeMinutes: 5,
   imageUrl: "",
 };
 
-function extractRecords(value: unknown): Record<string, unknown>[] {
-  if (Array.isArray(value)) {
-    return value.filter(
-      (item): item is Record<string, unknown> =>
-        typeof item === "object" && item !== null
-    );
-  }
+const mealTypes = [
+  { id: "10000000-0000-0000-0000-000000000001", name: "Breakfast" },
+  { id: "10000000-0000-0000-0000-000000000002", name: "Lunch" },
+  { id: "10000000-0000-0000-0000-000000000003", name: "Dinner" },
+  { id: "10000000-0000-0000-0000-000000000004", name: "Snacks" },
+  { id: "10000000-0000-0000-0000-000000000005", name: "Beverages" },
+];
 
-  if (typeof value !== "object" || value === null) {
-    return [];
-  }
-
-  const result = value as Record<string, unknown>;
-
-  for (const key of [
-    "items",
-    "data",
-    "records",
-    "results",
-    "categories",
-    "kitchens",
-  ]) {
-    if (Array.isArray(result[key])) {
-      return extractRecords(result[key]);
-    }
-  }
-
-  if (
-    result.id ||
-    result.Id ||
-    result.kitchenId ||
-    result.menuCategoryId
-  ) {
-    return [result];
-  }
-
-  return [];
-}
-
-function getString(
-  record: Record<string, unknown>,
-  keys: string[]
-): string {
-  for (const key of keys) {
-    const value = record[key];
-
-    if (
-      typeof value === "string" &&
-      value.trim() !== ""
-    ) {
-      return value.trim();
-    }
-  }
-
-  return "";
-}
-
-function makeOptions(
-  records: Record<string, unknown>[],
-  idKeys: string[],
-  nameKeys: string[],
-  uniqueByName = false
-): Option[] {
-  const options = new Map<string, Option>();
-  const seenNames = new Set<string>();
-
-  records.forEach((record) => {
-    const id = getString(record, idKeys);
-    const name = getString(record, nameKeys);
-
-    if (!id || !name) return;
-
-    const normalizedName = name.toLowerCase();
-
-    if (uniqueByName) {
-      if (seenNames.has(normalizedName)) return;
-      seenNames.add(normalizedName);
-    }
-
-    if (!options.has(id)) {
-      options.set(id, { id, name });
-    }
-  });
-
-  return Array.from(options.values());
-}
-
-function getItemOptions(
-  items: MenuItem[],
-  idKey: keyof MenuItem,
-  nameKey: keyof MenuItem,
-  uniqueByName = false
-): Option[] {
-  const options = new Map<string, Option>();
-  const seenNames = new Set<string>();
-
-  items.forEach((item) => {
-    const id = item[idKey];
-    const name = item[nameKey];
-
-    if (
-      typeof id !== "string" ||
-      !id.trim() ||
-      typeof name !== "string" ||
-      !name.trim()
-    ) {
-      return;
-    }
-
-    const normalizedName = name.trim().toLowerCase();
-
-    if (uniqueByName) {
-      if (seenNames.has(normalizedName)) return;
-      seenNames.add(normalizedName);
-    }
-
-    if (!options.has(id)) {
-      options.set(id, {
-        id,
-        name: name.trim(),
-      });
-    }
-  });
-
-  return Array.from(options.values());
-}
+const foodTypes = [
+  { id: "20000000-0000-0000-0000-000000000001", name: "Unspecified" },
+  { id: "20000000-0000-0000-0000-000000000002", name: "Vegetarian" },
+];
 
 function MenuItemPage() {
-  const [items, setItems] = useState<MenuItem[]>([]);
-  const [kitchens, setKitchens] = useState<Option[]>([]);
-  const [categories, setCategories] = useState<Option[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [categories, setCategories] = useState<MenuCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<MenuSubCategory[]>([]);
 
-  const [formData, setFormData] =
-    useState<FormData>(emptyForm);
+  const [formData, setFormData] = useState<MenuItemInput>(emptyForm);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
-
+  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loadingSubCategories, setLoadingSubCategories] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+
+  const totalPages = Math.max(1, Math.ceil(totalRecords / PAGE_SIZE));
 
   const loadMenuItems = useCallback(async () => {
-    setLoading(true);
-    setError("");
-
     try {
-      const data = await getAllMenuItems();
-      setItems(data);
+      setLoading(true);
+      setError("");
+
+      const response = await getMenuItems(pageNumber, PAGE_SIZE);
+
+      setMenuItems(response.items ?? []);
+      setTotalRecords(response.totalRecords ?? 0);
     } catch (err) {
       console.error("Failed to load menu items:", err);
-      setError(
-        "Unable to load menu items. Please check the backend API."
-      );
+      setError("Menu items could not be loaded. Please check the API.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [pageNumber]);
 
-  const loadDropdownOptions = useCallback(async () => {
+  const loadCategories = useCallback(async () => {
     try {
-      const [kitchenResponse, categoryResponse] =
-        await Promise.all([
-          getKitchen(),
-          getMenuCategories(),
-        ]);
+      setLoadingCategories(true);
 
-      const kitchenRecords = extractRecords(kitchenResponse);
-      const categoryRecords = extractRecords(categoryResponse);
-
-      setKitchens(
-        makeOptions(
-          kitchenRecords,
-          ["id", "Id", "kitchenId", "KitchenId"],
-          ["name", "Name", "kitchenName", "KitchenName"]
-        )
-      );
-
-      setCategories(
-        makeOptions(
-          categoryRecords,
-          [
-            "id",
-            "Id",
-            "menuCategoryId",
-            "MenuCategoryId",
-            "categoryId",
-          ],
-          [
-            "name",
-            "Name",
-            "categoryName",
-            "CategoryName",
-            "menuCategoryName",
-          ]
-        )
-      );
+      const response = await getMenuCategories();
+      setCategories(Array.isArray(response) ? response : []);
     } catch (err) {
-      console.error("Failed to load dropdown options:", err);
-      setError(
-        "Unable to load Kitchen or Category options. Please check their APIs."
-      );
+      console.error("Failed to load categories:", err);
+      setError("Categories could not be loaded. Please check the API.");
+    } finally {
+      setLoadingCategories(false);
     }
   }, []);
 
   useEffect(() => {
     void loadMenuItems();
-    void loadDropdownOptions();
-  }, [loadMenuItems, loadDropdownOptions]);
+  }, [loadMenuItems]);
 
-  const subCategoryOptions = useMemo(() => {
-    const filteredItems = items.filter(
-      (item) =>
-        item.menuCategoryId === formData.menuCategoryId
-    );
+  useEffect(() => {
+    void loadCategories();
+  }, [loadCategories]);
 
-    return getItemOptions(
-      filteredItems,
-      "menuSubCategoryId",
-      "subCategoryName",
-      true
-    );
-  }, [items, formData.menuCategoryId]);
+  useEffect(() => {
+    const categoryId = formData.menuCategoryId;
 
-  const mealTypeOptions = useMemo(
-    () =>
-      getItemOptions(
-        items,
-        "mealTypeId",
-        "mealTypeName",
-        true
-      ),
-    [items]
-  );
+    if (!categoryId) {
+      setSubCategories([]);
+      return;
+    }
 
-  const foodTypeOptions = useMemo(
-    () =>
-      getItemOptions(
-        items,
-        "foodTypeId",
-        "foodTypeName",
-        true
-      ),
-    [items]
-  );
+    let cancelled = false;
+
+    const loadSubCategories = async () => {
+      try {
+        setLoadingSubCategories(true);
+        setSubCategories([]);
+        setError("");
+
+        const response =
+          await getMenuSubCategoriesByCategory(categoryId);
+
+        if (!cancelled) {
+          setSubCategories(
+            response.filter(
+              (subcategory) =>
+                subcategory.menuCategoryId === categoryId &&
+                subcategory.isActive !== false
+            )
+          );
+        }
+      } catch (err) {
+        console.error("Failed to load subcategories:", err);
+
+        if (!cancelled) {
+          setSubCategories([]);
+          setError(
+            "Subcategories could not be loaded. Check the API endpoint and response."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingSubCategories(false);
+        }
+      }
+    };
+
+    void loadSubCategories();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.menuCategoryId]);
 
   const handleChange = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value, type } = event.target;
+    const { name, value } = event.target;
 
-    const nextValue =
-      type === "checkbox"
-        ? (event.target as HTMLInputElement).checked
-        : name === "price" ||
-            name === "preparationTimeMinutes"
-          ? Number(value)
-          : value;
+    if (name === "menuCategoryId") {
+      setFormData((previous) => ({
+        ...previous,
+        menuCategoryId: value,
+        menuSubCategoryId: "",
+      }));
+      return;
+    }
 
     setFormData((previous) => ({
       ...previous,
-      [name]: nextValue,
-      ...(name === "menuCategoryId"
-        ? { menuSubCategoryId: "" }
-        : {}),
+      [name]:
+        name === "price" || name === "preparationTimeMinutes"
+          ? Number(value)
+          : value,
     }));
   };
 
   const resetForm = () => {
     setFormData(emptyForm);
+    setSubCategories([]);
     setEditingId(null);
+    setShowForm(false);
+    setMessage("");
     setError("");
-    setSuccess("");
   };
 
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
+  const handleCreate = () => {
+    resetForm();
+    setShowForm(true);
+  };
 
-    setSaving(true);
+  const handleEdit = async (id: string) => {
+    try {
+      setError("");
+      setMessage("");
+
+      const item = await getMenuItemById(id);
+
+      setFormData({
+        kitchenId: item.kitchenId ?? "",
+        menuCategoryId: item.menuCategoryId ?? "",
+        menuSubCategoryId: item.menuSubCategoryId ?? "",
+        name: item.name ?? "",
+        description: item.description ?? "",
+        mealTypeId: item.mealTypeId ?? "",
+        foodTypeId: item.foodTypeId ?? "",
+        dietaryTagIds: [],
+        price: item.price ?? 0,
+        isAvailable: item.isAvailable ?? true,
+        preparationTimeMinutes: item.preparationTimeMinutes ?? 5,
+        imageUrl: item.imageUrl ?? "",
+      });
+
+      setEditingId(id);
+      setShowForm(true);
+    } catch (err) {
+      console.error("Failed to load menu item:", err);
+      setError("Menu item details could not be loaded.");
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMessage("");
     setError("");
-    setSuccess("");
+
+    if (
+      !formData.kitchenId.trim() ||
+      !formData.menuCategoryId ||
+      !formData.menuSubCategoryId ||
+      !formData.mealTypeId ||
+      !formData.foodTypeId
+    ) {
+      setError(
+        "Please enter Kitchen ID and select Category, Subcategory, Meal Type and Food Type."
+      );
+      return;
+    }
+
+    if (!formData.name.trim()) {
+      setError("Menu item name is required.");
+      return;
+    }
+
+    if (formData.price <= 0) {
+      setError("Please enter a price greater than zero.");
+      return;
+    }
+
+    if (formData.preparationTimeMinutes < 0) {
+      setError("Preparation time cannot be negative.");
+      return;
+    }
 
     try {
+      setSaving(true);
+
       const payload: MenuItemInput = {
         ...formData,
-        kitchenId: formData.kitchenId,
-        menuCategoryId: formData.menuCategoryId,
-        menuSubCategoryId: formData.menuSubCategoryId,
-        mealTypeId: formData.mealTypeId,
-        foodTypeId: formData.foodTypeId,
-        price: Number(formData.price),
-        preparationTimeMinutes: Number(
-          formData.preparationTimeMinutes
-        ),
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        imageUrl: formData.imageUrl?.trim() || "",
       };
 
       if (editingId) {
-        await updateMenuItem(editingId, payload);
-        setSuccess("Menu item updated successfully.");
+        await updateMenuItem({
+          ...payload,
+          id: editingId,
+        } as MenuItemInput);
+
+        setMessage("Menu item updated successfully.");
       } else {
         await createMenuItem(payload);
-        setSuccess("Menu item created successfully.");
+        setMessage("Menu item created successfully.");
       }
 
       setFormData(emptyForm);
+      setSubCategories([]);
       setEditingId(null);
+      setShowForm(false);
 
-      await Promise.all([
-        loadMenuItems(),
-        loadDropdownOptions(),
-      ]);
+      await loadMenuItems();
     } catch (err) {
       console.error("Failed to save menu item:", err);
       setError(
-        "Unable to save menu item. Please verify the API payload and backend."
+        "Menu item could not be saved. Please check the API request format."
       );
     } finally {
       setSaving(false);
     }
   };
 
-  const handleEdit = (item: MenuItem) => {
-    setEditingId(item.id);
-    setError("");
-    setSuccess("");
-
-    setFormData({
-      kitchenId: item.kitchenId ?? "",
-      menuCategoryId: item.menuCategoryId ?? "",
-      menuSubCategoryId: item.menuSubCategoryId ?? "",
-      mealTypeId: item.mealTypeId ?? "",
-      foodTypeId: item.foodTypeId ?? "",
-      name: item.name ?? "",
-      description: item.description ?? "",
-      price: Number(item.price ?? 0),
-      currencyCode: item.currencyCode ?? "INR",
-      isAvailable: item.isAvailable ?? true,
-      preparationTimeMinutes: Number(
-        item.preparationTimeMinutes ?? 30
-      ),
-      imageUrl: item.imageUrl ?? "",
-    });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this menu item?"
-    );
-
-    if (!confirmed) return;
-
-    setError("");
-    setSuccess("");
+    if (!window.confirm("Are you sure you want to delete this menu item?")) {
+      return;
+    }
 
     try {
+      setError("");
+      setMessage("");
+
       await deleteMenuItem(id);
-      setSuccess("Menu item deleted successfully.");
-      await loadMenuItems();
+      setMessage("Menu item deleted successfully.");
+
+      if (menuItems.length === 1 && pageNumber > 1) {
+        setPageNumber((previous) => previous - 1);
+      } else {
+        await loadMenuItems();
+      }
     } catch (err) {
       console.error("Failed to delete menu item:", err);
-      setError("Unable to delete menu item.");
+      setError("Menu item could not be deleted.");
     }
   };
 
-  const renderSelect = (
-    label: string,
-    name: keyof FormData,
-    options: Option[],
-    required = true,
-    disabled = false
-  ) => (
-    <div className="col-md-6" key={name}>
-      <label
-        className="form-label fw-semibold"
-        htmlFor={name}
-      >
-        {label}
-      </label>
+  const pageNumbers = useMemo(() => {
+    const start = Math.max(
+      1,
+      Math.min(pageNumber - 2, totalPages - 4)
+    );
+    const end = Math.min(totalPages, start + 4);
 
-      <select
-        id={name}
-        className="form-select"
-        name={name}
-        value={String(formData[name])}
-        onChange={handleChange}
-        required={required}
-        disabled={disabled}
-      >
-        <option value="">Select {label}</option>
-
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-          </option>
-        ))}
-      </select>
-
-      {options.length === 0 && (
-        <small className="text-secondary">
-          No options available.
-        </small>
-      )}
-    </div>
-  );
+    return Array.from(
+      { length: end - start + 1 },
+      (_, index) => start + index
+    );
+  }, [pageNumber, totalPages]);
 
   return (
-    <div className="menu-item-page container-fluid">
-      <div className="menu-item-heading">
+    <div className="menu-item-page">
+      <div className="menu-item-header">
         <div>
-          <h2>Menu Items</h2>
-          <p>Manage your kitchen menu items here.</p>
+          <h2>Menu Item Management</h2>
+          <p>Manage your kitchen menu items.</p>
         </div>
 
         <button
           type="button"
-          className="btn menu-refresh-btn"
-          onClick={() => {
-            void loadMenuItems();
-            void loadDropdownOptions();
-          }}
-          disabled={loading}
+          className="menu-item-create-btn"
+          onClick={handleCreate}
         >
-          {loading ? "Loading..." : "Refresh"}
+          + Add Menu Item
         </button>
       </div>
 
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      )}
+      {message && <div className="menu-item-message">{message}</div>}
+      {error && <div className="menu-item-error">{error}</div>}
 
-      {success && (
-        <div className="alert alert-success" role="status">
-          {success}
-        </div>
-      )}
+      {showForm && (
+        <form className="menu-item-form" onSubmit={handleSubmit}>
+          <h3>{editingId ? "Update Menu Item" : "Create Menu Item"}</h3>
 
-      <section className="menu-item-form-card">
-        <h4>
-          {editingId ? "Update Menu Item" : "Create Menu Item"}
-        </h4>
-
-        <form onSubmit={handleSubmit}>
-          <div className="row g-3">
-            {renderSelect(
-              "Kitchen",
-              "kitchenId",
-              kitchens
-            )}
-
-            {renderSelect(
-              "Category",
-              "menuCategoryId",
-              categories
-            )}
-
-            {renderSelect(
-              "Subcategory",
-              "menuSubCategoryId",
-              subCategoryOptions,
-              false,
-              !formData.menuCategoryId
-            )}
-
-            {renderSelect(
-              "Meal Type",
-              "mealTypeId",
-              mealTypeOptions
-            )}
-
-            {renderSelect(
-              "Food Type",
-              "foodTypeId",
-              foodTypeOptions
-            )}
-
-            <div className="col-md-6">
-              <label
-                className="form-label fw-semibold"
-                htmlFor="name"
-              >
-                Menu Item Name
-              </label>
+          <div className="menu-item-form-grid">
+            <div className="menu-item-field">
+              <label htmlFor="kitchenId">Kitchen ID *</label>
               <input
-                id="name"
-                className="form-control"
-                name="name"
-                value={formData.name}
+                id="kitchenId"
+                name="kitchenId"
+                value={formData.kitchenId}
                 onChange={handleChange}
-                placeholder="Enter menu item name"
+                placeholder="Enter kitchen ID"
                 required
               />
             </div>
 
-            <div className="col-md-6">
-              <label
-                className="form-label fw-semibold"
-                htmlFor="price"
+            <div className="menu-item-field">
+              <label htmlFor="menuCategoryId">Category *</label>
+              <select
+                id="menuCategoryId"
+                name="menuCategoryId"
+                value={formData.menuCategoryId}
+                onChange={handleChange}
+                disabled={loadingCategories}
+                required
               >
-                Price
-              </label>
+                <option value="">
+                  {loadingCategories
+                    ? "Loading categories..."
+                    : "Select Category"}
+                </option>
+
+                {categories
+                  .filter((category) => category.isActive !== false)
+                  .map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="menu-item-field">
+              <label htmlFor="menuSubCategoryId">Subcategory *</label>
+              <select
+                id="menuSubCategoryId"
+                name="menuSubCategoryId"
+                value={formData.menuSubCategoryId}
+                onChange={handleChange}
+                disabled={
+                  !formData.menuCategoryId || loadingSubCategories
+                }
+                required
+              >
+                <option value="">
+                  {!formData.menuCategoryId
+                    ? "Select Category First"
+                    : loadingSubCategories
+                      ? "Loading subcategories..."
+                      : subCategories.length === 0
+                        ? "No subcategories found"
+                        : "Select Subcategory"}
+                </option>
+
+                {subCategories.map((subcategory) => (
+                  <option key={subcategory.id} value={subcategory.id}>
+                    {subcategory.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="menu-item-field">
+              <label htmlFor="name">Menu Item Name *</label>
+              <input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="e.g. Veg Thali"
+                required
+              />
+            </div>
+
+            <div className="menu-item-field">
+              <label htmlFor="mealTypeId">Meal Type *</label>
+              <select
+                id="mealTypeId"
+                name="mealTypeId"
+                value={formData.mealTypeId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Meal Type</option>
+                {mealTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="menu-item-field">
+              <label htmlFor="foodTypeId">Food Type *</label>
+              <select
+                id="foodTypeId"
+                name="foodTypeId"
+                value={formData.foodTypeId}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Food Type</option>
+                {foodTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="menu-item-field">
+              <label htmlFor="price">Price (₹) *</label>
               <input
                 id="price"
-                className="form-control"
                 name="price"
                 type="number"
-                min="0"
+                min="0.01"
                 step="0.01"
                 value={formData.price}
                 onChange={handleChange}
@@ -565,36 +497,12 @@ function MenuItemPage() {
               />
             </div>
 
-            <div className="col-md-6">
-              <label
-                className="form-label fw-semibold"
-                htmlFor="currencyCode"
-              >
-                Currency
-              </label>
-              <select
-                id="currencyCode"
-                className="form-select"
-                name="currencyCode"
-                value={formData.currencyCode}
-                onChange={handleChange}
-                required
-              >
-                <option value="INR">INR</option>
-                <option value="USD">USD</option>
-              </select>
-            </div>
-
-            <div className="col-md-6">
-              <label
-                className="form-label fw-semibold"
-                htmlFor="preparationTimeMinutes"
-              >
-                Preparation Time (minutes)
+            <div className="menu-item-field">
+              <label htmlFor="preparationTimeMinutes">
+                Preparation Time (Minutes) *
               </label>
               <input
                 id="preparationTimeMinutes"
-                className="form-control"
                 name="preparationTimeMinutes"
                 type="number"
                 min="0"
@@ -604,192 +512,186 @@ function MenuItemPage() {
               />
             </div>
 
-            <div className="col-12">
-              <label
-                className="form-label fw-semibold"
-                htmlFor="description"
-              >
-                Description
-              </label>
+            <div className="menu-item-field menu-item-full-width">
+              <label htmlFor="description">Description</label>
               <textarea
                 id="description"
-                className="form-control"
                 name="description"
-                rows={3}
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Enter description"
+                placeholder="Enter menu item description"
+                rows={3}
               />
             </div>
 
-            <div className="col-12">
-              <label
-                className="form-label fw-semibold"
-                htmlFor="imageUrl"
-              >
-                Image URL
-              </label>
+            <div className="menu-item-field menu-item-full-width">
+              <label htmlFor="imageUrl">Image URL (Optional)</label>
               <input
                 id="imageUrl"
-                className="form-control"
                 name="imageUrl"
-                type="url"
-                value={formData.imageUrl}
+                value={formData.imageUrl ?? ""}
                 onChange={handleChange}
                 placeholder="Enter image URL"
               />
             </div>
 
-            <div className="col-12">
-              <label className="menu-availability">
-                <input
-                  type="checkbox"
-                  name="isAvailable"
-                  checked={formData.isAvailable}
-                  onChange={handleChange}
-                />
-                <span>Available for customers</span>
-              </label>
+            <div className="menu-item-field menu-item-checkbox">
+              <label htmlFor="isAvailable">Available</label>
+              <input
+                id="isAvailable"
+                name="isAvailable"
+                type="checkbox"
+                checked={formData.isAvailable}
+                onChange={(event) =>
+                  setFormData((previous) => ({
+                    ...previous,
+                    isAvailable: event.target.checked,
+                  }))
+                }
+              />
             </div>
+          </div>
 
-            <div className="col-12 d-flex flex-wrap gap-2">
-              <button
-                type="submit"
-                className="btn menu-save-btn"
-                disabled={saving}
-              >
-                {saving
-                  ? "Saving..."
-                  : editingId
-                    ? "Update Menu Item"
-                    : "Create Menu Item"}
-              </button>
+          <div className="menu-item-form-actions">
+            <button type="submit" disabled={saving}>
+              {saving
+                ? "Saving..."
+                : editingId
+                  ? "Update Menu Item"
+                  : "Create Menu Item"}
+            </button>
 
-              {editingId && (
-                <button
-                  type="button"
-                  className="btn menu-cancel-btn"
-                  onClick={resetForm}
-                >
-                  Cancel Edit
-                </button>
-              )}
-            </div>
+            <button
+              type="button"
+              className="menu-item-cancel-btn"
+              onClick={resetForm}
+            >
+              Cancel
+            </button>
           </div>
         </form>
-      </section>
+      )}
 
-      <section className="menu-item-table-card">
-        <div className="menu-table-heading">
-          <h4>Menu Item List</h4>
-          <span>{items.length} items</span>
-        </div>
-
+      <div className="menu-item-table-container">
         {loading ? (
-          <p className="menu-empty-message">
-            Loading menu items...
-          </p>
-        ) : items.length === 0 ? (
-          <p className="menu-empty-message">
-            No menu items found.
-          </p>
+          <p className="menu-item-loading">Loading menu items...</p>
+        ) : menuItems.length === 0 ? (
+          <p className="menu-item-empty">No menu items found.</p>
         ) : (
-          <div className="table-responsive">
-            <table className="table align-middle menu-item-table">
-              <thead>
-                <tr>
-                  <th>Item Name</th>
-                  <th>Kitchen</th>
-                  <th>Category</th>
-                  <th>Subcategory</th>
-                  <th>Meal Type</th>
-                  <th>Food Type</th>
-                  <th>Price</th>
-                  <th>Availability</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
+          <table className="menu-item-table">
+            <thead>
+              <tr>
+                <th>Sr. No.</th>
+                <th>Menu Item</th>
+                <th>Category</th>
+                <th>Meal Type</th>
+                <th>Food Type</th>
+                <th>Price</th>
+                <th>Available</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <strong>{item.name}</strong>
-                      {item.description && (
-                        <small className="menu-item-description">
-                          {item.description}
-                        </small>
-                      )}
-                    </td>
-
-                    <td>
-                      {item.kitchenName ||
-                        kitchens.find(
-                          (option) => option.id === item.kitchenId
-                        )?.name ||
-                        "—"}
-                    </td>
-
-                    <td>
-                      {item.categoryName ||
-                        categories.find(
-                          (option) =>
-                            option.id === item.menuCategoryId
-                        )?.name ||
-                        "—"}
-                    </td>
-
-                    <td>{item.subCategoryName || "—"}</td>
-                    <td>{item.mealTypeName || "—"}</td>
-                    <td>{item.foodTypeName || "—"}</td>
-
-                    <td>
-                      {item.currencyCode || "INR"}{" "}
-                      {Number(item.price || 0).toFixed(2)}
-                    </td>
-
-                    <td>
-                      <span
-                        className={`menu-status ${
-                          item.isAvailable
-                            ? "menu-status-available"
-                            : "menu-status-unavailable"
-                        }`}
+            <tbody>
+              {menuItems.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{(pageNumber - 1) * PAGE_SIZE + index + 1}</td>
+                  <td>
+                    <strong>{item.name}</strong>
+                    <small>{item.description || "No description"}</small>
+                  </td>
+                  <td>{item.categoryName || "-"}</td>
+                  <td>{item.mealTypeName || "-"}</td>
+                  <td>{item.foodTypeName || "-"}</td>
+                  <td>₹{Number(item.price).toFixed(2)}</td>
+                  <td>
+                    <span
+                      className={
+                        item.isAvailable
+                          ? "menu-item-status available"
+                          : "menu-item-status unavailable"
+                      }
+                    >
+                      {item.isAvailable ? "Available" : "Unavailable"}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="menu-item-actions">
+                      <button
+                        type="button"
+                        className="menu-item-edit-btn"
+                        onClick={() => void handleEdit(item.id)}
                       >
-                        {item.isAvailable
-                          ? "Available"
-                          : "Unavailable"}
-                      </span>
-                    </td>
+                        Edit
+                      </button>
 
-                    <td>
-                      <div className="d-flex gap-2">
-                        <button
-                          type="button"
-                          className="btn menu-edit-btn"
-                          onClick={() => handleEdit(item)}
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          type="button"
-                          className="btn menu-delete-btn"
-                          onClick={() =>
-                            void handleDelete(item.id)
-                          }
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      <button
+                        type="button"
+                        className="menu-item-delete-btn"
+                        onClick={() => void handleDelete(item.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
-      </section>
+      </div>
+
+      <div className="menu-item-pagination">
+        <span>
+          Total Records: {totalRecords} | Page {pageNumber} of {totalPages}
+        </span>
+
+        <div className="menu-item-page-buttons">
+          <button
+            type="button"
+            disabled={pageNumber === 1 || loading}
+            onClick={() => setPageNumber(1)}
+          >
+            First
+          </button>
+
+          <button
+            type="button"
+            disabled={pageNumber === 1 || loading}
+            onClick={() => setPageNumber((page) => page - 1)}
+          >
+            Previous
+          </button>
+
+          {pageNumbers.map((page) => (
+            <button
+              type="button"
+              key={page}
+              className={page === pageNumber ? "active" : ""}
+              disabled={loading}
+              onClick={() => setPageNumber(page)}
+            >
+              {page}
+            </button>
+          ))}
+
+          <button
+            type="button"
+            disabled={pageNumber === totalPages || loading}
+            onClick={() => setPageNumber((page) => page + 1)}
+          >
+            Next
+          </button>
+
+          <button
+            type="button"
+            disabled={pageNumber === totalPages || loading}
+            onClick={() => setPageNumber(totalPages)}
+          >
+            Last
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

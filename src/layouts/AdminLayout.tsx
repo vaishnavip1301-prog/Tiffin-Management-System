@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./AdminLayout.css";
+import { icons } from "lucide-react";
+import { label } from "framer-motion/client";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -33,9 +35,31 @@ function AdminLayout() {
       label: "Kitchens",
     },
     {
+      to: "/admin/dietary-tags",
+      icon: "bi-heart-pulse",
+      label: "Dietary Tags",
+    },
+    
+    {
+      to: "/admin/food-types",
+      icon: "bi-tags",
+      label: "Food Type",
+    },
+
+    {
+      to:"/admin/meal-types",
+      icon:"bi-clock-history",
+      label:"Meal Type"
+    },
+     {
       to: "/admin/menu-categories",
       icon: "bi-tags",
       label: "Menu Categories",
+    },
+      {
+      to: "/admin/menu-subcategories",
+      icon: "bi-diagram-3",
+      label: "Menu Sub Categories",
     },
     {
       to: "/admin/menu-items",
@@ -52,6 +76,7 @@ function AdminLayout() {
       icon: "bi-people",
       label: "Customers",
     },
+    
   ];
 
   return (

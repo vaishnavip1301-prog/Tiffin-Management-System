@@ -25,8 +25,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import Kitchen from "./pages/Admin/Kitchen";
 import MenuCategories from "./pages/Admin/MenuCategories";
-import MenuItemPage from "./pages/Admin/MenuItem";
-
+import MenuItem from "./pages/Admin/MenuItem";
+import MealTypePage from "./pages/Admin/MealType";
+import MenuSubCategory from "./pages/Admin/MenuSubCategory";
+import DietaryTag from "./pages/Admin/DietaryTag";
+import FoodType from "./pages/Admin/FoodType";
 import Order from "./pages/Order/Order";
 
 function App() {
@@ -62,7 +65,11 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />}/>
             <Route path="kitchen" element={<Kitchen />}/>
             <Route path="menu-categories" element={<MenuCategories />}/>
-            <Route path="/admin/menu-items" element={<MenuItemPage />}/>
+            <Route path="menu-items" element={<MenuItem />} />
+            <Route path="meal-types" element={<MealTypePage />} />
+            <Route path="menu-subcategories" element={<MenuSubCategory />}/>
+            <Route path="dietary-tags" element={<DietaryTag />} />
+            <Route path="food-types" element={<FoodType />} />
           </Route>
         </Route>
       </Routes>

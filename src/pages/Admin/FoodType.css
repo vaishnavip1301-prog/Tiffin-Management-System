@@ -1,0 +1,652 @@
+/* ========================================
+   AAPLA DABBA - FOOD TYPE MANAGEMENT
+   ======================================== */
+
+.food-type-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 24px;
+  color: #26352d;
+  background: #f7f9f7;
+  box-sizing: border-box;
+}
+
+.food-type-page *,
+.food-type-page *::before,
+.food-type-page *::after {
+  box-sizing: border-box;
+}
+
+/* Page Header */
+.food-type-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.food-type-header h2 {
+  margin: 0 0 7px;
+  color: #203d2c;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.food-type-header p {
+  margin: 0;
+  color: #77847b;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Common Buttons */
+.food-type-create-btn,
+.food-type-cancel-btn,
+.food-type-submit-btn,
+.food-type-close-btn,
+.food-type-edit-btn,
+.food-type-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Create and Update Buttons */
+.food-type-create-btn,
+.food-type-submit-btn {
+  min-height: 40px;
+  padding: 10px 16px;
+  color: #ffffff;
+  background: #347653;
+  border-color: #347653;
+}
+
+.food-type-create-btn:hover,
+.food-type-submit-btn:hover {
+  color: #ffffff;
+  background: #285d40;
+  border-color: #285d40;
+  box-shadow: 0 4px 10px rgba(52, 118, 83, 0.16);
+}
+
+.food-type-create-btn:active,
+.food-type-submit-btn:active {
+  transform: translateY(1px);
+}
+
+/* Cancel Button */
+.food-type-cancel-btn {
+  min-height: 38px;
+  padding: 9px 16px;
+  color: #425449;
+  background: #edf1ee;
+  border-color: #dfe6e0;
+}
+
+.food-type-cancel-btn:hover {
+  color: #293d30;
+  background: #dfe7e1;
+  border-color: #cfd9d1;
+}
+
+/* Close Button */
+.food-type-close-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: #647168;
+  background: #f2f5f2;
+  border-color: #e2e8e3;
+}
+
+.food-type-close-btn:hover {
+  color: #243c2d;
+  background: #e6ede7;
+  border-color: #d2ddd4;
+}
+
+/* Disabled Buttons */
+.food-type-page button:disabled {
+  opacity: 0.58;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Success and Error Messages */
+.food-type-alert {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 12px 15px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.food-type-alert.success {
+  color: #24633d;
+  background: #eaf6ed;
+  border-color: #cce7d2;
+}
+
+.food-type-alert.error {
+  color: #963737;
+  background: #fff0f0;
+  border-color: #f0cccc;
+}
+
+/* Create and Edit Form */
+.food-type-form-card {
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #e4ebe5;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(26, 58, 40, 0.045);
+}
+
+.food-type-form-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.food-type-form-heading h3 {
+  margin: 0;
+  color: #284633;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.food-type-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.food-type-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+}
+
+.food-type-field.full-width {
+  grid-column: 1 / -1;
+}
+
+.food-type-field label {
+  color: #35463b;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.food-type-field input,
+.food-type-field textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  color: #26352d;
+  background: #ffffff;
+  border: 1px solid #dce5de;
+  border-radius: 7px;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.food-type-field textarea {
+  min-height: 88px;
+  resize: vertical;
+}
+
+.food-type-field input::placeholder,
+.food-type-field textarea::placeholder {
+  color: #9aa59d;
+}
+
+.food-type-field input:focus,
+.food-type-field textarea:focus {
+  border-color: #347653;
+  box-shadow: 0 0 0 3px rgba(52, 118, 83, 0.12);
+}
+
+/* Form Action Buttons */
+.food-type-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* Table Card */
+.food-type-table-card {
+  width: 100%;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e4ebe5;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(26, 58, 40, 0.045);
+}
+
+.food-type-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px;
+  border-bottom: 1px solid #edf1ee;
+}
+
+.food-type-table-heading h3 {
+  margin: 0;
+  color: #284633;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.food-type-table-heading > span {
+  padding: 5px 10px;
+  color: #52685a;
+  background: #f0f5f1;
+  border: 1px solid #e1eae3;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Responsive Table Wrapper */
+.food-type-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.food-type-table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.food-type-table thead th {
+  padding: 15px 16px;
+  color: #526258;
+  background: #f5f8f5;
+  border-bottom: 1px solid #e6ece7;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.food-type-table tbody td {
+  padding: 14px 16px;
+  color: #58665d;
+  border-bottom: 1px solid #edf1ee;
+  font-size: 13px;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+.food-type-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.food-type-table tbody tr:hover {
+  background: #f7faf7;
+}
+
+.food-type-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.food-type-table th:first-child,
+.food-type-table td:first-child {
+  padding-left: 22px;
+}
+
+.food-type-table th:last-child,
+.food-type-table td:last-child {
+  padding-right: 22px;
+}
+
+/* Food Type Name */
+.food-type-name {
+  color: #2f6848 !important;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Description */
+.food-type-description {
+  min-width: 180px;
+  max-width: 320px;
+  overflow-wrap: anywhere;
+}
+
+/* Active and Inactive Status */
+.food-type-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 78px;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.food-type-status.active {
+  color: #24633d;
+  background: #e8f5eb;
+  border-color: #d1ead7;
+}
+
+.food-type-status.inactive {
+  color: #8b4141;
+  background: #faeaea;
+  border-color: #f0d5d5;
+}
+
+.food-type-status-dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+/* ========================================
+   EDIT AND DELETE BUTTONS
+   ======================================== */
+
+.food-type-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.food-type-edit-btn,
+.food-type-delete-btn {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Edit - Blue */
+.food-type-edit-btn {
+  color: #2473c7;
+  background: #ffffff;
+  border-color: #2473c7;
+}
+
+.food-type-edit-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background: #2473c7;
+  border-color: #2473c7;
+  box-shadow: 0 3px 8px rgba(36, 115, 199, 0.16);
+}
+
+.food-type-edit-btn:active:not(:disabled) {
+  color: #ffffff;
+  background: #1d5fa8;
+  border-color: #1d5fa8;
+}
+
+/* Delete - Red */
+.food-type-delete-btn {
+  color: #d34545;
+  background: #ffffff;
+  border-color: #d34545;
+}
+
+.food-type-delete-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background: #d34545;
+  border-color: #d34545;
+  box-shadow: 0 3px 8px rgba(211, 69, 69, 0.15);
+}
+
+.food-type-delete-btn:active:not(:disabled) {
+  color: #ffffff;
+  background: #b83232;
+  border-color: #b83232;
+}
+
+/* Button Icons */
+.food-type-edit-btn i,
+.food-type-delete-btn i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Loading and Empty States */
+.food-type-loading,
+.food-type-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 145px;
+  padding: 28px 20px;
+  color: #7a887e;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Loading Spinner */
+.food-type-spinner {
+  width: 17px;
+  height: 17px;
+  margin-right: 10px;
+  border: 2px solid #dce8df;
+  border-top-color: #347653;
+  border-radius: 50%;
+  animation: food-type-spin 0.75s linear infinite;
+}
+
+@keyframes food-type-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Keyboard Focus */
+.food-type-page button:focus-visible {
+  outline: 3px solid rgba(52, 118, 83, 0.25);
+  outline-offset: 2px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .food-type-page *,
+  .food-type-page *::before,
+  .food-type-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .food-type-page {
+    padding: 20px;
+  }
+
+  .food-type-form-card {
+    padding: 20px;
+  }
+
+  .food-type-table-heading {
+    padding: 18px;
+  }
+
+  .food-type-table th,
+  .food-type-table td {
+    padding: 13px 14px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .food-type-page {
+    padding: 15px;
+  }
+
+  .food-type-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .food-type-header h2 {
+    font-size: 23px;
+  }
+
+  .food-type-header p {
+    font-size: 13px;
+  }
+
+  .food-type-header .food-type-create-btn {
+    width: 100%;
+  }
+
+  .food-type-form-card {
+    padding: 17px;
+    margin-bottom: 20px;
+  }
+
+  .food-type-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 17px;
+  }
+
+  .food-type-field.full-width {
+    grid-column: auto;
+  }
+
+  .food-type-form-actions {
+    gap: 9px;
+    margin-top: 20px;
+  }
+
+  .food-type-form-actions button {
+    flex: 1;
+  }
+
+  .food-type-table-heading {
+    padding: 16px;
+  }
+
+  .food-type-table-heading h3 {
+    font-size: 15px;
+  }
+
+  .food-type-table th,
+  .food-type-table td {
+    padding: 12px;
+  }
+
+  .food-type-table th:first-child,
+  .food-type-table td:first-child {
+    padding-left: 15px;
+  }
+
+  .food-type-table th:last-child,
+  .food-type-table td:last-child {
+    padding-right: 15px;
+  }
+
+  .food-type-alert {
+    padding: 11px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .food-type-page {
+    padding: 12px;
+  }
+
+  .food-type-header h2 {
+    font-size: 21px;
+  }
+
+  .food-type-form-card {
+    padding: 14px;
+    border-radius: 9px;
+  }
+
+  .food-type-field input,
+  .food-type-field textarea {
+    font-size: 13px;
+  }
+
+  .food-type-table-card {
+    border-radius: 9px;
+  }
+
+  .food-type-table-heading {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .food-type-create-btn,
+  .food-type-cancel-btn,
+  .food-type-submit-btn {
+    min-height: 40px;
+    font-size: 12px;
+  }
+
+  .food-type-edit-btn,
+  .food-type-delete-btn {
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+}
