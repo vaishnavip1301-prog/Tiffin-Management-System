@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+
 import {
   getKitchen,
-  createKitchen,
   updateKitchen,
   type Kitchen as KitchenData,
   type KitchenInput,
 } from "../../api/kitchenService";
+
 import "./Kitchen.css";
 
 const emptyForm = {
@@ -15,11 +16,12 @@ const emptyForm = {
   ownerName: "",
   phoneNumber: "",
   email: "",
-  addressLine: "",
-  area: "",
-  city: "",
-  state: "",
-  postalCode: "",
+  locationAddressLine: "",
+  locationLandmark: "",
+  locationAreaName: "",
+  locationCityName: "",
+  locationStateName: "",
+  locationPostalCode: "",
 };
 
 type KitchenForm = typeof emptyForm;
@@ -28,15 +30,18 @@ function Kitchen() {
   const [kitchens, setKitchens] = useState<KitchenData[]>([]);
   const [formData, setFormData] = useState<KitchenForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingKitchen, setEditingKitchen] =
+    useState<KitchenData | null>(null);
+
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState<"success" | "danger">(
-    "success"
-  );
+  const [messageType, setMessageType] =
+    useState<"success" | "danger">("success");
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // GET: Fetch kitchens
+  // GET: Load kitchen data
   const loadKitchens = useCallback(async (showMessage = false) => {
     setLoading(true);
 
@@ -57,9 +62,8 @@ function Kitchen() {
       }
     } catch (error) {
       console.error("Get Kitchen API error:", error);
-      setMessage(
-        "Kitchen data could not be loaded. Check the API URL, endpoint and browser console."
-      );
+
+      setMessage("Kitchen data could not be loaded. Please check the API endpoint.");
       setMessageType("danger");
     } finally {
       setLoading(false);
@@ -82,16 +86,22 @@ function Kitchen() {
     }));
   };
 
-  // Reset form
+  // Cancel editing
   const resetForm = () => {
     setFormData(emptyForm);
     setEditingId(null);
+    setEditingKitchen(null);
     setShowForm(false);
   };
 
-  // CREATE / UPDATE
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  // PUT: Update kitchen
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
+
+    if (!editingId || !editingKitchen) return;
+
     setSaving(true);
     setMessage("");
 
@@ -101,47 +111,40 @@ function Kitchen() {
       ownerName: formData.ownerName.trim() || null,
       phoneNumber: formData.phoneNumber.trim() || null,
       email: formData.email.trim() || null,
-      addressLine: formData.addressLine.trim() || null,
-      area: formData.area.trim() || null,
-      city: formData.city.trim() || null,
-      state: formData.state.trim() || null,
-      postalCode: formData.postalCode.trim() || null,
+      locationId: editingKitchen.locationId,
+      locationAddressLine: formData.locationAddressLine.trim() || null,
+      locationLandmark: formData.locationLandmark.trim() || null,
+      locationAreaName: formData.locationAreaName.trim() || null,
+      locationCityName: formData.locationCityName.trim() || null,
+      locationStateName: formData.locationStateName.trim() || null,
+      locationPostalCode: formData.locationPostalCode.trim() || null,
+      latitude: editingKitchen.latitude,
+      longitude: editingKitchen.longitude,
+      currencyCode: editingKitchen.currencyCode,
+      isActive: editingKitchen.isActive,
     };
 
     try {
-      if (editingId) {
-        // UPDATE: Send Kitchen ID and form data
-        await updateKitchen(editingId, payload);
+      await updateKitchen(editingId, payload);
 
-        setMessage("Kitchen updated successfully.");
-      } else {
-        // CREATE: Send new Kitchen data
-        await createKitchen(payload);
-
-        setMessage("Kitchen created successfully.");
-      }
-
+      setMessage("Kitchen updated successfully.");
       setMessageType("success");
-      resetForm();
 
-      // Reload list after successful save
+      resetForm();
       await loadKitchens();
     } catch (error) {
-      console.error("Save Kitchen API error:", error);
+      console.error("Update Kitchen API error:", error);
 
       setMessage(
-        editingId
-          ? "Kitchen update failed. Please check the UpdateKitchen API."
-          : "Kitchen creation failed. Please check the CreateKitchen API."
+        "Kitchen update failed. Please check the UpdateKitchen API and request fields."
       );
-
       setMessageType("danger");
     } finally {
       setSaving(false);
     }
   };
 
-  // EDIT: Load selected Kitchen into the form
+  // Edit selected kitchen
   const handleEdit = (kitchen: KitchenData) => {
     setFormData({
       name: kitchen.name ?? "",
@@ -149,46 +152,45 @@ function Kitchen() {
       ownerName: kitchen.ownerName ?? "",
       phoneNumber: kitchen.phoneNumber ?? "",
       email: kitchen.email ?? "",
-      addressLine: kitchen.addressLine ?? "",
-      area: kitchen.area ?? "",
-      city: kitchen.city ?? "",
-      state: kitchen.state ?? "",
-      postalCode: kitchen.postalCode ?? "",
+      locationAddressLine: kitchen.locationAddressLine ?? "",
+      locationLandmark: kitchen.locationLandmark ?? "",
+      locationAreaName: kitchen.locationAreaName ?? "",
+      locationCityName: kitchen.locationCityName ?? "",
+      locationStateName: kitchen.locationStateName ?? "",
+      locationPostalCode: kitchen.locationPostalCode ?? "",
     });
 
     setEditingId(kitchen.id);
+    setEditingKitchen(kitchen);
     setShowForm(true);
     setMessage("");
-  };
 
-  // Open empty form for creating a Kitchen
-  const handleCreate = () => {
-    setFormData(emptyForm);
-    setEditingId(null);
-    setShowForm(true);
-    setMessage("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="container-fluid py-4 kitchen-management">
+      {/* Page heading */}
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
           <h2 className="fw-bold mb-1">Kitchen Management</h2>
           <p className="text-secondary mb-0">
-            Create, view and update kitchen information.
+            View and update kitchen information.
           </p>
         </div>
 
         <button
           type="button"
-          className="btn btn-success"
-          onClick={handleCreate}
+          className="btn btn-outline-success"
+          onClick={() => void loadKitchens(true)}
+          disabled={loading}
         >
-          <i className="bi bi-plus-circle me-2" />
-          Create Kitchen
+          <i className="bi bi-arrow-clockwise me-1" />
+          {loading ? "Loading..." : "Refresh"}
         </button>
       </div>
 
+      {/* API message */}
       {message && (
         <div
           className={`alert alert-${messageType} alert-dismissible fade show`}
@@ -204,46 +206,37 @@ function Kitchen() {
         </div>
       )}
 
-      {/* Kitchen Create / Update Form */}
+      {/* Update form */}
       {showForm && (
         <div className="row justify-content-center mb-4">
           <div className="col-12 kitchen-form-wrapper">
             <div className="card border-0 shadow-sm rounded-4">
               <div className="card-header bg-white border-0 px-4 pt-4">
-                <h5 className="fw-bold mb-1">
-                  {editingId ? "Update Kitchen" : "Create Kitchen"}
-                </h5>
-
+                <h5 className="fw-bold mb-1">Update Kitchen</h5>
                 <p className="text-secondary small mb-0">
-                  Fill in the kitchen information below.
+                  Edit the kitchen information below.
                 </p>
               </div>
 
               <div className="card-body p-4">
                 <form onSubmit={handleSubmit}>
                   <div className="row g-3">
-                    {/* Kitchen ID: visible only during editing */}
-                    {editingId && (
-                      <div className="col-12">
-                        <label className="form-label fw-semibold">
-                          Kitchen ID
-                        </label>
-
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={editingId}
-                          disabled
-                          readOnly
-                        />
-                      </div>
-                    )}
+                    <div className="col-12">
+                      <label className="form-label fw-semibold">
+                        Kitchen ID
+                      </label>
+                      <input
+                        className="form-control"
+                        value={editingId ?? ""}
+                        disabled
+                        readOnly
+                      />
+                    </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
                         Kitchen Name *
                       </label>
-
                       <input
                         className="form-control"
                         name="name"
@@ -258,7 +251,6 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         Owner Name
                       </label>
-
                       <input
                         className="form-control"
                         name="ownerName"
@@ -272,7 +264,6 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         Mobile Number
                       </label>
-
                       <input
                         type="tel"
                         className="form-control"
@@ -287,7 +278,6 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         Email Address
                       </label>
-
                       <input
                         type="email"
                         className="form-control"
@@ -302,11 +292,10 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         City
                       </label>
-
                       <input
                         className="form-control"
-                        name="city"
-                        value={formData.city}
+                        name="locationCityName"
+                        value={formData.locationCityName}
                         onChange={handleChange}
                         placeholder="Enter city"
                       />
@@ -316,11 +305,10 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         Area
                       </label>
-
                       <input
                         className="form-control"
-                        name="area"
-                        value={formData.area}
+                        name="locationAreaName"
+                        value={formData.locationAreaName}
                         onChange={handleChange}
                         placeholder="Enter area"
                       />
@@ -330,11 +318,10 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         State
                       </label>
-
                       <input
                         className="form-control"
-                        name="state"
-                        value={formData.state}
+                        name="locationStateName"
+                        value={formData.locationStateName}
                         onChange={handleChange}
                         placeholder="Enter state"
                       />
@@ -344,28 +331,40 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         Postal Code
                       </label>
-
                       <input
                         className="form-control"
-                        name="postalCode"
-                        value={formData.postalCode}
+                        name="locationPostalCode"
+                        value={formData.locationPostalCode}
                         onChange={handleChange}
                         placeholder="Enter postal code"
                       />
                     </div>
 
-                    <div className="col-12">
+                    <div className="col-md-6">
                       <label className="form-label fw-semibold">
                         Address
                       </label>
-
                       <textarea
                         className="form-control"
-                        name="addressLine"
+                        name="locationAddressLine"
                         rows={2}
-                        value={formData.addressLine}
+                        value={formData.locationAddressLine}
                         onChange={handleChange}
                         placeholder="Enter kitchen address"
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold">
+                        Landmark
+                      </label>
+                      <textarea
+                        className="form-control"
+                        name="locationLandmark"
+                        rows={2}
+                        value={formData.locationLandmark}
+                        onChange={handleChange}
+                        placeholder="Enter nearby landmark"
                       />
                     </div>
 
@@ -373,7 +372,6 @@ function Kitchen() {
                       <label className="form-label fw-semibold">
                         Description
                       </label>
-
                       <textarea
                         className="form-control"
                         name="description"
@@ -399,11 +397,7 @@ function Kitchen() {
                         className="btn btn-success px-4"
                         disabled={saving}
                       >
-                        {saving
-                          ? "Saving..."
-                          : editingId
-                            ? "Update Kitchen"
-                            : "Save Kitchen"}
+                        {saving ? "Updating..." : "Update Kitchen"}
                       </button>
                     </div>
                   </div>
@@ -414,28 +408,13 @@ function Kitchen() {
         </div>
       )}
 
-      {/* Kitchen List */}
+      {/* Kitchen list */}
       <div className="card border-0 shadow-sm rounded-4">
         <div className="card-header bg-white border-0 px-4 pt-4">
-          <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <div>
-              <h5 className="fw-bold mb-1">All Kitchens</h5>
-
-              <p className="text-secondary small mb-0">
-                Total kitchens: {kitchens.length}
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="btn btn-outline-success btn-sm"
-              onClick={() => void loadKitchens(true)}
-              disabled={loading}
-            >
-              <i className="bi bi-arrow-clockwise me-1" />
-              {loading ? "Loading..." : "Refresh"}
-            </button>
-          </div>
+          <h5 className="fw-bold mb-1">All Kitchens</h5>
+          <p className="text-secondary small mb-0">
+            Total kitchens: {kitchens.length}
+          </p>
         </div>
 
         <div className="card-body p-0">
@@ -458,7 +437,6 @@ function Kitchen() {
                   <tr>
                     <td colSpan={7} className="text-center py-5">
                       <div className="spinner-border text-success mb-2" />
-
                       <p className="text-secondary mb-0">
                         Loading kitchen data...
                       </p>
@@ -468,20 +446,10 @@ function Kitchen() {
                   <tr>
                     <td colSpan={7} className="text-center py-5">
                       <i className="bi bi-shop fs-1 text-secondary d-block mb-2" />
-
                       <h6 className="fw-semibold">No kitchens found</h6>
-
-                      <p className="text-secondary small mb-3">
+                      <p className="text-secondary small mb-0">
                         The API returned no kitchen records.
                       </p>
-
-                      <button
-                        type="button"
-                        className="btn btn-success btn-sm"
-                        onClick={handleCreate}
-                      >
-                        Create Kitchen
-                      </button>
                     </td>
                   </tr>
                 ) : (
@@ -491,7 +459,6 @@ function Kitchen() {
                         <div className="fw-semibold">
                           {kitchen.name || "Unnamed Kitchen"}
                         </div>
-
                         <small className="text-secondary">
                           {kitchen.email || "No email"}
                         </small>
@@ -499,13 +466,13 @@ function Kitchen() {
 
                       <td>{kitchen.ownerName || "—"}</td>
                       <td>{kitchen.phoneNumber || "—"}</td>
-                      <td>{kitchen.city || "—"}</td>
+                      <td>{kitchen.locationCityName || "—"}</td>
 
                       <td>
                         {[
-                          kitchen.addressLine,
-                          kitchen.area,
-                          kitchen.postalCode,
+                          kitchen.locationAddressLine,
+                          kitchen.locationAreaName,
+                          kitchen.locationPostalCode,
                         ]
                           .filter(Boolean)
                           .join(", ") || "—"}

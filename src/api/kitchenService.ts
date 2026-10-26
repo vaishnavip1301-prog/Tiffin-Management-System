@@ -9,54 +9,44 @@ export interface Kitchen {
   ownerName: string | null;
   phoneNumber: string | null;
   email: string | null;
-  addressLine: string | null;
-  area: string | null;
-  city: string | null;
-  state: string | null;
-  postalCode: string | null;
-  currencyCode?: string;
-  isActive?: boolean;
-}
+  locationId: string | null;
+  locationAddressLine?: string | null;
+  locationLandmark?: string | null;
+  locationAreaName?: string | null;
+  locationCityName?: string | null;
+  locationStateName?: string | null;
+  locationPostalCode?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  currencyCode: string;
+  isActive: boolean;
+}export type KitchenInput = Omit<Kitchen, "id">;
 
-export type KitchenInput = Omit<Kitchen, "id">;
-
-// GET: Get Kitchen data
-export const getKitchen = async (): Promise<
-  Kitchen | Kitchen[]
-> => {
+// GET: Get Kitchen
+export const getKitchen = async (): Promise<Kitchen | Kitchen[]> => {
   const response = await axios.get<Kitchen | Kitchen[]>(
     `${API_URL}/GetKitchen`
   );
 
-  console.log("Kitchen API response:", response.data);
+  console.log("Kitchen GET response:", response.data);
 
   return response.data;
 };
 
-// CREATE: Create Kitchen
-export const createKitchen = async (
-  data: KitchenInput
-): Promise<Kitchen> => {
-  const response = await axios.post<Kitchen>(
-    `${API_URL}/CreateKitchen`,
-    data
-  );
-
-  return response.data;
-};
-
-// UPDATE: Update Kitchen using ID
+// UPDATE: Update Kitchen
 export const updateKitchen = async (
   id: string,
-  data: KitchenInput
+  data: Partial<Kitchen>
 ): Promise<Kitchen> => {
   const response = await axios.put<Kitchen>(
     `${API_URL}/UpdateKitchen`,
     {
+      id,
       ...data,
-      id: id,
     }
   );
+
+  console.log("Kitchen UPDATE response:", response.data);
 
   return response.data;
 };

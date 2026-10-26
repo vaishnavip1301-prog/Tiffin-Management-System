@@ -1,0 +1,459 @@
+/* ========================================
+   AAPLA DABBA - STATE MANAGEMENT
+   ======================================== */
+
+.state-management {
+  width: 100%;
+  min-height: 100%;
+  padding: 24px;
+  background: #f7f9f6;
+  color: #26352d;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+/* Header */
+
+.state-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.state-header h2 {
+  margin: 0;
+  color: #234b36;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.state-header p {
+  margin: 6px 0 0;
+  color: #7b887f;
+  font-size: 14px;
+}
+
+.state-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Buttons */
+
+.state-management button {
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.state-management button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.state-refresh-btn {
+  padding: 10px 17px;
+  border: 1px solid #347653;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #347653;
+  font-size: 13px;
+}
+
+.state-refresh-btn:hover:not(:disabled) {
+  background: #edf5ef;
+}
+
+.state-add-btn {
+  padding: 10px 17px;
+  border: 1px solid #347653;
+  border-radius: 7px;
+  background: #347653;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.state-add-btn:hover {
+  background: #285d40;
+  border-color: #285d40;
+  transform: translateY(-1px);
+}
+
+/* Messages */
+
+.state-message {
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 7px;
+  font-size: 14px;
+}
+
+.state-success-message {
+  border: 1px solid #b8dfc3;
+  background: #edf8ef;
+  color: #27663b;
+}
+
+.state-error-message {
+  border: 1px solid #f0c3c3;
+  background: #fff0f0;
+  color: #a52a2a;
+}
+
+/* Cards */
+
+.state-card {
+  width: 100%;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: 1px solid #e4ebe5;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgba(30, 65, 43, 0.04);
+}
+
+.state-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 22px;
+  border-bottom: 1px solid #e9eee9;
+}
+
+.state-card-header h3 {
+  margin: 0;
+  color: #294b36;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.state-card-header p {
+  margin: 5px 0 0;
+  color: #859087;
+  font-size: 13px;
+}
+
+/* Form */
+
+.state-form {
+  padding: 22px;
+}
+
+.state-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+}
+
+.state-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+  margin-bottom: 17px;
+}
+
+.state-form-grid .state-form-group {
+  margin-bottom: 0;
+}
+
+.state-form-group label {
+  color: #43564a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.state-form-group input,
+.state-form-group select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #dce5dd;
+  border-radius: 7px;
+  outline: none;
+  background: #ffffff;
+  color: #26352d;
+  font-family: inherit;
+  font-size: 13px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.state-form-group input:focus,
+.state-form-group select:focus {
+  border-color: #347653;
+  box-shadow: 0 0 0 3px rgba(52, 118, 83, 0.1);
+}
+
+.state-form-group input:disabled,
+.state-form-group select:disabled {
+  background: #f3f6f3;
+  color: #68756c;
+  cursor: not-allowed;
+}
+
+.state-form-group input::placeholder {
+  color: #a0aaa2;
+}
+
+/* Form Actions */
+
+.state-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #edf0ed;
+}
+
+.state-save-btn {
+  min-width: 125px;
+  padding: 11px 20px;
+  border: 1px solid #347653;
+  border-radius: 7px;
+  background: #347653;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.state-save-btn:hover:not(:disabled) {
+  background: #285d40;
+  border-color: #285d40;
+}
+
+.state-cancel-btn {
+  padding: 11px 18px;
+  border: 1px solid #d7dfd8;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #526157;
+  font-size: 13px;
+}
+
+.state-cancel-btn:hover {
+  background: #f3f6f3;
+  border-color: #c7d2c9;
+}
+
+/* Table */
+
+.state-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.state-table {
+  width: 100%;
+  min-width: 760px;
+  margin: 0;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.state-table thead th {
+  padding: 15px 17px;
+  border-bottom: 1px solid #e5ebe6;
+  background: #f4f7f4;
+  color: #536458;
+  text-align: left;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.state-table tbody td {
+  padding: 15px 17px;
+  border-bottom: 1px solid #edf0ed;
+  color: #536157;
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.state-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.state-table tbody tr:hover {
+  background: #f9fbf9;
+}
+
+.state-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.state-name {
+  color: #294b36 !important;
+  font-weight: 700;
+}
+
+/* Status */
+
+.state-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.state-status.active {
+  background: #e7f5e9;
+  color: #287641;
+}
+
+.state-status.inactive {
+  background: #fbeaea;
+  color: #a33b3b;
+}
+
+/* Action Buttons */
+
+.state-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.state-view-btn {
+  padding: 7px 11px;
+  border: 1px solid #347653;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #347653;
+  font-size: 12px;
+}
+
+.state-view-btn:hover {
+  background: #edf5ef;
+}
+
+.state-edit-btn {
+  padding: 7px 12px;
+  border: 1px solid #2879c7;
+  border-radius: 6px;
+  background: #2879c7;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.state-edit-btn:hover {
+  border-color: #1c5e9c;
+  background: #1c5e9c;
+  transform: translateY(-1px);
+}
+
+.state-delete-btn {
+  padding: 7px 11px;
+  border: 1px solid #d9534f;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #c74743;
+  font-size: 12px;
+}
+
+.state-delete-btn:hover {
+  background: #d9534f;
+  color: #ffffff;
+}
+
+/* Loading and Empty States */
+
+.state-loading,
+.state-empty {
+  padding: 35px 20px;
+  color: #7b887f;
+  text-align: center;
+  font-size: 14px;
+}
+
+.state-empty strong {
+  display: block;
+  margin-bottom: 7px;
+  color: #405747;
+  font-size: 16px;
+}
+
+.state-empty p {
+  margin: 0;
+  color: #859087;
+  font-size: 13px;
+}
+
+/* Responsive */
+
+@media (max-width: 992px) {
+  .state-management {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .state-management {
+    padding: 15px;
+  }
+
+  .state-header h2 {
+    font-size: 23px;
+  }
+
+  .state-header-actions {
+    width: 100%;
+  }
+
+  .state-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .state-card-header,
+  .state-form {
+    padding: 16px;
+  }
+
+  .state-table thead th,
+  .state-table tbody td {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .state-management {
+    padding: 12px;
+  }
+
+  .state-header {
+    align-items: flex-start;
+  }
+
+  .state-header h2 {
+    font-size: 21px;
+  }
+
+  .state-header-actions {
+    gap: 8px;
+  }
+
+  .state-header-actions button {
+    flex: 1;
+  }
+
+  .state-form-actions {
+    flex-direction: column;
+  }
+
+  .state-form-actions button {
+    width: 100%;
+  }
+}

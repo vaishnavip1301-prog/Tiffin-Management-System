@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import "./AdminLayout.css";
-import { icons } from "lucide-react";
-import { label } from "framer-motion/client";
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -34,6 +32,26 @@ function AdminLayout() {
       icon: "bi-shop",
       label: "Kitchens",
     },
+      {
+    to: "/admin/states",
+    icon: "bi-geo-alt",
+    label: "States",
+  },
+  {
+    to: "/admin/cities",
+    icon: "bi-buildings",
+    label: "Cities",
+  },
+  {
+  to: "/admin/areas",
+  icon: "bi-map",
+  label: "Areas",
+  },
+  {
+    to: "/admin/locations",
+    icon: "bi-pin-map",
+    label: "Locations",
+  },
     {
       to: "/admin/dietary-tags",
       icon: "bi-heart-pulse",

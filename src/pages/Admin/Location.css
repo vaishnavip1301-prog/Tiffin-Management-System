@@ -1,0 +1,408 @@
+
+/* ========================================
+   AAPLA DABBA - LOCATION MANAGEMENT
+   ======================================== */
+
+.location-management {
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  color: #26352d;
+  font-family: Arial, sans-serif;
+}
+
+/* Header */
+
+.location-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.location-header h2 {
+  margin: 0 0 8px;
+  color: #234b37;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.location-header p {
+  margin: 0;
+  color: #77847b;
+  font-size: 14px;
+}
+
+/* Common Buttons */
+
+.location-add-btn,
+.location-save-btn,
+.location-cancel-btn,
+.location-refresh-btn,
+.location-edit-btn,
+.location-delete-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.location-add-btn {
+  background: #347653;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.location-add-btn:hover,
+.location-save-btn:hover {
+  background: #285d40;
+  transform: translateY(-1px);
+}
+
+.location-refresh-btn {
+  background: #edf3ef;
+  color: #347653;
+}
+
+.location-refresh-btn:hover {
+  background: #dce9df;
+}
+
+.location-refresh-btn:disabled,
+.location-save-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Success and Error Messages */
+
+.location-success,
+.location-error {
+  padding: 12px 15px;
+  margin-bottom: 18px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.location-success {
+  background: #eaf5ed;
+  border: 1px solid #c8e5d0;
+  color: #28633c;
+}
+
+.location-error {
+  background: #fff0ef;
+  border: 1px solid #f0cfcb;
+  color: #a43232;
+}
+
+/* Create and Update Form */
+
+.location-form {
+  padding: 22px;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px solid #e2e9e3;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(30, 65, 42, 0.05);
+}
+
+.location-form h3 {
+  margin: 0 0 22px;
+  color: #2b553d;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.location-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.location-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+}
+
+.location-full-width {
+  grid-column: 1 / -1;
+}
+
+.location-field label {
+  color: #425449;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.location-field input,
+.location-field textarea,
+.location-field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d7e0d9;
+  border-radius: 6px;
+  outline: none;
+  background: #ffffff;
+  color: #2d3931;
+  font-family: inherit;
+  font-size: 14px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.location-field input:focus,
+.location-field textarea:focus,
+.location-field select:focus {
+  border-color: #55916b;
+  box-shadow: 0 0 0 3px rgba(85, 145, 107, 0.12);
+}
+
+.location-field textarea {
+  resize: vertical;
+  min-height: 75px;
+}
+
+.location-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.location-save-btn {
+  background: #347653;
+  color: #ffffff;
+}
+
+.location-cancel-btn {
+  background: #edf0ed;
+  color: #46534a;
+}
+
+.location-cancel-btn:hover {
+  background: #dfe5df;
+}
+
+/* Locations Table Card */
+
+.location-table-card {
+  width: 100%;
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e3e9e4;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(30, 65, 42, 0.04);
+  overflow: hidden;
+}
+
+.location-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e8ede9;
+}
+
+.location-table-heading h3 {
+  margin: 0;
+  color: #2b553d;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Table */
+
+.location-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.location-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.location-table thead {
+  background: #f3f7f3;
+}
+
+.location-table th {
+  padding: 14px 16px;
+  color: #526357;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  border-bottom: 1px solid #e2e9e3;
+}
+
+.location-table td {
+  padding: 14px 16px;
+  color: #58645b;
+  vertical-align: middle;
+  border-bottom: 1px solid #edf1ed;
+}
+
+.location-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.location-table tbody tr:hover {
+  background: #f8fbf8;
+}
+
+.location-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.location-table td strong {
+  display: block;
+  max-width: 240px;
+  color: #34483a;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.location-table td small {
+  display: block;
+  margin-top: 5px;
+  color: #879188;
+  font-size: 12px;
+}
+
+/* Status */
+
+.location-status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.location-status.active {
+  background: #e5f3e8;
+  color: #2c7443;
+}
+
+.location-status.inactive {
+  background: #f0eeee;
+  color: #77716f;
+}
+
+/* Edit and Delete Actions */
+
+.location-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.location-edit-btn {
+  background: #e8f1ff;
+  color: #2463b5;
+  padding: 8px 13px;
+}
+
+.location-edit-btn:hover {
+  background: #2463b5;
+  color: #ffffff;
+}
+
+.location-delete-btn {
+  background: #fff0ef;
+  color: #c34444;
+  padding: 8px 13px;
+}
+
+.location-delete-btn:hover {
+  background: #c34444;
+  color: #ffffff;
+}
+
+/* Empty and Loading States */
+
+.location-empty {
+  padding: 35px 20px;
+  margin: 0;
+  color: #818c83;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Tablet */
+
+@media (max-width: 992px) {
+  .location-management {
+    padding: 20px;
+  }
+
+  .location-table {
+    min-width: 850px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 576px) {
+  .location-management {
+    padding: 14px;
+  }
+
+  .location-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .location-header h2 {
+    font-size: 22px;
+  }
+
+  .location-add-btn {
+    width: 100%;
+  }
+
+  .location-form {
+    padding: 16px;
+  }
+
+  .location-form-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .location-full-width {
+    grid-column: auto;
+  }
+
+  .location-form-actions {
+    flex-direction: column;
+  }
+
+  .location-save-btn,
+  .location-cancel-btn {
+    width: 100%;
+  }
+
+  .location-table-heading {
+    padding: 15px;
+  }
+
+  .location-table-heading h3 {
+    font-size: 16px;
+  }
+}

@@ -30,6 +30,10 @@ import MealTypePage from "./pages/Admin/MealType";
 import MenuSubCategory from "./pages/Admin/MenuSubCategory";
 import DietaryTag from "./pages/Admin/DietaryTag";
 import FoodType from "./pages/Admin/FoodType";
+import State from "./pages/Admin/State";
+import City from "./pages/Admin/City";
+import Location from "./pages/Admin/Location";
+import Area from "./pages/Admin/Area";
 import Order from "./pages/Order/Order";
 
 function App() {
@@ -70,6 +74,10 @@ function App() {
             <Route path="menu-subcategories" element={<MenuSubCategory />}/>
             <Route path="dietary-tags" element={<DietaryTag />} />
             <Route path="food-types" element={<FoodType />} />
+            <Route path="states" element={<State />} />
+            <Route path="cities" element={<City />} />
+            <Route path="locations" element={<Location />} />
+            <Route path="areas" element={<Area />} />
           </Route>
         </Route>
       </Routes>
