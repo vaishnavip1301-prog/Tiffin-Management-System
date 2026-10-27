@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -169,93 +168,17 @@ function Navbar() {
                 </ul>
               </li>
 
-              {/* Our Menu */}
-              <li
-                className={`nav-item dropdown aapla-dropdown ${
-                  openDropdown === "menu" ? "dropdown-open" : ""
-                }`}
-                onMouseEnter={() => handleDropdownEnter("menu")}
-                onMouseLeave={handleDropdownLeave}
-              >
-                <div className="d-flex align-items-center">
-                  <NavLink
-                    to="/menu"
-                    end
-                    className={({ isActive }) =>
-                      `nav-link ${isActive ? "active" : ""}`
-                    }
-                    onClick={closeMenu}
-                  >
-                    Our Menu
-                  </NavLink>
-
-                  <button
-                    type="button"
-                    className="nav-link aapla-dropdown-toggle"
-                    aria-label="Toggle Our Menu dropdown"
-                    aria-expanded={openDropdown === "menu"}
-                    onClick={() => toggleDropdown("menu")}
-                  >
-                    <i
-                      className={`bi ${
-                        openDropdown === "menu"
-                          ? "bi-chevron-up"
-                          : "bi-chevron-down"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                <ul
-                  className={`dropdown-menu aapla-dropdown-menu ${
-                    openDropdown === "menu" ? "show" : ""
-                  }`}
+              {/* Our Menu - Direct Link */}
+              <li className="nav-item">
+                <NavLink
+                  to="/menu"
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? "active" : ""}`
+                  }
+                  onClick={closeMenu}
                 >
-                  <li>
-                    <NavLink
-                      to="/menu"
-                      end
-                      className="dropdown-item"
-                      onClick={closeMenu}
-                    >
-                      <i className="bi bi-grid me-2" />
-                      All Meals
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/menu/daily-meal"
-                      className="dropdown-item"
-                      onClick={closeMenu}
-                    >
-                      <i className="bi bi-egg-fried me-2" />
-                      Daily Tiffin
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/menu/healthy-meals"
-                      className="dropdown-item"
-                      onClick={closeMenu}
-                    >
-                      <i className="bi bi-heart-pulse me-2" />
-                      Healthy Meals
-                    </NavLink>
-                  </li>
-
-                  <li>
-                    <NavLink
-                      to="/menu/special-dishes"
-                      className="dropdown-item"
-                      onClick={closeMenu}
-                    >
-                      <i className="bi bi-stars me-2" />
-                      Special Dishes
-                    </NavLink>
-                  </li>
-                </ul>
+                  Our Menu
+                </NavLink>
               </li>
 
               {/* Meal Plans */}
@@ -335,26 +258,32 @@ function Navbar() {
                 </NavLink>
               </li>
 
-            {/* Language Switch */}
-            <div className="aapla-language-switch">
-              <button
-                type="button"
-                className={i18n.language.startsWith("en") ? "active" : ""}
-                onClick={() => changeLanguage("en")}
-              >
-                En
-              </button>
+              {/* Language Switch */}
+              <li className="nav-item">
+                <div className="aapla-language-switch">
+                  <button
+                    type="button"
+                    className={
+                      i18n.language.startsWith("en") ? "active" : ""
+                    }
+                    onClick={() => changeLanguage("en")}
+                  >
+                    En
+                  </button>
 
-              <button
-                type="button"
-                className={i18n.language.startsWith("mr") ? "active" : ""}
-                onClick={() => changeLanguage("mr")}
-              >
-                म
-              </button>
-            </div>
+                  <button
+                    type="button"
+                    className={
+                      i18n.language.startsWith("mr") ? "active" : ""
+                    }
+                    onClick={() => changeLanguage("mr")}
+                  >
+                    म
+                  </button>
+                </div>
+              </li>
 
-            {/* Login */}
+              {/* Login */}
               <li className="nav-item">
                 <button
                   type="button"

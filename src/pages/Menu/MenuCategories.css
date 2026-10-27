@@ -1,0 +1,344 @@
+/* =========================================
+   AAPLA DABBA - MENU CATEGORIES
+========================================= */
+
+.menu-categories-page {
+  min-height: 70vh;
+  padding: 65px 0 85px;
+  background-color: #fffaf1;
+}
+
+/* =========================================
+   PAGE HEADER
+========================================= */
+
+.menu-categories-page .menu-page-header {
+  max-width: 760px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.menu-categories-page .menu-brand-label {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #e96b2c;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.menu-categories-page .menu-page-title {
+  margin: 0 0 16px;
+  color: #123c2e;
+  font-size: clamp(32px, 4vw, 46px);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.menu-categories-page .menu-page-description {
+  max-width: 650px;
+  margin: 0 auto;
+  color: #68756d;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* =========================================
+   CATEGORY CARD
+========================================= */
+
+.menu-categories-page .menu-category-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  color: inherit;
+  background-color: #ffffff;
+  border: 1px solid #e8ece6;
+  border-radius: 20px;
+  text-align: left;
+  cursor: pointer;
+
+  box-shadow: 0 5px 18px rgba(18, 60, 46, 0.05);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.menu-categories-page .menu-category-card:hover {
+  transform: translateY(-7px);
+  border-color: #a8f52b;
+  box-shadow: 0 16px 36px rgba(18, 60, 46, 0.13);
+}
+
+.menu-categories-page .menu-category-card:focus-visible {
+  outline: 3px solid #a8f52b;
+  outline-offset: 4px;
+}
+
+/* =========================================
+   CATEGORY IMAGE
+========================================= */
+
+.menu-categories-page .menu-category-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 235px;
+  overflow: hidden;
+  background-color: #f0eee5;
+}
+
+.menu-categories-page .menu-category-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease;
+}
+
+.menu-categories-page .menu-category-card:hover
+.menu-category-image {
+  transform: scale(1.06);
+}
+
+/* Subtle image overlay at the bottom */
+
+.menu-categories-page .menu-category-image-wrap::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 45px;
+  background: linear-gradient(
+    to top,
+    rgba(18, 60, 46, 0.12),
+    transparent
+  );
+  content: "";
+  pointer-events: none;
+}
+
+/* =========================================
+   CATEGORY CONTENT
+========================================= */
+
+.menu-categories-page .menu-category-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.menu-categories-page .menu-category-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 19px;
+}
+
+.menu-categories-page .menu-category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  color: #245538;
+  background-color: #eff8df;
+  border-radius: 30px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* Arrow */
+
+.menu-categories-page .menu-category-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  color: #ffffff;
+  background-color: #123c2e;
+  border-radius: 50%;
+  font-size: 19px;
+
+  transition:
+    background-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.menu-categories-page .menu-category-card:hover
+.menu-category-arrow {
+  background-color: #e96b2c;
+  transform: translate(2px, -2px);
+}
+
+/* Category Name */
+
+.menu-categories-page .menu-category-name {
+  margin: 0 0 11px;
+  color: #123c2e;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Category Description */
+
+.menu-categories-page .menu-category-description {
+  margin: 0;
+  color: #6b756f;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* =========================================
+   LOADING STATE
+========================================= */
+
+.menu-categories-page .menu-loading {
+  padding: 75px 15px;
+  text-align: center;
+}
+
+.menu-categories-page .menu-loading .spinner-border {
+  width: 42px;
+  height: 42px;
+  color: #347653;
+  border-width: 4px;
+}
+
+/* =========================================
+   ERROR MESSAGE
+========================================= */
+
+.menu-categories-page .alert-danger {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.menu-categories-page .menu-empty-state {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 55px 20px;
+  background-color: #ffffff;
+  border: 1px dashed #cbd8cc;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.menu-categories-page .menu-empty-state h4 {
+  margin-bottom: 12px;
+  color: #123c2e;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.menu-categories-page .menu-empty-state p {
+  margin: 0;
+  color: #6b756f;
+  font-size: 14px;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 991px) {
+  .menu-categories-page {
+    padding: 50px 0 65px;
+  }
+
+  .menu-categories-page .menu-category-image-wrap {
+    height: 210px;
+  }
+
+  .menu-categories-page .menu-category-content {
+    padding: 21px;
+  }
+
+  .menu-categories-page .menu-category-name {
+    font-size: 20px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 575px) {
+  .menu-categories-page {
+    padding: 38px 0 50px;
+  }
+
+  .menu-categories-page .menu-page-header {
+    margin-bottom: 30px;
+  }
+
+  .menu-categories-page .menu-page-title {
+    font-size: 32px;
+  }
+
+  .menu-categories-page .menu-page-description {
+    padding: 0 8px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .menu-categories-page .menu-category-image-wrap {
+    height: 225px;
+  }
+
+  .menu-categories-page .menu-category-content {
+    padding: 20px;
+  }
+
+  .menu-categories-page .menu-category-top {
+    margin-bottom: 15px;
+  }
+
+  .menu-categories-page .menu-category-name {
+    font-size: 21px;
+  }
+
+  .menu-categories-page .menu-category-description {
+    font-size: 14px;
+  }
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-categories-page .menu-category-card,
+  .menu-categories-page .menu-category-image,
+  .menu-categories-page .menu-category-arrow {
+    transition: none;
+  }
+
+  .menu-categories-page .menu-category-card:hover {
+    transform: none;
+  }
+
+  .menu-categories-page .menu-category-card:hover
+  .menu-category-image {
+    transform: none;
+  }
+}

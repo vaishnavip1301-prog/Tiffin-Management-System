@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
@@ -10,7 +9,9 @@ import OurStory from "./pages/About/OurStory";
 import WhyChooseUs from "./pages/About/WhyChooseUs";
 import OurKitchen from "./pages/About/OurKitchen";
 
-import Menu from "./pages/Menu/Menu";
+// import Menu from "./pages/Menu/Menu";
+import MenuCategoriesPage from "./pages/Menu/MenuCategories";
+import MenuSubCategories from "./pages/Menu/MenuSubCategories";
 import DailyTiffin from "./pages/Menu/DailyTiffin";
 import HealthyMeals from "./pages/Menu/HealthyMeals";
 import SpecialDishes from "./pages/Menu/SpecialDishes";
@@ -49,7 +50,11 @@ function App() {
           <Route path="/about/why-choose-us" element={<WhyChooseUs />} />
           <Route path="/about/our-kitchen" element={<OurKitchen />} />
 
-          <Route path="/menu" element={<Menu />} />
+          {/* Public Menu Categories */}
+          <Route path="/menu" element={<MenuCategoriesPage />} />
+          <Route path="/menu/category/:categoryId" element={<MenuSubCategories />}/>
+
+          {/* Existing Menu Pages */}
           <Route path="/menu/daily-meal" element={<DailyTiffin />} />
           <Route path="/menu/healthy-meals" element={<HealthyMeals />} />
           <Route path="/menu/special-dishes" element={<SpecialDishes />} />
@@ -65,13 +70,26 @@ function App() {
         {/* Protected Admin Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Navigate to="/admin/dashboard" replace />}/>
-            <Route path="dashboard" element={<AdminDashboard />}/>
-            <Route path="kitchen" element={<Kitchen />}/>
-            <Route path="menu-categories" element={<MenuCategories />}/>
+            <Route
+              index
+              element={<Navigate to="/admin/dashboard" replace />}
+            />
+
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="kitchen" element={<Kitchen />} />
+
+            {/* Admin Menu Categories */}
+            <Route
+              path="menu-categories"
+              element={<MenuCategories />}
+            />
+
             <Route path="menu-items" element={<MenuItem />} />
             <Route path="meal-types" element={<MealTypePage />} />
-            <Route path="menu-subcategories" element={<MenuSubCategory />}/>
+            <Route
+              path="menu-subcategories"
+              element={<MenuSubCategory />}
+            />
             <Route path="dietary-tags" element={<DietaryTag />} />
             <Route path="food-types" element={<FoodType />} />
             <Route path="states" element={<State />} />
