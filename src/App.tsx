@@ -9,9 +9,7 @@ import OurStory from "./pages/About/OurStory";
 import WhyChooseUs from "./pages/About/WhyChooseUs";
 import OurKitchen from "./pages/About/OurKitchen";
 
-// import Menu from "./pages/Menu/Menu";
-import MenuCategoriesPage from "./pages/Menu/MenuCategories";
-import MenuSubCategories from "./pages/Menu/MenuSubCategories";
+import Menu from "./pages/Menu/Menu";
 import DailyTiffin from "./pages/Menu/DailyTiffin";
 import HealthyMeals from "./pages/Menu/HealthyMeals";
 import SpecialDishes from "./pages/Menu/SpecialDishes";
@@ -36,6 +34,8 @@ import City from "./pages/Admin/City";
 import Location from "./pages/Admin/Location";
 import Area from "./pages/Admin/Area";
 import Order from "./pages/Order/Order";
+import Cart from "./pages/Cart/Cart";
+import Plans from "./pages/Plans/Plans";
 
 function App() {
   return (
@@ -50,21 +50,23 @@ function App() {
           <Route path="/about/why-choose-us" element={<WhyChooseUs />} />
           <Route path="/about/our-kitchen" element={<OurKitchen />} />
 
-          {/* Public Menu Categories */}
-          <Route path="/menu" element={<MenuCategoriesPage />} />
-          <Route path="/menu/category/:categoryId" element={<MenuSubCategories />}/>
+          {/* Our Menu - API Based Menu Page */}
+          <Route path="/menu" element={<Menu />} />
 
-          {/* Existing Menu Pages */}
+          {/* Individual Menu Pages */}
           <Route path="/menu/daily-meal" element={<DailyTiffin />} />
           <Route path="/menu/healthy-meals" element={<HealthyMeals />} />
           <Route path="/menu/special-dishes" element={<SpecialDishes />} />
 
+          {/* Meal Plans */}
           <Route path="/mealplans/dailyplan" element={<DailyPlan />} />
           <Route path="/mealplans/weeklyplan" element={<WeeklyPlan />} />
           <Route path="/mealplans/monthlyplan" element={<MonthlyPlan />} />
 
           <Route path="/contact" element={<Contact />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/plans" element={<Plans />} />
+          <Route path="/cart" element={<Cart />} />
         </Route>
 
         {/* Protected Admin Routes */}
@@ -77,19 +79,10 @@ function App() {
 
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="kitchen" element={<Kitchen />} />
-
-            {/* Admin Menu Categories */}
-            <Route
-              path="menu-categories"
-              element={<MenuCategories />}
-            />
-
+            <Route path="menu-categories" element={<MenuCategories />} />
             <Route path="menu-items" element={<MenuItem />} />
             <Route path="meal-types" element={<MealTypePage />} />
-            <Route
-              path="menu-subcategories"
-              element={<MenuSubCategory />}
-            />
+            <Route path="menu-subcategories" element={<MenuSubCategory />} />
             <Route path="dietary-tags" element={<DietaryTag />} />
             <Route path="food-types" element={<FoodType />} />
             <Route path="states" element={<State />} />

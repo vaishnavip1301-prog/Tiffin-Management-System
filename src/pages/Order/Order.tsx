@@ -1,403 +1,518 @@
-
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Order.css";
 
-type MealPlan = "Daily" | "Weekly" | "Monthly";
+type CartOrderItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  cartItemId?: string;
+  image?: string;
+};
 
-const plans = [
+type Plan = {
+  id: string;
+  name: string;
+  price: number;
+  duration: string;
+  description: string;
+};
+
+type OrderLocationState = {
+  cartItems?: CartOrderItem[];
+};
+
+const plans: Plan[] = [
   {
-    name: "Daily" as MealPlan,
+    id: "daily",
+    name: "Daily Plan",
     price: 120,
-    duration: "Per day",
-    description: "Fresh gharghuti jevan every day",
-    icon: "bi-sun",
+    duration: "per day",
+    description: "Fresh homemade meals for your everyday needs.",
   },
   {
-    name: "Weekly" as MealPlan,
+    id: "weekly",
+    name: "Weekly Plan",
     price: 700,
-    duration: "Per week",
-    description: "Convenient meals for the whole week",
-    icon: "bi-calendar-week",
+    duration: "per week",
+    description: "Convenient homemade meals throughout the week.",
   },
   {
-    name: "Monthly" as MealPlan,
+    id: "monthly",
+    name: "Monthly Plan",
     price: 2800,
-    duration: "Per month",
-    description: "Your regular monthly tiffin plan",
-    icon: "bi-calendar-month",
+    duration: "per month",
+    description: "An affordable monthly homemade meal plan.",
   },
 ];
 
-function Order() {
-  const navigate = useNavigate();
+const FALLBACK_IMAGE = "/images/tiffin.jpg";
 
-  const [selectedPlan, setSelectedPlan] = useState<MealPlan>("Daily");
+export default function Order() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const routeState = location.state as OrderLocationState | null;
+  const cartItems = routeState?.cartItems ?? [];
+  const isCartOrder = cartItems.length > 0;
+
+  const [selectedPlan, setSelectedPlan] = useState("daily");
   const [quantity, setQuantity] = useState(1);
+
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [pincode, setPincode] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [instructions, setInstructions] = useState("");
+
+  const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const plan = plans.find((item) => item.name === selectedPlan)!;
-  const total = plan.price * quantity;
+  const currentPlan =
+    plans.find((plan) => plan.id === selectedPlan) ?? plans[0];
 
-  const today = new Date();
-  const minDate = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, "0"),
-    String(today.getDate()).padStart(2, "0"),
-  ].join("-");
+  const cartTotal = useMemo(
+    () =>
+      cartItems.reduce(
+        (total, item) =>
+          total + Number(item.price) * Number(item.quantity),
+        0,
+      ),
+    [cartItems],
+  );
+
+  const planTotal = currentPlan.price * quantity;
+  const totalAmount = isCartOrder ? cartTotal : planTotal;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError("");
+
+    if (!customerName.trim()) {
+      setError("Please enter your full name.");
+      return;
+    }
+
+    if (!/^[6-9]\d{9}$/.test(phone.trim())) {
+      setError("Please enter a valid 10-digit Indian mobile number.");
+      return;
+    }
+
+    if (!address.trim()) {
+      setError("Please enter your delivery address.");
+      return;
+    }
+
+    if (!/^\d{6}$/.test(pincode.trim())) {
+      setError("Please enter a valid 6-digit pincode.");
+      return;
+    }
+
+    if (!deliveryDate) {
+      setError("Please select your delivery date.");
+      return;
+    }
+
+    if (isCartOrder && cartItems.length === 0) {
+      setError("Your cart is empty. Please add a meal first.");
+      return;
+    }
+
     setSubmitted(true);
   };
 
   if (submitted) {
     return (
-      <section className="order-page">
-        <div className="container">
+      <main className="order-page">
+        <section className="order-container">
           <div className="order-success">
-            <div className="order-success-icon">
-              <i className="bi bi-check2-circle" />
-            </div>
+            <div className="order-success-icon">✓</div>
 
-            <h1>Order Details Ready!</h1>
+            <h1>Order Details Submitted!</h1>
+
             <p>
-              Please review your tiffin details below. Your order has not
-              been placed yet.
+              Your order details have been reviewed. Please contact Aapla
+              Dabba to confirm availability and delivery.
             </p>
 
-            <div className="order-review">
-              <div>
+            <div className="order-review-card">
+              <h2>Order Summary</h2>
+
+              <div className="order-review-row">
                 <span>Customer</span>
                 <strong>{customerName}</strong>
               </div>
-              <div>
+
+              <div className="order-review-row">
                 <span>Phone</span>
                 <strong>{phone}</strong>
               </div>
-              <div>
-                <span>Meal plan</span>
-                <strong>{plan.name} Tiffin</strong>
-              </div>
-              <div>
-                <span>Quantity</span>
-                <strong>{quantity}</strong>
-              </div>
-              <div>
-                <span>Delivery date</span>
+
+              <div className="order-review-row">
+                <span>Delivery Date</span>
                 <strong>{deliveryDate}</strong>
               </div>
-              <div>
-                <span>Estimated total</span>
-                <strong>₹{total.toLocaleString("en-IN")}</strong>
+
+              {isCartOrder ? (
+                <>
+                  <h3>Selected Meals</h3>
+
+                  {cartItems.map((item) => (
+                    <div
+                      className="order-review-row"
+                      key={item.id}
+                    >
+                      <span>
+                        {item.name} × {item.quantity}
+                      </span>
+
+                      <strong>
+                        ₹{(
+                          Number(item.price) * item.quantity
+                        ).toFixed(2)}
+                      </strong>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <div className="order-review-row">
+                    <span>Selected Plan</span>
+                    <strong>{currentPlan.name}</strong>
+                  </div>
+
+                  <div className="order-review-row">
+                    <span>Quantity</span>
+                    <strong>{quantity}</strong>
+                  </div>
+                </>
+              )}
+
+              <div className="order-review-row">
+                <span>Delivery Address</span>
+                <strong>{address}</strong>
               </div>
-              <div className="order-review-address">
-                <span>Delivery address</span>
-                <strong>{address}, {pincode}</strong>
+
+              <div className="order-review-row">
+                <span>Pincode</span>
+                <strong>{pincode}</strong>
               </div>
-              {instructions && (
-                <div className="order-review-address">
-                  <span>Special instructions</span>
+
+              {instructions.trim() && (
+                <div className="order-review-row">
+                  <span>Instructions</span>
                   <strong>{instructions}</strong>
                 </div>
               )}
+
+              <div className="order-review-total">
+                <span>Total Amount</span>
+                <strong>₹{totalAmount.toFixed(2)}</strong>
+              </div>
             </div>
 
-            <div className="order-notice">
-              <i className="bi bi-info-circle" />
-              Backend order submission is not connected yet. These details
-              have not been saved to the server.
-            </div>
+            <p className="order-note">
+              Note: This page currently displays your order summary. The
+              order has not been saved to a backend order API.
+            </p>
 
             <div className="order-success-actions">
               <button
                 type="button"
-                className="order-primary-btn"
-                onClick={() => setSubmitted(false)}
+                className="order-secondary-button"
+                onClick={() => navigate("/menu")}
               >
-                <i className="bi bi-pencil-square" /> Edit Details
+                Back to Menu
               </button>
 
               <button
                 type="button"
-                className="order-secondary-btn"
+                className="order-primary-button"
                 onClick={() => navigate("/")}
               >
-                Back to Home
+                Go to Home
               </button>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
     );
   }
 
   return (
-    <section className="order-page">
-      <div className="order-hero">
+    <main className="order-page">
+      <section className="order-hero">
         <div className="container">
-          <div className="order-hero-content">
-            <span className="order-eyebrow">
-              <i className="bi bi-egg-fried" /> AAPLA DABBA
-            </span>
-            <h1>Your Daily Meals, <span>Made Simple.</span></h1>
-            <p>
-              Choose your favourite gharghuti tiffin plan and share
-              your delivery details.
-            </p>
-            <div className="order-hero-points">
-              <span><i className="bi bi-check-circle-fill" /> Homemade Taste</span>
-              <span><i className="bi bi-check-circle-fill" /> Fresh Meals</span>
-              <span><i className="bi bi-check-circle-fill" /> Convenient Plans</span>
-            </div>
-          </div>
+          <span className="order-kicker">AAPLA DABBA</span>
+          <h1>Place Your Order</h1>
+          <p>Fresh homemade meals, delivered with care.</p>
         </div>
-      </div>
+      </section>
 
-      <div className="container order-container">
-        <div className="order-section-heading">
-          <span>LET'S GET STARTED</span>
-          <h2>Place Your Tiffin Order</h2>
-          <p>Select your meal plan and enter your delivery information.</p>
+      <section className="order-container">
+        <div className="order-heading">
+          <h2>
+            {isCartOrder ? "Your Selected Meals" : "Choose Your Meal Plan"}
+          </h2>
+
+          <p>
+            {isCartOrder
+              ? "Review your cart and enter your delivery details."
+              : "Select the plan that suits your needs."}
+          </p>
         </div>
 
         <form className="order-form" onSubmit={handleSubmit}>
-          <div className="order-form-main">
-            <section className="order-card">
-              <div className="order-card-heading">
-                <span className="order-step">01</span>
-                <div>
-                  <h3>Choose Your Meal Plan</h3>
-                  <p>Pick the plan that suits your routine.</p>
-                </div>
+          {isCartOrder ? (
+            <section className="order-section">
+              <h3>Cart Summary</h3>
+
+              <div className="order-selected-meals">
+                {cartItems.map((item) => (
+                  <div
+                    className="order-selected-meal"
+                    key={item.id}
+                  >
+                    <img
+                      src={item.image || FALLBACK_IMAGE}
+                      alt={item.name}
+                      onError={(event) => {
+                        const image = event.currentTarget;
+
+                        if (image.dataset.fallbackApplied === "true") {
+                          return;
+                        }
+
+                        image.dataset.fallbackApplied = "true";
+                        image.src = FALLBACK_IMAGE;
+                      }}
+                    />
+
+                    <div className="order-selected-meal-info">
+                      <h4>{item.name}</h4>
+
+                      <p>
+                        ₹{Number(item.price).toFixed(2)} × {item.quantity}
+                      </p>
+                    </div>
+
+                    <strong>
+                      ₹{(
+                        Number(item.price) * item.quantity
+                      ).toFixed(2)}
+                    </strong>
+                  </div>
+                ))}
               </div>
 
+              <div className="order-total-row">
+                <span>Total Amount</span>
+                <strong>₹{cartTotal.toFixed(2)}</strong>
+              </div>
+
+              <button
+                type="button"
+                className="order-secondary-button"
+                onClick={() => navigate("/menu")}
+              >
+                Back to Menu
+              </button>
+            </section>
+          ) : (
+            <section className="order-section">
+              <h3>Select a Plan</h3>
+
               <div className="order-plan-grid">
-                {plans.map((item) => (
+                {plans.map((plan) => (
                   <button
-                    key={item.name}
                     type="button"
-                    className={`order-plan-card ${
-                      selectedPlan === item.name ? "selected" : ""
-                    }`}
-                    onClick={() => setSelectedPlan(item.name)}
-                    aria-pressed={selectedPlan === item.name}
+                    key={plan.id}
+                    className={
+                      selectedPlan === plan.id
+                        ? "order-plan-card active"
+                        : "order-plan-card"
+                    }
+                    onClick={() => setSelectedPlan(plan.id)}
                   >
-                    <span className="order-plan-icon">
-                      <i className={`bi ${item.icon}`} />
-                    </span>
+                    <span className="order-plan-name">{plan.name}</span>
 
-                    {selectedPlan === item.name && (
-                      <span className="order-plan-check">
-                        <i className="bi bi-check-lg" />
-                      </span>
-                    )}
+                    <strong className="order-plan-price">
+                      ₹{plan.price}
+                    </strong>
 
-                    <strong>{item.name}</strong>
-                    <span className="order-plan-description">
-                      {item.description}
-                    </span>
-
-                    <span className="order-plan-price">
-                      ₹{item.price.toLocaleString("en-IN")}
-                    </span>
                     <span className="order-plan-duration">
-                      {item.duration}
+                      {plan.duration}
+                    </span>
+
+                    <p>{plan.description}</p>
+
+                    <span className="order-plan-select">
+                      {selectedPlan === plan.id
+                        ? "Selected"
+                        : "Select Plan"}
                     </span>
                   </button>
                 ))}
               </div>
 
-              <div className="order-quantity">
-                <div>
-                  <strong>Number of tiffins</strong>
-                  <p>Choose how many tiffins you need.</p>
-                </div>
+              <div className="order-quantity-row">
+                <label htmlFor="planQuantity">Number of plans</label>
 
                 <div className="order-quantity-control">
                   <button
                     type="button"
-                    aria-label="Decrease quantity"
+                    onClick={() =>
+                      setQuantity((current) => Math.max(1, current - 1))
+                    }
                     disabled={quantity <= 1}
-                    onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                    aria-label="Decrease plan quantity"
                   >
-                    <i className="bi bi-dash-lg" />
+                    −
                   </button>
 
                   <span>{quantity}</span>
 
                   <button
                     type="button"
-                    aria-label="Increase quantity"
-                    disabled={quantity >= 20}
-                    onClick={() => setQuantity((value) => Math.min(20, value + 1))}
+                    onClick={() =>
+                      setQuantity((current) => current + 1)
+                    }
+                    aria-label="Increase plan quantity"
                   >
-                    <i className="bi bi-plus-lg" />
+                    +
                   </button>
                 </div>
               </div>
-            </section>
 
-            <section className="order-card">
-              <div className="order-card-heading">
-                <span className="order-step">02</span>
-                <div>
-                  <h3>Delivery Details</h3>
-                  <p>Tell us where to deliver your tiffin.</p>
-                </div>
-              </div>
-
-              <div className="order-input-grid">
-                <div className="order-field">
-                  <label htmlFor="customerName">Full Name *</label>
-                  <input
-                    id="customerName"
-                    type="text"
-                    value={customerName}
-                    onChange={(event) => setCustomerName(event.target.value)}
-                    placeholder="Enter your full name"
-                    autoComplete="name"
-                    required
-                    maxLength={100}
-                  />
-                </div>
-
-                <div className="order-field">
-                  <label htmlFor="phone">Mobile Number *</label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(event) =>
-                      setPhone(event.target.value.replace(/\D/g, "").slice(0, 10))
-                    }
-                    placeholder="10-digit mobile number"
-                    autoComplete="tel"
-                    inputMode="numeric"
-                    pattern="[6-9][0-9]{9}"
-                    title="Enter a valid 10-digit Indian mobile number."
-                    required
-                  />
-                </div>
-
-                <div className="order-field order-field-full">
-                  <label htmlFor="address">Full Delivery Address *</label>
-                  <textarea
-                    id="address"
-                    value={address}
-                    onChange={(event) => setAddress(event.target.value)}
-                    placeholder="House number, street, area, landmark"
-                    rows={3}
-                    autoComplete="street-address"
-                    required
-                    maxLength={500}
-                  />
-                </div>
-
-                <div className="order-field">
-                  <label htmlFor="pincode">PIN Code *</label>
-                  <input
-                    id="pincode"
-                    type="text"
-                    value={pincode}
-                    onChange={(event) =>
-                      setPincode(event.target.value.replace(/\D/g, "").slice(0, 6))
-                    }
-                    placeholder="6-digit PIN code"
-                    inputMode="numeric"
-                    pattern="[1-9][0-9]{5}"
-                    title="Enter a valid 6-digit PIN code."
-                    required
-                  />
-                </div>
-
-                <div className="order-field">
-                  <label htmlFor="deliveryDate">Preferred Start Date *</label>
-                  <input
-                    id="deliveryDate"
-                    type="date"
-                    min={minDate}
-                    value={deliveryDate}
-                    onChange={(event) => setDeliveryDate(event.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="order-field order-field-full">
-                  <label htmlFor="instructions">
-                    Special Instructions <span>(Optional)</span>
-                  </label>
-                  <textarea
-                    id="instructions"
-                    value={instructions}
-                    onChange={(event) => setInstructions(event.target.value)}
-                    placeholder="Any delivery instructions or meal preferences?"
-                    rows={2}
-                    maxLength={500}
-                  />
-                </div>
+              <div className="order-total-row">
+                <span>Total Amount</span>
+                <strong>₹{planTotal.toFixed(2)}</strong>
               </div>
             </section>
-          </div>
+          )}
 
-          <aside className="order-summary-card">
-            <div className="order-summary-top">
-              <span><i className="bi bi-receipt" /> ORDER SUMMARY</span>
-              <h3>Your Tiffin</h3>
-            </div>
+          <section className="order-section">
+            <h3>Delivery Details</h3>
 
-            <div className="order-summary-meal">
-              <div className="order-summary-icon">
-                <i className="bi bi-egg-fried" />
+            <div className="order-fields-grid">
+              <div className="order-field">
+                <label htmlFor="customerName">Full Name *</label>
+
+                <input
+                  id="customerName"
+                  type="text"
+                  value={customerName}
+                  onChange={(event) => setCustomerName(event.target.value)}
+                  placeholder="Enter your full name"
+                  autoComplete="name"
+                  required
+                />
               </div>
-              <div>
-                <strong>{plan.name} Tiffin Plan</strong>
-                <span>{plan.duration}</span>
+
+              <div className="order-field">
+                <label htmlFor="phone">Mobile Number *</label>
+
+                <input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(event) =>
+                    setPhone(event.target.value.replace(/\D/g, "").slice(0, 10))
+                  }
+                  placeholder="10-digit mobile number"
+                  autoComplete="tel"
+                  maxLength={10}
+                  required
+                />
+              </div>
+
+              <div className="order-field order-field-full">
+                <label htmlFor="address">Delivery Address *</label>
+
+                <textarea
+                  id="address"
+                  value={address}
+                  onChange={(event) => setAddress(event.target.value)}
+                  placeholder="Flat number, building, street, area..."
+                  rows={3}
+                  autoComplete="street-address"
+                  required
+                />
+              </div>
+
+              <div className="order-field">
+                <label htmlFor="pincode">Pincode *</label>
+
+                <input
+                  id="pincode"
+                  type="text"
+                  inputMode="numeric"
+                  value={pincode}
+                  onChange={(event) =>
+                    setPincode(
+                      event.target.value.replace(/\D/g, "").slice(0, 6),
+                    )
+                  }
+                  placeholder="6-digit pincode"
+                  maxLength={6}
+                  required
+                />
+              </div>
+
+              <div className="order-field">
+                <label htmlFor="deliveryDate">Delivery Date *</label>
+
+                <input
+                  id="deliveryDate"
+                  type="date"
+                  value={deliveryDate}
+                  onChange={(event) => setDeliveryDate(event.target.value)}
+                  min={new Date().toLocaleDateString("en-CA")}
+                  required
+                />
+              </div>
+
+              <div className="order-field order-field-full">
+                <label htmlFor="instructions">
+                  Special Instructions (Optional)
+                </label>
+
+                <textarea
+                  id="instructions"
+                  value={instructions}
+                  onChange={(event) => setInstructions(event.target.value)}
+                  placeholder="Any delivery instructions or food preferences..."
+                  rows={3}
+                />
               </div>
             </div>
+          </section>
 
-            <div className="order-summary-row">
-              <span>Price per plan</span>
-              <strong>₹{plan.price.toLocaleString("en-IN")}</strong>
-            </div>
-
-            <div className="order-summary-row">
-              <span>Quantity</span>
-              <strong>× {quantity}</strong>
-            </div>
-
-            <div className="order-summary-divider" />
-
-            <div className="order-summary-total">
-              <span>Estimated Total</span>
-              <strong>₹{total.toLocaleString("en-IN")}</strong>
-            </div>
-
-            <p className="order-summary-note">
-              <i className="bi bi-info-circle" />
-              Delivery charges, if applicable, will be confirmed separately.
+          {error && (
+            <p className="order-error" role="alert">
+              {error}
             </p>
+          )}
 
-            <button type="submit" className="order-primary-btn order-submit-btn">
-              Review Order <i className="bi bi-arrow-right" />
-            </button>
-
-            <div className="order-secure-note">
-              <i className="bi bi-shield-check" />
-              Your details are used for your order information.
+          <div className="order-submit-area">
+            <div className="order-submit-total">
+              <span>Total Payable</span>
+              <strong>₹{totalAmount.toFixed(2)}</strong>
             </div>
-          </aside>
+
+            <button
+              type="submit"
+              className="order-primary-button"
+              disabled={isCartOrder && cartItems.length === 0}
+            >
+              Review Order
+            </button>
+          </div>
         </form>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }
-
-export default Order;

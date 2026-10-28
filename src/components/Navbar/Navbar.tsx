@@ -168,10 +168,11 @@ function Navbar() {
                 </ul>
               </li>
 
-              {/* Our Menu - Direct Link */}
+              {/* Our Menu - API Based Menu Page */}
               <li className="nav-item">
                 <NavLink
                   to="/menu"
+                  end
                   className={({ isActive }) =>
                     `nav-link ${isActive ? "active" : ""}`
                   }
@@ -181,7 +182,7 @@ function Navbar() {
                 </NavLink>
               </li>
 
-              {/* Meal Plans */}
+              {/* Meal Plans Dropdown */}
               <li
                 className={`nav-item dropdown aapla-dropdown ${
                   openDropdown === "plans" ? "dropdown-open" : ""
