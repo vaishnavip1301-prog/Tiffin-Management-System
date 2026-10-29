@@ -1,7 +1,4 @@
-
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface Location {
   id: string;
@@ -31,8 +28,8 @@ export interface LocationInput {
 
 // GET: All Locations
 export const getLocations = async (): Promise<Location[]> => {
-  const response = await axios.get<Location[]>(
-    `${API_URL}/Locations`
+  const response = await kitchenAxiosInstance.get<Location[]>(
+    "/Locations"
   );
 
   return response.data;
@@ -42,8 +39,8 @@ export const getLocations = async (): Promise<Location[]> => {
 export const getLocationsByArea = async (
   areaId: string
 ): Promise<Location[]> => {
-  const response = await axios.get<Location[]>(
-    `${API_URL}/LocationsByArea/${encodeURIComponent(areaId)}`
+  const response = await kitchenAxiosInstance.get<Location[]>(
+    `/LocationsByArea/${encodeURIComponent(areaId)}`
   );
 
   return response.data;
@@ -53,8 +50,8 @@ export const getLocationsByArea = async (
 export const getLocationById = async (
   id: string
 ): Promise<Location> => {
-  const response = await axios.get<Location>(
-    `${API_URL}/Location/${encodeURIComponent(id)}`
+  const response = await kitchenAxiosInstance.get<Location>(
+    `/Location/${encodeURIComponent(id)}`
   );
 
   return response.data;
@@ -64,8 +61,8 @@ export const getLocationById = async (
 export const addLocation = async (
   location: LocationInput
 ): Promise<Location> => {
-  const response = await axios.post<Location>(
-    `${API_URL}/AddLocation`,
+  const response = await kitchenAxiosInstance.post<Location>(
+    "/AddLocation",
     location
   );
 
@@ -76,8 +73,8 @@ export const addLocation = async (
 export const updateLocation = async (
   location: Location
 ): Promise<Location> => {
-  const response = await axios.put<Location>(
-    `${API_URL}/UpdateLocation`,
+  const response = await kitchenAxiosInstance.put<Location>(
+    "/UpdateLocation",
     location
   );
 
@@ -88,7 +85,7 @@ export const updateLocation = async (
 export const deleteLocation = async (
   id: string
 ): Promise<void> => {
-  await axios.delete(
-    `${API_URL}/DeleteLocation/${encodeURIComponent(id)}`
+  await kitchenAxiosInstance.delete(
+    `/DeleteLocation/${encodeURIComponent(id)}`
   );
 };

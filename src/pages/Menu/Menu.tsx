@@ -52,31 +52,16 @@ function getMealImage(meal: MenuItem): string {
 
   if (imageMap[name]) return imageMap[name];
 
-  if (
-    name.includes("chapati") ||
-    name.includes("roti") ||
-    name.includes("fulka")
-  ) {
+  if (name.includes("chapati") || name.includes("roti") || name.includes("fulka")) {
     return "/images/chapati.jpg";
   }
 
   if (name.includes("thali")) return "/images/vegthali.jpg";
-
-  if (name.includes("poha") || name.includes("pohe")) {
-    return "/images/kandapohe.jpg";
-  }
-
+  if (name.includes("poha") || name.includes("pohe")) return "/images/kandapohe.jpg";
   if (name.includes("coffee")) return "/images/filtercoffee.jpg";
+  if (name.includes("chai") || name.includes("tea")) return "/images/masalachai.jpg";
 
-  if (name.includes("chai") || name.includes("tea")) {
-    return "/images/masalachai.jpg";
-  }
-
-  if (
-    name.includes("rice") ||
-    name.includes("pulao") ||
-    name.includes("pulav")
-  ) {
+  if (name.includes("rice") || name.includes("pulao") || name.includes("pulav")) {
     return "/images/vegpulao.jpg";
   }
 
@@ -84,11 +69,7 @@ function getMealImage(meal: MenuItem): string {
     return "/images/KandaBhaji.jpg";
   }
 
-  if (
-    name.includes("juice") ||
-    name.includes("lime") ||
-    name.includes("lemon")
-  ) {
+  if (name.includes("juice") || name.includes("lime") || name.includes("lemon")) {
     return "/images/limejuice.jpg";
   }
 
@@ -129,7 +110,6 @@ function readNumber(
 
     if (value !== undefined && value !== null && value !== "") {
       const number = Number(value);
-
       if (Number.isFinite(number)) return number;
     }
   }
@@ -153,7 +133,6 @@ function getCartRows(response: unknown): Record<string, unknown>[] {
 
     if (nested && typeof nested === "object") {
       const rows = getCartRows(nested);
-
       if (rows.length > 0) return rows;
     }
   }
@@ -173,7 +152,7 @@ function getCartItemId(
       "menuItemID",
     );
 
-    return menuItemId === mealId;
+    return menuItemId === String(mealId);
   });
 
   if (!row) return undefined;
@@ -208,7 +187,7 @@ function mapCartToEntries(
     if (!menuItemId || quantity < 1) return [];
 
     const meal = menuItems.find(
-      (item) => String(item.id) === menuItemId,
+      (item) => String(item.id) === String(menuItemId),
     );
 
     if (!meal) return [];
@@ -230,6 +209,7 @@ export default function Menu() {
   const [cartBusyId, setCartBusyId] = useState<string | null>(null);
   const [cartMessage, setCartMessage] = useState("");
 
+  // Load menu items and then load the cart saved by the Cart API.
   const loadMeals = useCallback(async () => {
     try {
       setLoading(true);
@@ -238,9 +218,7 @@ export default function Menu() {
       const firstResponse = await getMenuItems(1, PAGE_SIZE);
       let allItems = firstResponse.items ?? [];
 
-      const totalRecords =
-        firstResponse.totalRecords ?? allItems.length;
-
+      const totalRecords = firstResponse.totalRecords ?? allItems.length;
       const pageSize = firstResponse.pageSize || PAGE_SIZE;
 
       if (pageSize > 0 && allItems.length < totalRecords) {
@@ -253,13 +231,27 @@ export default function Menu() {
       }
 
       const uniqueItems = Array.from(
-        new Map(allItems.map((item) => [item.id, item])).values(),
+        new Map(allItems.map((item) => [String(item.id), item])).values(),
       );
 
-      setMeals(uniqueItems.filter((item) => item.isActive !== false));
+      const activeItems = uniqueItems.filter(
+        (item) => item.isActive !== false,
+      );
+
+      setMeals(activeItems);
+
+      // Load existing backend cart so it survives a page refresh.
+      try {
+        const savedCart = await getCart();
+        setCart(mapCartToEntries(savedCart, activeItems));
+      } catch (cartError) {
+        console.error("Failed to load saved cart:", cartError);
+        setCartMessage(
+          "Menu loaded, but the saved cart could not be loaded. Please check the Cart API.",
+        );
+      }
     } catch (err) {
       console.error("Failed to load website menu:", err);
-
       setError(
         "Menu items could not be loaded. Please check the API connection and try again.",
       );
@@ -268,30 +260,9 @@ export default function Menu() {
     }
   }, []);
 
-  const loadCart = useCallback(async () => {
-    if (meals.length === 0) return;
-
-    try {
-      const response = await getCart();
-      setCart(mapCartToEntries(response, meals));
-    } catch (err) {
-      console.error("Failed to load cart:", err);
-
-      setCartMessage(
-        "Your cart could not be loaded. Please check the Cart API response and guest cart token.",
-      );
-    }
-  }, [meals]);
-
   useEffect(() => {
     void loadMeals();
   }, [loadMeals]);
-
-  useEffect(() => {
-    if (meals.length > 0) {
-      void loadCart();
-    }
-  }, [meals, loadCart]);
 
   const categories = useMemo(() => {
     const names = meals
@@ -328,51 +299,64 @@ export default function Menu() {
   );
 
   const cartTotal = cart.reduce(
-    (total, entry) =>
-      total + Number(entry.meal.price) * entry.quantity,
+    (total, entry) => total + Number(entry.meal.price) * entry.quantity,
     0,
   );
 
-  // Add item, refresh the cart from API and open the cart panel.
-  const addToCart = async (meal: MenuItem) => {
-    if (!meal.isAvailable || cartBusyId !== null) return;
+  // Refresh local cart state from the backend after every successful change.
+  const refreshCartFromApi = async () => {
+    const response = await getCart();
+    const entries = mapCartToEntries(response, meals);
+    setCart(entries);
+    return response;
+  };
 
-    setCartBusyId(meal.id);
+  const addToCart = async (meal: MenuItem) => {
+    if (meal.isAvailable === false || cartBusyId !== null) return;
+
+    const mealId = String(meal.id);
+
+    setCartBusyId(mealId);
     setCartMessage("");
 
     try {
-      const existing = cart.find((entry) => entry.meal.id === meal.id);
+      // Read the latest cart before deciding whether to add or increment.
+      const currentCart = await getCart();
+      const currentEntries = mapCartToEntries(currentCart, meals);
+      const existing = currentEntries.find(
+        (entry) => String(entry.meal.id) === mealId,
+      );
 
       if (existing) {
         let cartItemId = existing.cartItemId;
 
         if (!cartItemId) {
-          const currentCart = await getCart();
-          cartItemId = getCartItemId(currentCart, meal.id);
+          cartItemId = getCartItemId(currentCart, mealId);
         }
 
         if (!cartItemId) {
-          throw new Error("Cart item ID was not returned by GetCart.");
+          throw new Error(
+            "Cart item ID was not returned by the GetCart API.",
+          );
         }
 
         await updateCartItemQty(cartItemId, existing.quantity + 1);
       } else {
         await addCartItem({
-          menuItemId: meal.id,
+          menuItemId: String(meal.id),
           quantity: 1,
         });
       }
 
-      // Fetch the saved cart again so the UI displays API data.
+      // Confirm the change by fetching the latest cart from the API.
       const updatedCart = await getCart();
       setCart(mapCartToEntries(updatedCart, meals));
       setCartOpen(true);
       setCartMessage(`${meal.name} added to your cart successfully!`);
     } catch (err) {
       console.error("Failed to add/update cart item:", err);
-
       setCartMessage(
-        "Could not update cart. Please check the Cart API response and guest cart token.",
+        "Could not update cart. Check the AddCartItem request in the browser Network tab.",
       );
     } finally {
       setCartBusyId(null);
@@ -380,47 +364,52 @@ export default function Menu() {
   };
 
   const changeQuantity = async (mealId: string, change: number) => {
-    const entry = cart.find((item) => item.meal.id === mealId);
+    const id = String(mealId);
 
-    if (!entry || cartBusyId !== null) return;
+    if (cartBusyId !== null) return;
 
-    setCartBusyId(mealId);
+    setCartBusyId(id);
     setCartMessage("");
 
     try {
-      let cartItemId = entry.cartItemId;
+      const currentCart = await getCart();
+      const currentEntries = mapCartToEntries(currentCart, meals);
+      const entry = currentEntries.find(
+        (item) => String(item.meal.id) === id,
+      );
 
-      if (!cartItemId) {
-        const currentCart = await getCart();
-        cartItemId = getCartItemId(currentCart, mealId);
+      if (!entry) {
+        setCart(currentEntries);
+        setCartMessage("This item is not present in the current cart.");
+        return;
       }
 
+      const cartItemId =
+        entry.cartItemId ?? getCartItemId(currentCart, id);
+
       if (!cartItemId) {
-        throw new Error("Cart item ID was not returned by GetCart.");
+        throw new Error(
+          "Cart item ID was not returned by the GetCart API.",
+        );
       }
 
       if (change < 0 && entry.quantity <= 1) {
         await removeCartItem(cartItemId);
+      } else {
+        const nextQuantity = entry.quantity + change;
 
-        const updatedCart = await getCart();
-        setCart(mapCartToEntries(updatedCart, meals));
+        if (nextQuantity < 1) return;
 
-        return;
+        await updateCartItemQty(cartItemId, nextQuantity);
       }
 
-      const nextQuantity = entry.quantity + change;
-
-      if (nextQuantity < 1) return;
-
-      await updateCartItemQty(cartItemId, nextQuantity);
-
+      // Re-read the backend cart to keep the UI in sync.
       const updatedCart = await getCart();
       setCart(mapCartToEntries(updatedCart, meals));
     } catch (err) {
       console.error("Failed to change cart quantity:", err);
-
       setCartMessage(
-        "Could not update quantity. Please check the Cart API response.",
+        "Could not update quantity. Check the Cart API response.",
       );
     } finally {
       setCartBusyId(null);
@@ -471,7 +460,7 @@ export default function Menu() {
       "Please confirm my order and delivery details.",
     ].join("\n");
 
-    // Replace with your actual business WhatsApp number.
+    // Replace this with your actual business WhatsApp number.
     const whatsappNumber = "919999999999";
 
     window.open(
@@ -479,6 +468,16 @@ export default function Menu() {
       "_blank",
       "noopener,noreferrer",
     );
+  };
+
+  const handleAddMoreItems = () => {
+    setCartOpen(false);
+    setCartMessage("");
+
+    document.querySelector(".menu-catalog")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
@@ -587,7 +586,7 @@ export default function Menu() {
               <div className="row g-4">
                 {visibleMeals.map((meal) => {
                   const cartEntry = cart.find(
-                    (entry) => entry.meal.id === meal.id,
+                    (entry) => String(entry.meal.id) === String(meal.id),
                   );
 
                   return (
@@ -614,7 +613,7 @@ export default function Menu() {
                             }}
                           />
 
-                          {!meal.isAvailable && (
+                          {meal.isAvailable === false && (
                             <span className="meal-tag">
                               Currently Unavailable
                             </span>
@@ -638,7 +637,7 @@ export default function Menu() {
                               ₹{Number(meal.price).toFixed(2)}
                             </strong>
 
-                            {!meal.isAvailable ? (
+                            {meal.isAvailable === false ? (
                               <button
                                 type="button"
                                 className="meal-add-button"
@@ -653,7 +652,7 @@ export default function Menu() {
                                     type="button"
                                     disabled={cartBusyId !== null}
                                     onClick={() =>
-                                      void changeQuantity(meal.id, -1)
+                                      void changeQuantity(String(meal.id), -1)
                                     }
                                     aria-label={`Decrease ${meal.name}`}
                                   >
@@ -666,7 +665,7 @@ export default function Menu() {
                                     type="button"
                                     disabled={cartBusyId !== null}
                                     onClick={() =>
-                                      void changeQuantity(meal.id, 1)
+                                      void changeQuantity(String(meal.id), 1)
                                     }
                                     aria-label={`Increase ${meal.name}`}
                                   >
@@ -689,9 +688,9 @@ export default function Menu() {
                                 disabled={cartBusyId !== null}
                                 onClick={() => void addToCart(meal)}
                               >
-                                {cartBusyId === meal.id
+                                {cartBusyId === String(meal.id)
                                   ? "Adding..."
-                                  : "Add +"}
+                                  : "Add to Cart +"}
                               </button>
                             )}
                           </div>
@@ -801,6 +800,15 @@ export default function Menu() {
               </button>
             </div>
 
+            <button
+              type="button"
+              className="menu-add-more-button"
+              onClick={handleAddMoreItems}
+            >
+              <span aria-hidden="true">＋</span>
+              Add More Items
+            </button>
+
             {cart.length === 0 ? (
               <div className="menu-cart-empty">
                 <h3>Your cart is empty</h3>
@@ -809,7 +817,7 @@ export default function Menu() {
                 <button
                   type="button"
                   className="menu-reset-button"
-                  onClick={() => setCartOpen(false)}
+                  onClick={handleAddMoreItems}
                 >
                   Explore Menu
                 </button>
@@ -843,7 +851,7 @@ export default function Menu() {
                             type="button"
                             disabled={cartBusyId !== null}
                             onClick={() =>
-                              void changeQuantity(meal.id, -1)
+                              void changeQuantity(String(meal.id), -1)
                             }
                             aria-label={`Decrease ${meal.name}`}
                           >
@@ -856,7 +864,7 @@ export default function Menu() {
                             type="button"
                             disabled={cartBusyId !== null}
                             onClick={() =>
-                              void changeQuantity(meal.id, 1)
+                              void changeQuantity(String(meal.id), 1)
                             }
                             aria-label={`Increase ${meal.name}`}
                           >

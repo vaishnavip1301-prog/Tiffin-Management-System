@@ -1,5 +1,4 @@
-
-import axiosInstance from "./axiosInstance";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 /* =========================
    TYPES
@@ -59,7 +58,7 @@ export const getMenuItems = async (
   pageNumber: number = 1,
   pageSize: number = 10
 ): Promise<MenuItemsResponse> => {
-  const response = await axiosInstance.get("/GetMenuItems", {
+  const response = await kitchenAxiosInstance.get("/GetMenuItems", {
     params: {
       pageNumber,
       pageSize,
@@ -76,7 +75,7 @@ export const getMenuItems = async (
 export const getMenuItemById = async (
   id: string
 ): Promise<MenuItem> => {
-  const response = await axiosInstance.get(
+  const response = await kitchenAxiosInstance.get(
     `/GetMenuItem/${id}`
   );
 
@@ -90,7 +89,7 @@ export const getMenuItemById = async (
 export const createMenuItem = async (
   data: MenuItemInput
 ): Promise<unknown> => {
-  const response = await axiosInstance.post(
+  const response = await kitchenAxiosInstance.post(
     "/CreateMenuItem",
     data
   );
@@ -105,7 +104,7 @@ export const createMenuItem = async (
 export const updateMenuItem = async (
   data: MenuItemInput
 ): Promise<unknown> => {
-  const response = await axiosInstance.put(
+  const response = await kitchenAxiosInstance.put(
     "/UpdateMenuItem",
     data
   );
@@ -120,5 +119,5 @@ export const updateMenuItem = async (
 export const deleteMenuItem = async (
   id: string
 ): Promise<void> => {
-  await axiosInstance.delete(`/DeleteMenuItem/${id}`);
+  await kitchenAxiosInstance.delete(`/DeleteMenuItem/${id}`);
 };

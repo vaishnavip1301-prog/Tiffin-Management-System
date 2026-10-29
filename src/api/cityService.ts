@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 // City interface
 export interface City {
@@ -22,9 +20,7 @@ export interface CityInput {
 
 // GET: All Cities
 export const getCities = async (): Promise<City[]> => {
-  const response = await axios.get<City[]>(
-    `${API_URL}/Cities`
-  );
+  const response = await kitchenAxiosInstance.get<City[]>("/Cities");
 
   return response.data;
 };
@@ -33,8 +29,8 @@ export const getCities = async (): Promise<City[]> => {
 export const getCitiesByState = async (
   stateId: string
 ): Promise<City[]> => {
-  const response = await axios.get<City[]>(
-    `${API_URL}/CitiesByState/${stateId}`
+  const response = await kitchenAxiosInstance.get<City[]>(
+    `/CitiesByState/${stateId}`
   );
 
   return response.data;
@@ -44,8 +40,8 @@ export const getCitiesByState = async (
 export const getCityById = async (
   id: string
 ): Promise<City> => {
-  const response = await axios.get<City>(
-    `${API_URL}/City/${id}`
+  const response = await kitchenAxiosInstance.get<City>(
+    `/City/${id}`
   );
 
   return response.data;
@@ -55,8 +51,8 @@ export const getCityById = async (
 export const addCity = async (
   data: CityInput
 ): Promise<City> => {
-  const response = await axios.post<City>(
-    `${API_URL}/AddCity`,
+  const response = await kitchenAxiosInstance.post<City>(
+    "/AddCity",
     data
   );
 
@@ -68,8 +64,8 @@ export const updateCity = async (
   id: string,
   data: CityInput
 ): Promise<City> => {
-  const response = await axios.put<City>(
-    `${API_URL}/UpdateCity/${id}`,
+  const response = await kitchenAxiosInstance.put<City>(
+    `/UpdateCity/${id}`,
     {
       id,
       name: data.name,
@@ -85,7 +81,5 @@ export const updateCity = async (
 export const deleteCity = async (
   id: string
 ): Promise<void> => {
-  await axios.delete(
-    `${API_URL}/DeleteCity/${id}`
-  );
+  await kitchenAxiosInstance.delete(`/DeleteCity/${id}`);
 };

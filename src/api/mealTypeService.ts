@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface MealType {
   id: string;
@@ -16,13 +14,13 @@ export interface MealTypeInput {
 }
 
 export async function getMealTypes(): Promise<MealType[]> {
-  const response = await axios.get<MealType[]>(`${API_URL}/MealType`);
+  const response = await kitchenAxiosInstance.get<MealType[]>("/MealType");
   return response.data;
 }
 
 export async function getMealTypeById(id: string): Promise<MealType> {
-  const response = await axios.get<MealType>(
-    `${API_URL}/MealType/${encodeURIComponent(id)}`
+  const response = await kitchenAxiosInstance.get<MealType>(
+    `/MealType/${encodeURIComponent(id)}`
   );
   return response.data;
 }
@@ -30,7 +28,7 @@ export async function getMealTypeById(id: string): Promise<MealType> {
 export async function createMealType(
   data: MealTypeInput
 ): Promise<MealType> {
-  const response = await axios.post<MealType>(`${API_URL}/MealType`, data);
+  const response = await kitchenAxiosInstance.post<MealType>("/MealType", data);
   return response.data;
 }
 
@@ -38,13 +36,13 @@ export async function updateMealType(
   id: string,
   data: MealTypeInput
 ): Promise<MealType> {
-  const response = await axios.put<MealType>(
-    `${API_URL}/MealType/${encodeURIComponent(id)}`,
+  const response = await kitchenAxiosInstance.put<MealType>(
+    `/MealType/${encodeURIComponent(id)}`,
     data
   );
   return response.data;
 }
 
 export async function deleteMealType(id: string): Promise<void> {
-  await axios.delete(`${API_URL}/MealType/${encodeURIComponent(id)}`);
+  await kitchenAxiosInstance.delete(`/MealType/${encodeURIComponent(id)}`);
 }

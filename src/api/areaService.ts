@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface Area {
   id: string;
@@ -22,9 +20,7 @@ export interface AreaInput {
 }
 
 export const getAreas = async (): Promise<Area[]> => {
-  const response = await axios.get<Area[]>(
-    `${API_URL}/Areas`
-  );
+  const response = await kitchenAxiosInstance.get<Area[]>("/Areas");
 
   return response.data;
 };
@@ -32,8 +28,8 @@ export const getAreas = async (): Promise<Area[]> => {
 export const getAreasByCity = async (
   cityId: string
 ): Promise<Area[]> => {
-  const response = await axios.get<Area[]>(
-    `${API_URL}/AreasByCity/${cityId}`
+  const response = await kitchenAxiosInstance.get<Area[]>(
+    `/AreasByCity/${cityId}`
   );
 
   return response.data;
@@ -42,8 +38,8 @@ export const getAreasByCity = async (
 export const getAreaById = async (
   id: string
 ): Promise<Area> => {
-  const response = await axios.get<Area>(
-    `${API_URL}/Area/${id}`
+  const response = await kitchenAxiosInstance.get<Area>(
+    `/Area/${id}`
   );
 
   return response.data;
@@ -52,8 +48,8 @@ export const getAreaById = async (
 export const addArea = async (
   data: AreaInput
 ): Promise<Area> => {
-  const response = await axios.post<Area>(
-    `${API_URL}/AddArea`,
+  const response = await kitchenAxiosInstance.post<Area>(
+    "/AddArea",
     data
   );
 
@@ -64,8 +60,8 @@ export const updateArea = async (
   id: string,
   data: AreaInput
 ): Promise<Area> => {
-  const response = await axios.put<Area>(
-    `${API_URL}/UpdateArea/${id}`,
+  const response = await kitchenAxiosInstance.put<Area>(
+    `/UpdateArea/${id}`,
     data
   );
 
@@ -75,5 +71,5 @@ export const updateArea = async (
 export const deleteArea = async (
   id: string
 ): Promise<void> => {
-  await axios.delete(`${API_URL}/DeleteArea/${id}`);
+  await kitchenAxiosInstance.delete(`/DeleteArea/${id}`);
 };

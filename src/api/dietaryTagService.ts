@@ -1,7 +1,4 @@
-
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface DietaryTag {
   id: string;
@@ -21,8 +18,8 @@ export interface DietaryTagInput {
 
 // GET: All dietary tags
 export async function getDietaryTags(): Promise<DietaryTag[]> {
-  const response = await axios.get<DietaryTag[]>(
-    `${API_URL}/DietaryTag`
+  const response = await kitchenAxiosInstance.get<DietaryTag[]>(
+    "/DietaryTag"
   );
   return response.data;
 }
@@ -31,8 +28,8 @@ export async function getDietaryTags(): Promise<DietaryTag[]> {
 export async function getDietaryTagById(
   id: string
 ): Promise<DietaryTag> {
-  const response = await axios.get<DietaryTag>(
-    `${API_URL}/DietaryTag/${encodeURIComponent(id)}`
+  const response = await kitchenAxiosInstance.get<DietaryTag>(
+    `/DietaryTag/${encodeURIComponent(id)}`
   );
   return response.data;
 }
@@ -41,8 +38,8 @@ export async function getDietaryTagById(
 export async function createDietaryTag(
   data: DietaryTagInput
 ): Promise<DietaryTag> {
-  const response = await axios.post<DietaryTag>(
-    `${API_URL}/DietaryTag`,
+  const response = await kitchenAxiosInstance.post<DietaryTag>(
+    "/DietaryTag",
     data
   );
   return response.data;
@@ -53,8 +50,8 @@ export async function updateDietaryTag(
   id: string,
   data: DietaryTagInput
 ): Promise<DietaryTag> {
-  const response = await axios.put<DietaryTag>(
-    `${API_URL}/DietaryTag/${encodeURIComponent(id)}`,
+  const response = await kitchenAxiosInstance.put<DietaryTag>(
+    `/DietaryTag/${encodeURIComponent(id)}`,
     data
   );
   return response.data;
@@ -64,7 +61,7 @@ export async function updateDietaryTag(
 export async function deleteDietaryTag(
   id: string
 ): Promise<void> {
-  await axios.delete(
-    `${API_URL}/DietaryTag/${encodeURIComponent(id)}`
+  await kitchenAxiosInstance.delete(
+    `/DietaryTag/${encodeURIComponent(id)}`
   );
 }

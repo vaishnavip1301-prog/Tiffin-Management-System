@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface Kitchen {
   id: string;
@@ -20,12 +18,14 @@ export interface Kitchen {
   longitude?: number | null;
   currencyCode: string;
   isActive: boolean;
-}export type KitchenInput = Omit<Kitchen, "id">;
+}
+
+export type KitchenInput = Omit<Kitchen, "id">;
 
 // GET: Get Kitchen
 export const getKitchen = async (): Promise<Kitchen | Kitchen[]> => {
-  const response = await axios.get<Kitchen | Kitchen[]>(
-    `${API_URL}/GetKitchen`
+  const response = await kitchenAxiosInstance.get<Kitchen | Kitchen[]>(
+    "/GetKitchen"
   );
 
   console.log("Kitchen GET response:", response.data);
@@ -38,8 +38,8 @@ export const updateKitchen = async (
   id: string,
   data: Partial<Kitchen>
 ): Promise<Kitchen> => {
-  const response = await axios.put<Kitchen>(
-    `${API_URL}/UpdateKitchen`,
+  const response = await kitchenAxiosInstance.put<Kitchen>(
+    "/UpdateKitchen",
     {
       id,
       ...data,

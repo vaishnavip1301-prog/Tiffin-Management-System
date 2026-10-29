@@ -33,6 +33,7 @@ import State from "./pages/Admin/State";
 import City from "./pages/Admin/City";
 import Location from "./pages/Admin/Location";
 import Area from "./pages/Admin/Area";
+import CartPage from "./pages/Admin/Cart";
 import Order from "./pages/Order/Order";
 import Cart from "./pages/Cart/Cart";
 import Plans from "./pages/Plans/Plans";
@@ -72,11 +73,7 @@ function App() {
         {/* Protected Admin Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
-            <Route
-              index
-              element={<Navigate to="/admin/dashboard" replace />}
-            />
-
+            <Route index element={<Navigate to="/admin/dashboard" replace />}/>
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="kitchen" element={<Kitchen />} />
             <Route path="menu-categories" element={<MenuCategories />} />
@@ -89,6 +86,7 @@ function App() {
             <Route path="cities" element={<City />} />
             <Route path="locations" element={<Location />} />
             <Route path="areas" element={<Area />} />
+            <Route path="/admin/cart" element={<CartPage />} />
           </Route>
         </Route>
       </Routes>

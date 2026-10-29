@@ -1,7 +1,4 @@
-
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface MenuSubCategory {
   id: string;
@@ -27,8 +24,8 @@ export interface MenuSubCategoryInput {
 export async function getMenuSubCategories(): Promise<
   MenuSubCategory[]
 > {
-  const response = await axios.get<MenuSubCategory[]>(
-    `${API_URL}/MenuSubCategories`
+  const response = await kitchenAxiosInstance.get<MenuSubCategory[]>(
+    "/MenuSubCategories"
   );
 
   return response.data;
@@ -38,8 +35,8 @@ export async function getMenuSubCategories(): Promise<
 export async function getMenuSubCategoriesByCategory(
   menuCategoryId: string
 ): Promise<MenuSubCategory[]> {
-  const response = await axios.get<MenuSubCategory[]>(
-    `${API_URL}/MenuSubCategoriesByCategory/${encodeURIComponent(
+  const response = await kitchenAxiosInstance.get<MenuSubCategory[]>(
+    `/MenuSubCategoriesByCategory/${encodeURIComponent(
       menuCategoryId
     )}`
   );
@@ -51,8 +48,8 @@ export async function getMenuSubCategoriesByCategory(
 export async function getMenuSubCategoryById(
   id: string
 ): Promise<MenuSubCategory> {
-  const response = await axios.get<MenuSubCategory>(
-    `${API_URL}/MenuSubCategory/${encodeURIComponent(id)}`
+  const response = await kitchenAxiosInstance.get<MenuSubCategory>(
+    `/MenuSubCategory/${encodeURIComponent(id)}`
   );
 
   return response.data;
@@ -62,8 +59,8 @@ export async function getMenuSubCategoryById(
 export async function createMenuSubCategory(
   data: MenuSubCategoryInput
 ): Promise<MenuSubCategory> {
-  const response = await axios.post<MenuSubCategory>(
-    `${API_URL}/AddMenuSubCategory`,
+  const response = await kitchenAxiosInstance.post<MenuSubCategory>(
+    "/AddMenuSubCategory",
     data
   );
 
@@ -74,8 +71,8 @@ export async function createMenuSubCategory(
 export async function updateMenuSubCategory(
   data: MenuSubCategoryInput
 ): Promise<MenuSubCategory> {
-  const response = await axios.put<MenuSubCategory>(
-    `${API_URL}/UpdateMenuSubCategory`,
+  const response = await kitchenAxiosInstance.put<MenuSubCategory>(
+    "/UpdateMenuSubCategory",
     data
   );
 
@@ -86,7 +83,7 @@ export async function updateMenuSubCategory(
 export async function deleteMenuSubCategory(
   id: string
 ): Promise<void> {
-  await axios.delete(
-    `${API_URL}/DeleteMenuSubCategory/${encodeURIComponent(id)}`
+  await kitchenAxiosInstance.delete(
+    `/DeleteMenuSubCategory/${encodeURIComponent(id)}`
   );
 }

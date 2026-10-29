@@ -32,26 +32,26 @@ function AdminLayout() {
       icon: "bi-shop",
       label: "Kitchens",
     },
-      {
-    to: "/admin/states",
-    icon: "bi-geo-alt",
-    label: "States",
-  },
-  {
-    to: "/admin/cities",
-    icon: "bi-buildings",
-    label: "Cities",
-  },
-  {
-  to: "/admin/areas",
-  icon: "bi-map",
-  label: "Areas",
-  },
-  {
-    to: "/admin/locations",
-    icon: "bi-pin-map",
-    label: "Locations",
-  },
+    {
+      to: "/admin/states",
+      icon: "bi-geo-alt",
+      label: "States",
+    },
+    {
+      to: "/admin/cities",
+      icon: "bi-buildings",
+      label: "Cities",
+    },
+    {
+      to: "/admin/areas",
+      icon: "bi-map",
+      label: "Areas",
+    },
+    {
+      to: "/admin/locations",
+      icon: "bi-pin-map",
+      label: "Locations",
+    },
     {
       to: "/admin/dietary-tags",
       icon: "bi-heart-pulse",
@@ -83,6 +83,11 @@ function AdminLayout() {
       to: "/admin/menu-items",
       icon: "bi-egg-fried",
       label: "Menu Items",
+    },
+    {
+      to: "/admin/cart",
+      icon: "bi-cart3",
+      label: "Cart",
     },
     {
       to: "/admin/orders",

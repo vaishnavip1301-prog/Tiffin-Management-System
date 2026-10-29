@@ -1,7 +1,4 @@
-
-import axios from "axios";
-
-const API_URL = "https://tiffinapis.ysaasinfotech.com";
+import { kitchenAxiosInstance } from "./axiosInstance";
 
 export interface MenuCategory {
   id: string;
@@ -15,8 +12,8 @@ export type MenuCategoryInput = Omit<MenuCategory, "id">;
 
 // GET: All Menu Categories
 export const getMenuCategories = async (): Promise<MenuCategory[]> => {
-  const response = await axios.get<MenuCategory[]>(
-    `${API_URL}/GetMenuCategories`
+  const response = await kitchenAxiosInstance.get<MenuCategory[]>(
+    "/GetMenuCategories"
   );
 
   console.log("Menu Categories API response:", response.data);
@@ -27,8 +24,8 @@ export const getMenuCategories = async (): Promise<MenuCategory[]> => {
 export const getMenuCategoryById = async (
   id: string
 ): Promise<MenuCategory> => {
-  const response = await axios.get<MenuCategory>(
-    `${API_URL}/GetMenuCategory/${encodeURIComponent(id)}`
+  const response = await kitchenAxiosInstance.get<MenuCategory>(
+    `/GetMenuCategory/${encodeURIComponent(id)}`
   );
 
   return response.data;
@@ -38,8 +35,8 @@ export const getMenuCategoryById = async (
 export const createMenuCategory = async (
   data: MenuCategoryInput
 ): Promise<MenuCategory> => {
-  const response = await axios.post<MenuCategory>(
-    `${API_URL}/CreateMenuCategory`,
+  const response = await kitchenAxiosInstance.post<MenuCategory>(
+    "/CreateMenuCategory",
     data
   );
 
@@ -51,8 +48,8 @@ export const updateMenuCategory = async (
   id: string,
   data: MenuCategoryInput
 ): Promise<MenuCategory> => {
-  const response = await axios.put<MenuCategory>(
-    `${API_URL}/UpdateMenuCategory`,
+  const response = await kitchenAxiosInstance.put<MenuCategory>(
+    "/UpdateMenuCategory",
     {
       id,
       ...data,
@@ -66,7 +63,7 @@ export const updateMenuCategory = async (
 export const deleteMenuCategory = async (
   id: string
 ): Promise<void> => {
-  await axios.delete(
-    `${API_URL}/DeleteMenuCategory/${encodeURIComponent(id)}`
+  await kitchenAxiosInstance.delete(
+    `/DeleteMenuCategory/${encodeURIComponent(id)}`
   );
 };
