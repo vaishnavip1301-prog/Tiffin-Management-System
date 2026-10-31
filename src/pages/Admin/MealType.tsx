@@ -439,7 +439,6 @@ function MealTypePage() {
                           onClick={() => handleEdit(item)}
                           disabled={saving || deletingId !== null}
                         >
-                          <i className="bi bi-pencil me-1" />
                           Edit
                         </button>
 
@@ -449,7 +448,6 @@ function MealTypePage() {
                           onClick={() => void handleDelete(item)}
                           disabled={deletingId !== null || saving}
                         >
-                          <i className="bi bi-trash me-1" />
                           {deletingId === item.id ? "Deleting..." : "Delete"}
                         </button>
                       </td>

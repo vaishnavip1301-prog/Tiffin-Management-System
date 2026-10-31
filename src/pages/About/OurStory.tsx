@@ -1,8 +1,11 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./OurStory.css";
 
 function OurStory() {
+  const { t } = useTranslation();
+
   return (
     <main className="our-story-page">
       {/* Hero Section */}
@@ -11,43 +14,41 @@ function OurStory() {
 
         <div className="container our-story-hero-content">
           <span className="our-story-kicker">
-            THE STORY BEHIND AAPLA DABBA
+            {t("ourStory.hero.label")}
           </span>
 
           <h1>
-            Good Food,
+            {t("ourStory.hero.title")}
             <br />
-            <span>Made with Love.</span>
+            <span>{t("ourStory.hero.titleHighlight")}</span>
           </h1>
 
-          <p>
-            Every meal has a story. Ours began with a simple idea:
-            bringing the comfort, taste and warmth of homemade food
-            to your everyday life.
-          </p>
+          <p>{t("ourStory.hero.description")}</p>
 
           <div className="our-story-buttons">
             <Link to="/menu" className="our-story-primary-btn">
-              Explore Our Menu
+              {t("ourStory.hero.menuButton")}
             </Link>
 
             <Link to="/about" className="our-story-secondary-btn">
-              About Us
+              {t("ourStory.hero.aboutButton")}
             </Link>
           </div>
 
           <div className="our-story-highlights">
             <span>
               <i className="bi bi-heart-fill"></i>
-              Made with Care
+              {t("ourStory.hero.highlights.care")}
             </span>
+
             <span>
               <i className="bi bi-house-heart-fill"></i>
-              Homemade Taste
+              {t("ourStory.hero.highlights.homemade")}
             </span>
+
             <span>
               <i className="bi bi-egg-fried"></i>
-              Fresh Meals
+              {t("ourStory.hero.highlights.fresh")}
             </span>
           </div>
         </div>
@@ -61,15 +62,19 @@ function OurStory() {
               <div className="our-story-image-wrap">
                 <img
                   src="/images/t4.jpg"
-                  alt="Freshly prepared homemade food"
+                  alt={t("ourStory.beginning.imageAlt")}
                   className="our-story-image"
                 />
 
                 <div className="our-story-image-caption">
                   <i className="bi bi-heart-fill"></i>
                   <div>
-                    <strong>Food That Feels Like Home</strong>
-                    <span>Comfort in every bite</span>
+                    <strong>
+                      {t("ourStory.beginning.imageTitle")}
+                    </strong>
+                    <span>
+                      {t("ourStory.beginning.imageSubtitle")}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -77,32 +82,21 @@ function OurStory() {
 
             <div className="col-lg-6">
               <span className="our-story-section-label">
-                HOW IT BEGAN
+                {t("ourStory.beginning.label")}
               </span>
 
               <h2>
-                A Simple Idea,
+                {t("ourStory.beginning.title")}
                 <br />
-                <span>A Meaningful Journey.</span>
+                <span>{t("ourStory.beginning.titleHighlight")}</span>
               </h2>
 
-              <p>
-                Aapla Dabba is built around the idea that everyday
-                food should be fresh, satisfying and comforting.
-                We want to make it easier for people to enjoy
-                homemade-style meals even when their busy schedules
-                keep them away from home.
-              </p>
+              <p>{t("ourStory.beginning.paragraph1")}</p>
 
-              <p>
-                From the familiar taste of everyday meals to the
-                comfort of a well-prepared tiffin, our goal is to
-                bring warmth and convenience to your dining
-                experience.
-              </p>
+              <p>{t("ourStory.beginning.paragraph2")}</p>
 
               <Link to="/menu" className="our-story-text-link">
-                Discover Our Meals
+                {t("ourStory.beginning.link")}
                 <i className="bi bi-arrow-right"></i>
               </Link>
             </div>
@@ -115,18 +109,15 @@ function OurStory() {
         <div className="container">
           <div className="our-story-heading">
             <span className="our-story-section-label">
-              WHAT DRIVES US
+              {t("ourStory.purpose.label")}
             </span>
 
             <h2>
-              More Than Just
-              <span> a Meal.</span>
+              {t("ourStory.purpose.title")}
+              <span>{t("ourStory.purpose.titleHighlight")}</span>
             </h2>
 
-            <p>
-              We believe good food should make your everyday life
-              simpler, happier and more satisfying.
-            </p>
+            <p>{t("ourStory.purpose.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -136,12 +127,9 @@ function OurStory() {
                   <i className="bi bi-heart"></i>
                 </div>
 
-                <h3>Our Mission</h3>
+                <h3>{t("ourStory.purpose.mission.title")}</h3>
 
-                <p>
-                  To make everyday meals convenient and enjoyable
-                  by offering food inspired by the comfort of home.
-                </p>
+                <p>{t("ourStory.purpose.mission.description")}</p>
               </article>
             </div>
 
@@ -151,12 +139,9 @@ function OurStory() {
                   <i className="bi bi-stars"></i>
                 </div>
 
-                <h3>Our Promise</h3>
+                <h3>{t("ourStory.purpose.promise.title")}</h3>
 
-                <p>
-                  To focus on freshness, thoughtful preparation
-                  and a satisfying food experience with every meal.
-                </p>
+                <p>{t("ourStory.purpose.promise.description")}</p>
               </article>
             </div>
 
@@ -166,12 +151,9 @@ function OurStory() {
                   <i className="bi bi-house-heart"></i>
                 </div>
 
-                <h3>Our Belief</h3>
+                <h3>{t("ourStory.purpose.belief.title")}</h3>
 
-                <p>
-                  Good food brings comfort, creates connections
-                  and makes an ordinary day feel a little better.
-                </p>
+                <p>{t("ourStory.purpose.belief.description")}</p>
               </article>
             </div>
           </div>
@@ -184,19 +166,16 @@ function OurStory() {
           <div className="our-story-cta-inner">
             <div>
               <span className="our-story-section-label">
-                YOUR NEXT MEAL STARTS HERE
+                {t("ourStory.cta.label")}
               </span>
 
-              <h2>Bring Home the Taste of Comfort.</h2>
+              <h2>{t("ourStory.cta.title")}</h2>
 
-              <p>
-                Explore our meals and find something delicious
-                for your everyday routine.
-              </p>
+              <p>{t("ourStory.cta.description")}</p>
             </div>
 
             <Link to="/menu" className="our-story-cta-btn">
-              Explore Menu
+              {t("ourStory.cta.button")}
               <i className="bi bi-arrow-right"></i>
             </Link>
           </div>

@@ -4,12 +4,930 @@
     "about": "About Us",
     "menu": "Our Menu",
     "mealPlans": "Meal Plans",
-    "contact": "Contact Us"
+    "contact": "Contact",
+    "login": "Login",
+    "aboutLinks": {
+      "aboutUs": "About Us",
+      "ourStory": "Our Story",
+      "whyChooseUs": "Why Choose Us",
+      "ourKitchen": "Our Kitchen"
+    },
+    "plans": {
+      "daily": "Daily Plan",
+      "weekly": "Weekly Plan",
+      "monthly": "Monthly Plan"
+    },
+      "brandName": "Aapla Dabba",
+      "tagline": "GHARGHUTI JEVAAN, ROJ NAVIN"
   },
   "home": {
-    "title": "Homemade Taste, Every Single Day!",
-    "description": "Enjoy fresh, homemade meals delivered to your doorstep.",
-    "exploreMenu": "Explore Menu",
-    "viewPlans": "View Meal Plans"
+    "hero": {
+      "label": "Fresh • Homemade • Healthy",
+      "title": "Homemade Taste,",
+      "titleHighlight": " Every Single Day!",
+      "description": "Enjoy fresh, delicious and wholesome homemade meals delivered to your doorstep. Because good food makes every day better.",
+      "exploreMenu": "Explore Our Menu",
+      "viewPlans": "View Meal Plans",
+      "careTitle": "Made with care",
+      "careDescription": "Served with a homely touch",
+      "imageAlt": "A delicious homemade Indian meal",
+      "badgeTitle": "Homemade",
+      "badgeDescription": "Made with love"
+    },
+    "benefits": {
+      "fresh": {
+        "title": "Fresh Ingredients",
+        "description": "Freshness in every bite"
+      },
+      "homemade": {
+        "title": "Homemade Taste",
+        "description": "Comfort food, just like home"
+      },
+      "hygienic": {
+        "title": "Clean & Hygienic",
+        "description": "Care in every preparation"
+      },
+      "delivery": {
+        "title": "Doorstep Delivery",
+        "description": "Meals delivered to you"
+      }
+    },
+    "videoFallback": "Your browser does not support HTML video.",
+    "mealPlans": {
+      "headingLabel": "OUR MEAL PLANS",
+      "heading": "Good food for",
+      "headingHighlight": " every routine.",
+      "headingDescription": "Choose a plan that fits your lifestyle and enjoy the comfort of homemade meals.",
+      "exploreAll": "Explore All Plans",
+      "explore": "Explore",
+      "explorePlan": "Explore {{plan}}",
+      "daily": {
+        "name": "Daily Plan",
+        "description": "Fresh homemade meals for every day.",
+        "period": "/ day",
+        "tag": "Flexible"
+      },
+      "weekly": {
+        "name": "Weekly Plan",
+        "description": "Your favourite meals, all week long.",
+        "period": "/ week",
+        "tag": "Popular"
+      },
+      "monthly": {
+        "name": "Monthly Plan",
+        "description": "Homemade goodness throughout the month.",
+        "period": "/ month",
+        "tag": "Best Value"
+      }
+    },
+    "specialDishes": {
+      "headingLabel": "FRESHLY PREPARED",
+      "heading": "Today's Special",
+      "headingDescription": "A little taste of home, made fresh for you.",
+      "viewMenu": "View Menu",
+      "viewDish": "View {{dish}}",
+      "vegThali": {
+        "name": "Veg Thali",
+        "description": "Dal, sabzi, roti & rice"
+      },
+      "healthyBowl": {
+        "name": "Healthy Bowl",
+        "description": "Fresh and wholesome"
+      },
+      "indianSpecial": {
+        "name": "Indian Special",
+        "description": "Traditional flavours"
+      }
+    },
+    "cta": {
+      "label": "Your everyday meal, sorted.",
+      "title": "Ready for a homemade meal?",
+      "description": "Explore our menu and find a meal plan that works for you.",
+      "button": "Get in Touch"
+    },
+  
+  "About": {
+  "hero": {
+    "label": "WELCOME TO AAPLA DABBA",
+    "title": "The Comfort of Home,",
+    "titleHighlight": " Served in Every Dabba.",
+    "description": "Good food brings comfort, happiness and people together. At Aapla Dabba, we bring you fresh, homestyle meals prepared with care to make your everyday meals more enjoyable.",
+    "storyButton": "Discover Our Story",
+    "menuButton": "Explore Our Menu",
+    "imageCaption": "Made with care",
+    "imageTitle": "Every meal feels like home."
+  },
+  "story": {
+    "label": "OUR STORY",
+    "title": "Every Dabba Has a Little Taste of Home.",
+    "paragraph1": "Aapla Dabba is built around a simple thought: everyone deserves a comforting and satisfying meal, even on the busiest days.",
+    "paragraph2": "Whether you are working, studying or managing a busy routine, we want to make everyday meals easier with food that feels familiar, filling and comforting.",
+    "paragraph3": "For us, a good meal is more than just food. It is the warmth, care and comfort that make you feel at home.",
+    "link": "Discover Why Choose Us"
+  },
+  "why": {
+    "label": "WHY AAPLA DABBA",
+    "title": "Simple Food. Thoughtful Choices.",
+    "description": "Everyday meals made with care to fit your routine and bring comfort to your table.",
+    "features": {
+      "homestyle": {
+        "title": "Homestyle Taste",
+        "description": "Enjoy familiar flavours and comforting meals inspired by everyday home cooking."
+      },
+      "fresh": {
+        "title": "Fresh Ingredients",
+        "description": "We focus on fresh ingredients and thoughtful meal preparation for your everyday food needs."
+      },
+      "care": {
+        "title": "Made with Care",
+        "description": "Meals designed around taste, comfort and your everyday routine."
+      },
+      "easy": {
+        "title": "Easy Meal Choices",
+        "description": "Explore meal options that help make your busy days a little simpler."
+      }
+    }
+  },
+  "kitchen": {
+    "label": "OUR FOOD",
+    "title": "Made for Your Everyday Moments.",
+    "description": "Explore the meals that make Aapla Dabba part of your daily routine."
+  },
+  "cta": {
+    "label": "YOUR NEXT MEAL AWAITS",
+    "title": "Bring Home the Comfort of Aapla Dabba.",
+    "description": "Make everyday meals easier with food that feels familiar, comforting and satisfying.",
+    "button": "Explore Our Menu"
+  },
+  "images": {
+    "hero": "Homestyle food",
+    "story": "Aapla Dabba meal",
+    "gallery1": "Freshly prepared food",
+    "gallery2": "Homestyle meal",
+    "gallery3": "Everyday food",
+    "gallery4": "Meal ready to serve",
+    "gallery5": "Aapla Dabba food"
+  }
+  }
+},
+  "ourStory": {
+    "hero": {
+      "label": "THE STORY BEHIND AAPLA DABBA",
+      "title": "Good Food,",
+      "titleHighlight": "Made with Love.",
+      "description": "Every meal has a story. Ours began with a simple idea: bringing the comfort, taste and warmth of homemade food to your everyday life.",
+      "menuButton": "Explore Our Menu",
+      "aboutButton": "About Us",
+      "highlights": {
+        "care": "Made with Care",
+        "homemade": "Homemade Taste",
+        "fresh": "Fresh Meals"
+      }
+    },
+    "beginning": {
+      "imageAlt": "Freshly prepared homemade food",
+      "imageTitle": "Food That Feels Like Home",
+      "imageSubtitle": "Comfort in every bite",
+      "label": "HOW IT BEGAN",
+      "title": "A Simple Idea,",
+      "titleHighlight": "A Meaningful Journey.",
+      "paragraph1": "Aapla Dabba is built around the idea that everyday food should be fresh, satisfying and comforting. We want to make it easier for people to enjoy homemade-style meals even when their busy schedules keep them away from home.",
+      "paragraph2": "From the familiar taste of everyday meals to the comfort of a well-prepared tiffin, our goal is to bring warmth and convenience to your dining experience.",
+      "link": "Discover Our Meals"
+    },
+    "purpose": {
+      "label": "WHAT DRIVES US",
+      "title": "More Than Just",
+      "titleHighlight": " a Meal.",
+      "description": "We believe good food should make your everyday life simpler, happier and more satisfying.",
+      "mission": {
+        "title": "Our Mission",
+        "description": "To make everyday meals convenient and enjoyable by offering food inspired by the comfort of home."
+      },
+      "promise": {
+        "title": "Our Promise",
+        "description": "To focus on freshness, thoughtful preparation and a satisfying food experience with every meal."
+      },
+      "belief": {
+        "title": "Our Belief",
+        "description": "Good food brings comfort, creates connections and makes an ordinary day feel a little better."
+      }
+    },
+    "cta": {
+      "label": "YOUR NEXT MEAL STARTS HERE",
+      "title": "Bring Home the Taste of Comfort.",
+      "description": "Explore our meals and find something delicious for your everyday routine.",
+      "button": "Explore Menu"
+    }
+  },
+  "whyChooseUs": {
+    "hero": {
+      "label": "THE AAPLA DABBA DIFFERENCE",
+      "title": "Everyday Meals,",
+      "titleHighlight": "Made Easier.",
+      "description": "Good food should fit your everyday life. Discover the values behind our approach to convenient, comforting meals.",
+      "button": "Explore Our Menu"
+    },
+    "content": {
+      "label": "WHY AAPLA DABBA?",
+      "title": "Food That Fits Your ",
+      "titleHighlight": "Everyday Life.",
+      "description": "We want ordering your everyday meals to feel simple, convenient and satisfying."
+    },
+    "features": {
+      "homemade": {
+        "title": "Homemade-Style Comfort",
+        "description": "Enjoy meals inspired by the familiar flavours and comfort of food prepared at home."
+      },
+      "convenience": {
+        "title": "Everyday Convenience",
+        "description": "Make your daily meal planning easier with food options designed for busy routines."
+      },
+      "everyday": {
+        "title": "Food for Every Day",
+        "description": "Explore meal options that can make your everyday dining routine more enjoyable."
+      },
+      "care": {
+        "title": "Prepared with Care",
+        "description": "We value thoughtful preparation and a positive experience with every meal you choose."
+      },
+      "choices": {
+        "title": "Easy Meal Choices",
+        "description": "Browse our menu to find meal categories that suit your preferences and daily needs."
+      },
+      "lifestyle": {
+        "title": "Made for Everyday Living",
+        "description": "Our idea is simple: make everyday food more approachable for people with busy schedules."
+      }
+    },
+    "cta": {
+      "label": "READY TO EXPLORE?",
+      "title": "Your Next Favourite Meal Awaits.",
+      "description": "Take a look at our menu and discover your options.",
+      "button": "View Menu"
+    }
+  },
+  "ourKitchen": {
+    "hero": {
+      "label": "A LOOK BEHIND THE MEALS",
+      "title": "Welcome to",
+      "titleHighlight": "Our Kitchen.",
+      "description": "Every meal begins with an idea, thoughtful preparation and a love for food that feels familiar.",
+      "button": "Explore Our Menu"
+    },
+    "intro": {
+      "label": "BEHIND AAPLA DABBA",
+      "title": "The Food, The Feeling,",
+      "titleHighlight": " The Everyday Comfort.",
+      "description": "Our kitchen story is about the role food plays in everyday life. We want every meal to feel approachable, comforting and worth looking forward to."
+    },
+    "gallery": {
+      "image1": {
+        "title": "Food That Feels Like Home",
+        "description": "Comforting meals for everyday moments."
+      },
+      "image2": {
+        "title": "Everyday Meal Inspiration",
+        "description": "The familiar joy of homemade-style food."
+      },
+      "image3": {
+        "title": "A Love for Good Food",
+        "description": "Making everyday meals worth looking forward to."
+      },
+      "image4": {
+        "title": "Simple Food Moments",
+        "description": "Food that brings comfort to your routine."
+      },
+      "image5": {
+        "title": "Meals for Your Day",
+        "description": "Explore the food behind Aapla Dabba."
+      }
+    },
+    "values": {
+      "label": "OUR APPROACH",
+      "title": "Good Food Starts with Care.",
+      "description": "We believe in thoughtful food preparation, a welcoming meal experience and making everyday dining more convenient. Explore our menu to see the options available to you."
+    },
+    "cta": {
+      "label": "SOMETHING DELICIOUS AWAITS",
+      "title": "Make Your Next Meal Special.",
+      "description": "Find a meal to suit your everyday routine.",
+      "button": "View Our Menu"
+    }
+  },
+  "menu": {
+    "hero": {
+      "kicker": "FRESH • HOMEMADE • DELICIOUS",
+      "title": "Our Menu",
+      "description": "Everyday comfort food, prepared with care and delivered fresh.",
+      "home": "Home",
+      "breadcrumb": "All Meals"
+    },
+    "intro": {
+      "kicker": "MADE WITH LOVE",
+      "title": "Good Food. ",
+      "titleHighlight": "Good Mood.",
+      "description": "Explore our daily tiffins, healthy meals and special dishes. Choose your favourites and add them to your cart."
+    },
+    "catalog": {
+      "title": "Explore All Meals",
+      "description": "Fresh food for your everyday routine.",
+      "search": "Search meals...",
+      "allMeals": "All Meals"
+    },
+    "loading": {
+      "title": "Loading menu...",
+      "description": "Please wait while we fetch the latest meals."
+    },
+    "errors": {
+      "load": "Menu items could not be loaded. Please check the API connection and try again.",
+      "unableTitle": "Unable to load menu",
+      "add": "Could not update cart. Check the AddCartItem request in the browser Network tab.",
+      "notInCart": "This item is not present in the current cart.",
+      "quantity": "Could not update quantity. Check the Cart API response.",
+      "emptyOrder": "Please add at least one meal before placing an order."
+    },
+    "buttons": {
+      "tryAgain": "Try Again",
+      "orderNow": "Order Now",
+      "adding": "Adding...",
+      "addToCart": "Add to Cart +",
+      "showAll": "Show All Meals",
+      "viewCart": "View Cart ({{count}})",
+      "openCart": "Open cart, {{count}} items",
+      "cart": "Cart",
+      "addMore": "Add More Items",
+      "exploreMenu": "Explore Menu",
+      "whatsapp": "Order on WhatsApp"
+    },
+    "card": {
+      "unavailable": "Currently Unavailable",
+      "category": "Our Menu",
+      "defaultDescription": "Freshly prepared with care by Aapla Dabba."
+    },
+    "empty": {
+      "noItemsTitle": "No menu items available",
+      "noItemsDescription": "Menu items added by the admin will appear here when available in the API.",
+      "noResultsTitle": "No meals found",
+      "noResultsDescription": "Try another search or select a different category."
+    },
+    "messages": {
+      "added": "{{name}} added to your cart successfully!"
+    },
+    "cart": {
+      "selection": "YOUR SELECTION",
+      "title": "Your Cart",
+      "close": "Close cart",
+      "emptyTitle": "Your cart is empty",
+      "emptyDescription": "Add a meal from our menu to get started.",
+      "each": "each",
+      "total": "Total",
+      "deliveryNote": "Delivery charges, if applicable, are confirmed separately.",
+      "increase": "Increase {{name}}",
+      "decrease": "Decrease {{name}}"
+    },
+    "cta": {
+      "kicker": "YOUR NEXT MEAL AWAITS",
+      "title": "Craving a homemade meal?",
+      "description": "Choose your favourite meals and place your order."
+    },
+    "menu": {
+  "card": {
+    "addToCart": "Add to Cart +",
+    "adding": "Adding...",
+    "unavailable": "Unavailable",
+    "orderNow": "Order Now"
+  }
+  }
+},
+  "contact": {
+    "hero": {
+      "titleLine1": "The Taste of Home,",
+      "titleLine2": "Everyday Tiffin!",
+      "description": "Enjoy the comfort of homemade meals with Aapla Dabba. Enquire about our tiffin plans and find an option that suits your everyday routine.",
+      "button": "Enquire About Tiffin",
+      "imageAlt": "Aapla Dabba homemade food"
+    },
+    "location": "Hadapsar, Pune, Maharashtra – 411013",
+    "info": {
+      "eyebrow": "GET IN TOUCH",
+      "title": "Let's Talk About Your Dabba",
+      "description": "Have a question about meals or tiffin plans? Share your requirements with us.",
+      "locationTitle": "Our Location",
+      "directions": "Get Directions",
+      "plansTitle": "Tiffin Plans",
+      "plansDescription": "Enquire about daily, weekly and monthly meal plans.",
+      "explorePlans": "Explore Plans",
+      "mealTitle": "Meal Enquiry",
+      "mealDescription": "Tell us about your food preferences and delivery requirements.",
+      "sendEnquiry": "Send Enquiry"
+    },
+    "formInfo": {
+      "eyebrow": "YOUR DABBA STARTS HERE",
+      "title": "Tell Us What You'd Like to Eat!",
+      "description": "Fill in your details and preferred plan. Add your delivery area and any special meal requirements.",
+      "promise1": "Homestyle meal enquiries",
+      "promise2": "Daily, weekly and monthly plans",
+      "promise3": "Food preferences and delivery enquiries"
+    },
+    "form": {
+      "title": "Tiffin Enquiry Form",
+      "requiredNote": "Fields marked with * are required.",
+      "success": "Demo submission successful. Connect a backend to save enquiries permanently.",
+      "fullName": "Full Name *",
+      "fullNamePlaceholder": "Enter your full name",
+      "mobile": "Mobile Number *",
+      "mobilePlaceholder": "Enter your mobile number",
+      "phoneValidation": "Enter a valid phone number.",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "preferredPlan": "Preferred Plan *",
+      "selectPlan": "Select a plan",
+      "dailyPlan": "Daily Tiffin",
+      "weeklyPlan": "Weekly Plan",
+      "monthlyPlan": "Monthly Plan",
+      "otherEnquiry": "Other Enquiry",
+      "mealPreference": "Meal Preference *",
+      "selectPreference": "Select preference",
+      "vegetarian": "Vegetarian",
+      "specialMeal": "Special Meal Enquiry",
+      "otherRequirements": "Other Requirements",
+      "deliveryAddress": "Delivery Area / Address *",
+      "addressPlaceholder": "Enter your delivery area or address",
+      "additionalRequirements": "Additional Requirements",
+      "additionalPlaceholder": "Meal timing, quantity or other requirements...",
+      "submit": "Submit Tiffin Enquiry",
+      "disclaimer": "This form is currently a frontend demo and does not save submissions to a database."
+    },
+    "benefits": {
+      "eyebrow": "WHY AAPLA DABBA?",
+      "title": "Your Everyday Meal, Made Simple",
+      "description": "Tell us what works best for your everyday food routine.",
+      "homeTitle": "Homestyle Taste",
+      "homeDescription": "Enquire about everyday meals inspired by home-cooked food.",
+      "flexibleTitle": "Flexible Plans",
+      "flexibleDescription": "Explore daily, weekly and monthly plans for your routine.",
+      "deliveryTitle": "Delivery Enquiry",
+      "deliveryDescription": "Share your area to enquire about delivery availability."
+    },
+    "faq": {
+      "eyebrow": "GOT QUESTIONS?",
+      "title": "Frequently Asked Questions",
+      "description": "Answers to common questions about our tiffin service.",
+      "items": {
+        "daily": {
+          "question": "Can I order a daily tiffin?",
+          "answer": "Submit an enquiry for daily tiffin and discuss meal availability and timings with us."
+        },
+        "plans": {
+          "question": "Are weekly and monthly plans available?",
+          "answer": "Select your preferred weekly or monthly plan in the enquiry form."
+        },
+        "areas": {
+          "question": "Which areas do you serve?",
+          "answer": "Our listed location is Hadapsar, Pune, Maharashtra – 411013. Contact us to enquire about delivery availability in your area."
+        },
+        "preferences": {
+          "question": "Can I request special meal preferences?",
+          "answer": "Yes. Mention your food preferences, meal quantity and timings in the additional requirements field."
+        },
+        "pricing": {
+          "question": "How can I enquire about pricing?",
+          "answer": "Submit the enquiry form with your preferred plan to discuss pricing and availability."
+        }
+      }
+    },
+    "map": {
+      "eyebrow": "FIND OUR LOCATION",
+      "title": "Serving From Hadapsar, Pune",
+      "openMaps": "Open Google Maps",
+      "frameTitle": "Map showing Hadapsar, Pune"
+    }
+  },
+  "dailyPlan": {
+    "hero": {
+      "eyebrow": "FRESH FOOD, EVERY DAY",
+      "titleLine1": "Good Food,",
+      "titleLine2": "Every Single Day.",
+      "description": "Enjoy the comfort of gharghuti jevaan with freshly prepared meals from Aapla Dabba. Choose your daily dabba and make every meal feel like home.",
+      "button": "Explore Daily Meals",
+      "highlight1": "Freshly Prepared",
+      "highlight2": "Homemade Taste",
+      "highlight3": "Everyday Convenience"
+    },
+    "meals": {
+      "eyebrow": "TODAY'S GOODNESS",
+      "title": "Choose Your Daily Dabba",
+      "description": "Fresh, delicious and satisfying meals to make your everyday food routine easier.",
+      "perMeal": "/ meal",
+      "enquire": "Enquire Now",
+      "note": "* Prices are sample prices. Confirm the menu and delivery availability before ordering.",
+      "items": {
+        "vegDabba": {
+          "name": "Daily Veg Dabba",
+          "description": "Enjoy fresh chapati, seasonal bhaji, dal and rice prepared with homemade flavours.",
+          "tag": "Daily Favourite"
+        },
+        "vegThali": {
+          "name": "Homestyle Veg Thali",
+          "description": "A delicious combination of fresh vegetables, soft rotis, dal and rice for a satisfying meal.",
+          "tag": "Most Popular"
+        },
+        "healthyDabba": {
+          "name": "Simple Healthy Dabba",
+          "description": "Enjoy a wholesome everyday meal made with fresh ingredients and comforting homestyle taste.",
+          "tag": "Healthy Choice"
+        }
+      }
+    },
+    "benefits": {
+      "eyebrow": "WHY AAPLA DABBA?",
+      "title": "Good Food, Made with Care",
+      "description": "Enjoy a simple everyday meal experience with the comfort and flavour of home cooking.",
+      "freshTitle": "Fresh Ingredients",
+      "freshDescription": "Meals prepared with fresh ingredients for a delicious everyday dining experience.",
+      "homeTitle": "Homemade Taste",
+      "homeDescription": "Enjoy comforting flavours inspired by traditional home-cooked Indian meals.",
+      "easyTitle": "Easy Everyday Meals",
+      "easyDescription": "Make your daily food routine simpler with convenient meal options."
+    },
+    "cta": {
+      "eyebrow": "GHARGHUTI JEVAAN, ROJ NAVIN",
+      "title": "Your daily dose of homemade goodness.",
+      "description": "Have questions about our daily meals? Contact Aapla Dabba to learn more about available options.",
+      "button": "Contact Us"
+    }
+  },
+  "monthlyPlan": {
+    "hero": {
+      "eyebrow": "YOUR MONTHLY MEAL SOLUTION",
+      "titleLine1": "One Month,",
+      "titleLine2": "Countless Homemade Moments.",
+      "description": "Your favourite gharghuti jevaan, ready for your everyday routine. Choose a monthly meal plan and enjoy homemade food with greater convenience.",
+      "button": "Explore Monthly Plans",
+      "highlight1": "Freshly Prepared",
+      "highlight2": "Monthly Convenience",
+      "highlight3": "Homemade Taste"
+    },
+    "meals": {
+      "eyebrow": "GOOD FOOD, EVERY DAY",
+      "title": "Choose Your Monthly Dabba",
+      "description": "Make everyday meals simple with fresh, flavourful and homestyle food from Aapla Dabba.",
+      "perMonth": "/ month",
+      "enquire": "Enquire Now",
+      "note": "* Prices are sample prices. Confirm meal inclusions, subscription duration and delivery details before ordering.",
+      "items": {
+        "vegDabba": {
+          "name": "Monthly Veg Dabba",
+          "description": "Enjoy fresh chapati, seasonal bhaji, dal and rice with homemade flavours throughout the month.",
+          "tag": "Most Popular"
+        },
+        "specialThali": {
+          "name": "Monthly Special Thali",
+          "description": "A satisfying combination of fresh vegetables, soft rotis, dal and rice for your everyday meals.",
+          "tag": "Homemade Favourite"
+        },
+        "healthyMeals": {
+          "name": "Monthly Healthy Meals",
+          "description": "Wholesome meals made with fresh ingredients for your busy everyday routine.",
+          "tag": "Healthy Choice"
+        }
+      }
+    },
+    "benefits": {
+      "eyebrow": "A BETTER EVERYDAY ROUTINE",
+      "title": "Why Choose a Monthly Plan?",
+      "description": "Enjoy the comfort of homemade meals while keeping your monthly food routine organised.",
+      "planningTitle": "Easy Meal Planning",
+      "planningDescription": "Plan your regular meals ahead and simplify your busy everyday schedule.",
+      "homeTitle": "Homemade Goodness",
+      "homeDescription": "Enjoy familiar flavours and comforting meals inspired by home cooking.",
+      "convenienceTitle": "Everyday Convenience",
+      "convenienceDescription": "Spend less time worrying about daily meals and more time doing what matters to you."
+    },
+    "cta": {
+      "eyebrow": "GHARGHUTI JEVAAN, ROJ NAVIN",
+      "title": "Your monthly meals, made simple.",
+      "description": "Ready to enjoy homemade food every day? Contact Aapla Dabba to discuss your monthly plan.",
+      "button": "Contact Us"
+    }
+  },
+  "weeklyPlan": {
+    "hero": {
+      "eyebrow": "YOUR WEEKLY MEAL SOLUTION",
+      "titleLine1": "One Week,",
+      "titleLine2": "Full of Homemade Goodness.",
+      "description": "Make every day delicious with fresh gharghuti jevaan. Choose your weekly meal plan and enjoy homemade comfort without the everyday cooking hassle.",
+      "button": "Explore Weekly Plans",
+      "highlight1": "Freshly Prepared",
+      "highlight2": "Weekly Convenience",
+      "highlight3": "Homemade Taste"
+    },
+    "meals": {
+      "eyebrow": "GOOD FOOD, ALL WEEK",
+      "title": "Choose Your Weekly Dabba",
+      "description": "Delicious homemade meals to make your entire week simpler, fresher and more satisfying.",
+      "perWeek": "/ week",
+      "enquire": "Enquire Now",
+      "note": "* Prices are sample prices. Confirm meal inclusions and delivery details before ordering.",
+      "items": {
+        "homestyleDabba": {
+          "name": "Homestyle Weekly Dabba",
+          "description": "Enjoy fresh chapati, seasonal bhaji, dal and rice with homemade flavour throughout the week.",
+          "tag": "Most Popular"
+        },
+        "specialThali": {
+          "name": "Special Veg Thali",
+          "description": "A satisfying combination of fresh vegetables, soft rotis, dal and rice for your everyday meals.",
+          "tag": "Homemade Favourite"
+        },
+        "healthyMeals": {
+          "name": "Healthy Weekly Meals",
+          "description": "Wholesome meals made with fresh ingredients for your busy everyday routine.",
+          "tag": "Healthy Choice"
+        }
+      }
+    },
+    "benefits": {
+      "eyebrow": "MADE FOR YOUR ROUTINE",
+      "title": "Why Choose a Weekly Plan?",
+      "description": "Enjoy the comfort of homemade food with a simpler weekly meal routine.",
+      "planningTitle": "Plan Ahead",
+      "planningDescription": "Arrange your meals for the week and simplify your everyday food routine.",
+      "homeTitle": "Homemade Comfort",
+      "homeDescription": "Enjoy familiar flavours and freshly prepared meals inspired by home cooking.",
+      "convenienceTitle": "Everyday Convenience",
+      "convenienceDescription": "Spend less time arranging meals and more time focusing on your day."
+    },
+    "cta": {
+      "eyebrow": "GHARGHUTI JEVAAN, ROJ NAVIN",
+      "title": "Make your week delicious.",
+      "description": "Need help choosing your weekly dabba? Get in touch with Aapla Dabba.",
+      "button": "Contact Us"
+    }
+  },
+  "dailyTiffin": {
+    "hero": {
+      "kicker": "FRESH • HOMEMADE • EVERYDAY",
+      "title": "Your Daily Dose of",
+      "titleHighlight": "Homemade Happiness",
+      "description": "Enjoy fresh, comforting meals made with care. Bring the taste of ghar ka khana to your everyday routine.",
+      "exploreButton": "Explore Daily Meals",
+      "plansButton": "View Meal Plans",
+      "highlight1": "Homestyle Taste",
+      "highlight2": "Freshly Prepared",
+      "highlight3": "Made with Care"
+    },
+    "intro": {
+      "eyebrow": "YOUR EVERYDAY FOOD PARTNER",
+      "title": "Good Food.",
+      "titleHighlight": "Every Single Day.",
+      "description": "Busy schedule? Missing homemade food? Aapla Dabba brings you everyday meals with familiar flavours, fresh ingredients and the comfort of a home-cooked meal."
+    },
+    "meals": {
+      "eyebrow": "MADE FRESH FOR YOU",
+      "title": "Choose Your Daily Tiffin",
+      "description": "Find a meal that suits your appetite and your everyday needs.",
+      "viewAll": "View All Meals",
+      "category": "DAILY TIFFIN",
+      "startingAt": "Starting at",
+      "perMeal": "per meal",
+      "orderNow": "Order Now",
+      "orderLabel": "Order {{name}}",
+      "note": "Meal contents may vary depending on the day's menu.",
+      "items": {
+        "vegTiffin": {
+          "name": "Daily Veg Tiffin",
+          "description": "Fresh chapati, seasonal sabzi, dal and rice for a satisfying homemade lunch.",
+          "tag": "Popular"
+        },
+        "miniTiffin": {
+          "name": "Mini Tiffin",
+          "description": "A simple, tasty and budget-friendly homemade meal for your everyday routine.",
+          "tag": "Budget Friendly"
+        },
+        "healthyTiffin": {
+          "name": "Everyday Healthy Tiffin",
+          "description": "A wholesome combination of fresh vegetables and comforting home-style food.",
+          "tag": "Healthy Choice"
+        }
+      }
+    },
+    "benefits": {
+      "eyebrow": "THE AAPLA DABBA DIFFERENCE",
+      "title": "Everyday Meals, Made Better",
+      "description": "Simple food, familiar flavours and thoughtful preparation for your daily routine.",
+      "homeTitle": "Homemade Taste",
+      "homeDescription": "Enjoy comforting flavours inspired by everyday home cooking.",
+      "freshTitle": "Fresh Meals",
+      "freshDescription": "Meals prepared with care for your everyday dining needs.",
+      "convenienceTitle": "Everyday Convenience",
+      "convenienceDescription": "Make meal planning easier when work or studies keep you busy.",
+      "optionsTitle": "Everyday Options",
+      "optionsDescription": "Choose from different meal options to suit your budget."
+    },
+    "cta": {
+      "eyebrow": "YOUR HOMEMADE MEAL AWAITS",
+      "title": "Make Every Meal Feel Like Home.",
+      "description": "Explore our meal options and find your everyday favourite.",
+      "button": "Explore Meal Plans"
+    }
+  },
+  "healthyMeals": {
+    "hero": {
+      "kicker": "FRESH • BALANCED • DELICIOUS",
+      "title": "Eat Fresh.",
+      "titleHighlight": "Feel Good.",
+      "description": "Discover wholesome homemade meals made for your busy everyday routine. Fresh flavours, comforting food and delicious choices from Aapla Dabba.",
+      "exploreButton": "Explore Healthy Meals",
+      "menuButton": "View Full Menu",
+      "highlight1": "Fresh Ingredients",
+      "highlight2": "Made with Care",
+      "highlight3": "Homemade Taste"
+    },
+    "intro": {
+      "eyebrow": "A BETTER EVERYDAY MEAL",
+      "title": "Simple Food.",
+      "titleHighlight": "Wholesome Choices.",
+      "description": "Make everyday meals easier with satisfying food prepared with care. Explore our selection and find a meal that suits your day."
+    },
+    "catalog": {
+      "eyebrow": "GOODNESS IN EVERY BITE",
+      "title": "Explore Healthy Meals",
+      "description": "Find your favourite wholesome meal from our selection.",
+      "viewAll": "View All Meals",
+      "category": "HEALTHY MEALS",
+      "startingAt": "Starting at",
+      "perMeal": "per meal",
+      "orderNow": "Order Now",
+      "orderLabel": "Order {{name}}",
+      "note": "Meal ingredients and availability may vary depending on the day's menu.",
+      "items": {
+        "lunchBox": {
+          "name": "Healthy Lunch Box",
+          "description": "A balanced homemade meal prepared with fresh ingredients for your everyday routine.",
+          "tag": "Healthy Choice"
+        },
+        "vegBowl": {
+          "name": "Fresh Veg Bowl",
+          "description": "A wholesome combination of fresh vegetables and delicious home-style flavours.",
+          "tag": "Fresh & Light"
+        },
+        "healthyTiffin": {
+          "name": "Everyday Healthy Tiffin",
+          "description": "Enjoy a comforting meal with seasonal vegetables and familiar homemade taste.",
+          "tag": "Everyday Favourite"
+        }
+      }
+    },
+    "benefits": {
+      "eyebrow": "WHY AAPLA DABBA",
+      "title": "Good Food for Your Everyday Routine",
+      "description": "Enjoy the comfort of familiar meals with convenient everyday options.",
+      "freshTitle": "Fresh Choices",
+      "freshDescription": "Explore meals featuring vegetables and familiar ingredients.",
+      "homeTitle": "Homestyle Flavours",
+      "homeDescription": "Enjoy comforting food inspired by everyday home cooking.",
+      "convenienceTitle": "Everyday Convenience",
+      "convenienceDescription": "Make meal planning easier when your schedule gets busy.",
+      "optionsTitle": "Flexible Options",
+      "optionsDescription": "Choose from different meals to suit your everyday needs."
+    },
+    "cta": {
+      "eyebrow": "YOUR NEXT MEAL AWAITS",
+      "title": "Make Room for Something Fresh.",
+      "description": "Explore our complete menu and choose your next favourite.",
+      "button": "Explore Our Menu"
+    }
+  },
+  "specialDishes": {
+    "hero": {
+      "kicker": "SPECIAL • DELICIOUS • MADE WITH CARE",
+      "title": "Discover Our",
+      "titleHighlight": "Special Dishes",
+      "description": "Make every meal memorable with delicious thalis and special homemade food. Discover satisfying flavours prepared with care by Aapla Dabba.",
+      "exploreButton": "Explore Special Dishes",
+      "menuButton": "View Full Menu",
+      "highlight1": "Delicious Flavours",
+      "highlight2": "Homestyle Taste",
+      "highlight3": "Made with Care"
+    },
+    "intro": {
+      "eyebrow": "SOMETHING SPECIAL FOR YOU",
+      "title": "Great Food.",
+      "titleHighlight": "Memorable Flavours.",
+      "description": "Looking for something beyond your everyday meal? Explore our special dishes, comforting thalis and satisfying meal options for lunch or dinner."
+    },
+    "catalog": {
+      "eyebrow": "MADE TO SATISFY YOUR CRAVINGS",
+      "title": "Our Special Selection",
+      "description": "Find a delicious meal for your next lunch or dinner.",
+      "viewAll": "View All Meals",
+      "category": "SPECIAL DISHES",
+      "startingAt": "Starting at",
+      "perMeal": "per meal",
+      "orderNow": "Order Now",
+      "orderLabel": "Order {{name}}",
+      "note": "Dish availability and meal contents may vary.",
+      "items": {
+        "maharashtrianThali": {
+          "name": "Maharashtrian Thali",
+          "description": "Enjoy a traditional-style meal with chapati, seasonal bhaji, dal, rice and homestyle flavours.",
+          "tag": "Local Favourite"
+        },
+        "specialVegThali": {
+          "name": "Special Veg Thali",
+          "description": "A satisfying combination of fresh vegetables, chapati, rice and delicious everyday accompaniments.",
+          "tag": "Customer Favourite"
+        },
+        "premiumFamilyMeal": {
+          "name": "Premium Family Meal",
+          "description": "A generous meal option for sharing with family, featuring a variety of comforting dishes.",
+          "tag": "Premium Choice"
+        }
+      }
+    },
+    "benefits": {
+      "eyebrow": "THE AAPLA DABBA EXPERIENCE",
+      "title": "Make Your Meals More Special",
+      "description": "Enjoy satisfying food choices for days when you want something extra delicious.",
+      "varietyTitle": "Delicious Variety",
+      "varietyDescription": "Explore different meal combinations and familiar flavours.",
+      "homeTitle": "Homestyle Food",
+      "homeDescription": "Enjoy comforting dishes inspired by home-cooked meals.",
+      "sharingTitle": "Sharing Options",
+      "sharingDescription": "Choose suitable meal options for yourself or your family.",
+      "careTitle": "Made with Care",
+      "careDescription": "Discover meals selected to make everyday dining enjoyable."
+    },
+    "cta": {
+      "eyebrow": "YOUR NEXT FAVOURITE MEAL",
+      "title": "Bring Something Special to Your Table.",
+      "description": "Explore the complete Aapla Dabba menu and find your favourite.",
+      "button": "Explore Our Menu"
+    }
+  },
+  "footer": {
+    "brandTagline": "GHARGHUTI JEVAAN, ROJ NAVIN",
+    "description": "Bringing the taste of homemade food to your doorstep. Enjoy fresh, delicious and wholesome meals prepared with care, just like home.",
+    "company": {
+      "title": "Company",
+      "home": "Home",
+      "about": "About Us",
+      "menu": "Our Menu",
+      "plans": "Meal Plans",
+      "contact": "Contact Us"
+    },
+    "usefulLinks": {
+      "title": "Useful Links",
+      "dailyTiffin": "Daily Tiffin",
+      "weeklyPlans": "Weekly Plans",
+      "monthlyPlans": "Monthly Plans",
+      "faqs": "FAQs",
+      "support": "Help & Support"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "description": "Have a question about our tiffin services? We are happy to help you.",
+      "getInTouch": "Get in touch",
+      "enquiry": "Enquire about our meal plans",
+      "explorePlans": "Explore Meal Plans"
+    },
+    "bottom": {
+      "rights": "All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms & Conditions",
+      "backToTop": "Back to top"
+    },
+    "brandFirst": "Aapla",
+    "brandSecond": "Dabba",
+    "logoAlt": "Aapla Dabba Logo",
+    "brandTagline": "GHARGHUTI JEVAAN, ROJ NAVIN"
+  },
+  "mainLayout": {
+    "whatsapp": {
+      "ariaLabel": "Chat with Aapla Dabba on WhatsApp",
+      "title": "Chat with us on WhatsApp"
+    },
+    "orderNow": "Order Now"
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Login to continue to Aapla Dabba",
+    "close": "Close login form",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submit": "Login",
+    "secureMessage": "Secure access to your account",
+    "errors": {
+      "invalidCredentials": "Invalid email or password. Please try again.",
+      "requiredFields": "Please enter your email and password."
+    }
   }
 }
+
+

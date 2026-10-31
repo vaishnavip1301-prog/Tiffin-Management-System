@@ -1,97 +1,86 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./MonthlyPlan.css";
 
 const monthlyMeals = [
   {
     id: 1,
-    name: "Monthly Veg Dabba",
-    description:
-      "Enjoy fresh chapati, seasonal bhaji, dal and rice with homemade flavours throughout the month.",
+    key: "vegDabba",
     price: 2800,
     image: "/images/tiffin.jpg",
-    tag: "Most Popular",
   },
   {
     id: 2,
-    name: "Monthly Special Thali",
-    description:
-      "A satisfying combination of fresh vegetables, soft rotis, dal and rice for your everyday meals.",
+    key: "specialThali",
     price: 3200,
     image: "/images/vegthali.jpg",
-    tag: "Homemade Favourite",
   },
   {
     id: 3,
-    name: "Monthly Healthy Meals",
-    description:
-      "Wholesome meals made with fresh ingredients for your busy everyday routine.",
+    key: "healthyMeals",
     price: 3000,
     image: "/images/tiffin2.jpg",
-    tag: "Healthy Choice",
   },
 ];
 
 function MonthlyPlan() {
+  const { t } = useTranslation();
+
   return (
     <main className="monthly-plan-page">
+      {/* Hero Section */}
       <section className="monthly-plan-hero">
         <div className="container">
           <div className="monthly-plan-hero-content">
             <span className="monthly-plan-eyebrow">
-              YOUR MONTHLY MEAL SOLUTION
+              {t("monthlyPlan.hero.eyebrow")}
             </span>
 
             <h1>
-              One Month,
+              {t("monthlyPlan.hero.titleLine1")}
               <br />
-              <span>Countless Homemade Moments.</span>
+              <span>{t("monthlyPlan.hero.titleLine2")}</span>
             </h1>
 
-            <p>
-              Your favourite gharghuti jevaan, ready for your everyday routine.
-              Choose a monthly meal plan and enjoy homemade food with greater
-              convenience.
-            </p>
+            <p>{t("monthlyPlan.hero.description")}</p>
 
             <a href="#monthly-meals" className="monthly-plan-btn">
-              Explore Monthly Plans
+              {t("monthlyPlan.hero.button")}
               <i className="bi bi-arrow-down-right ms-2" />
             </a>
 
             <div className="monthly-plan-highlights">
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Freshly Prepared
+                {t("monthlyPlan.hero.highlight1")}
               </span>
 
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Monthly Convenience
+                {t("monthlyPlan.hero.highlight2")}
               </span>
 
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Homemade Taste
+                {t("monthlyPlan.hero.highlight3")}
               </span>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Monthly Meals Section */}
       <section className="monthly-meals-section" id="monthly-meals">
         <div className="container">
           <div className="monthly-section-heading text-center">
             <span className="monthly-plan-eyebrow">
-              GOOD FOOD, EVERY DAY
+              {t("monthlyPlan.meals.eyebrow")}
             </span>
 
-            <h2>Choose Your Monthly Dabba</h2>
+            <h2>{t("monthlyPlan.meals.title")}</h2>
 
-            <p>
-              Make everyday meals simple with fresh, flavourful and
-              homestyle food from Aapla Dabba.
-            </p>
+            <p>{t("monthlyPlan.meals.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -99,31 +88,41 @@ function MonthlyPlan() {
               <div className="col-12 col-md-6 col-lg-4" key={meal.id}>
                 <article className="monthly-meal-card">
                   <div className="monthly-meal-image-wrap">
-                    <img src={meal.image} alt={meal.name} />
+                    <img
+                      src={meal.image}
+                      alt={t(`monthlyPlan.meals.items.${meal.key}.name`)}
+                    />
 
                     <span className="monthly-meal-tag">
-                      {meal.tag}
+                      {t(`monthlyPlan.meals.items.${meal.key}.tag`)}
                     </span>
                   </div>
 
                   <div className="monthly-meal-content">
-                    <h3>{meal.name}</h3>
+                    <h3>
+                      {t(`monthlyPlan.meals.items.${meal.key}.name`)}
+                    </h3>
 
-                    <p>{meal.description}</p>
+                    <p>
+                      {t(`monthlyPlan.meals.items.${meal.key}.description`)}
+                    </p>
 
                     <div className="monthly-meal-bottom">
                       <div className="monthly-meal-price">
                         <strong>
                           ₹{meal.price.toLocaleString("en-IN")}
                         </strong>
-                        <span>/ month</span>
+
+                        <span>
+                          {t("monthlyPlan.meals.perMonth")}
+                        </span>
                       </div>
 
                       <Link
                         to="/contact"
                         className="monthly-meal-order-btn"
                       >
-                        Enquire Now
+                        {t("monthlyPlan.meals.enquire")}
                         <i className="bi bi-arrow-up-right ms-1" />
                       </Link>
                     </div>
@@ -134,25 +133,22 @@ function MonthlyPlan() {
           </div>
 
           <p className="monthly-plan-note">
-            * Prices are sample prices. Confirm meal inclusions,
-            subscription duration and delivery details before ordering.
+            {t("monthlyPlan.meals.note")}
           </p>
         </div>
       </section>
 
+      {/* Benefits Section */}
       <section className="monthly-benefits-section">
         <div className="container">
           <div className="monthly-section-heading text-center">
             <span className="monthly-plan-eyebrow">
-              A BETTER EVERYDAY ROUTINE
+              {t("monthlyPlan.benefits.eyebrow")}
             </span>
 
-            <h2>Why Choose a Monthly Plan?</h2>
+            <h2>{t("monthlyPlan.benefits.title")}</h2>
 
-            <p>
-              Enjoy the comfort of homemade meals while keeping your
-              monthly food routine organised.
-            </p>
+            <p>{t("monthlyPlan.benefits.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -162,11 +158,12 @@ function MonthlyPlan() {
                   <i className="bi bi-calendar2-check" />
                 </div>
 
-                <h3>Easy Meal Planning</h3>
+                <h3>
+                  {t("monthlyPlan.benefits.planningTitle")}
+                </h3>
 
                 <p>
-                  Plan your regular meals ahead and simplify your busy
-                  everyday schedule.
+                  {t("monthlyPlan.benefits.planningDescription")}
                 </p>
               </div>
             </div>
@@ -177,11 +174,12 @@ function MonthlyPlan() {
                   <i className="bi bi-heart" />
                 </div>
 
-                <h3>Homemade Goodness</h3>
+                <h3>
+                  {t("monthlyPlan.benefits.homeTitle")}
+                </h3>
 
                 <p>
-                  Enjoy familiar flavours and comforting meals inspired
-                  by home cooking.
+                  {t("monthlyPlan.benefits.homeDescription")}
                 </p>
               </div>
             </div>
@@ -192,11 +190,12 @@ function MonthlyPlan() {
                   <i className="bi bi-clock-history" />
                 </div>
 
-                <h3>Everyday Convenience</h3>
+                <h3>
+                  {t("monthlyPlan.benefits.convenienceTitle")}
+                </h3>
 
                 <p>
-                  Spend less time worrying about daily meals and more time
-                  doing what matters to you.
+                  {t("monthlyPlan.benefits.convenienceDescription")}
                 </p>
               </div>
             </div>
@@ -204,24 +203,22 @@ function MonthlyPlan() {
         </div>
       </section>
 
+      {/* CTA Section */}
       <section className="monthly-plan-cta">
         <div className="container">
           <div className="monthly-plan-cta-content">
             <div>
               <span className="monthly-plan-eyebrow">
-                GHARGHUTI JEVAAN, ROJ NAVIN
+                {t("monthlyPlan.cta.eyebrow")}
               </span>
 
-              <h2>Your monthly meals, made simple.</h2>
+              <h2>{t("monthlyPlan.cta.title")}</h2>
 
-              <p>
-                Ready to enjoy homemade food every day? Contact Aapla Dabba
-                to discuss your monthly plan.
-              </p>
+              <p>{t("monthlyPlan.cta.description")}</p>
             </div>
 
             <Link to="/contact" className="monthly-plan-btn">
-              Contact Us
+              {t("monthlyPlan.cta.button")}
               <i className="bi bi-arrow-up-right ms-2" />
             </Link>
           </div>

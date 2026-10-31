@@ -52,16 +52,28 @@ function getMealImage(meal: MenuItem): string {
 
   if (imageMap[name]) return imageMap[name];
 
-  if (name.includes("chapati") || name.includes("roti") || name.includes("fulka")) {
+  if (
+    name.includes("chapati") ||
+    name.includes("roti") ||
+    name.includes("fulka")
+  ) {
     return "/images/chapati.jpg";
   }
 
   if (name.includes("thali")) return "/images/vegthali.jpg";
-  if (name.includes("poha") || name.includes("pohe")) return "/images/kandapohe.jpg";
+  if (name.includes("poha") || name.includes("pohe")) {
+    return "/images/kandapohe.jpg";
+  }
   if (name.includes("coffee")) return "/images/filtercoffee.jpg";
-  if (name.includes("chai") || name.includes("tea")) return "/images/masalachai.jpg";
+  if (name.includes("chai") || name.includes("tea")) {
+    return "/images/masalachai.jpg";
+  }
 
-  if (name.includes("rice") || name.includes("pulao") || name.includes("pulav")) {
+  if (
+    name.includes("rice") ||
+    name.includes("pulao") ||
+    name.includes("pulav")
+  ) {
     return "/images/vegpulao.jpg";
   }
 
@@ -69,7 +81,11 @@ function getMealImage(meal: MenuItem): string {
     return "/images/KandaBhaji.jpg";
   }
 
-  if (name.includes("juice") || name.includes("lime") || name.includes("lemon")) {
+  if (
+    name.includes("juice") ||
+    name.includes("lime") ||
+    name.includes("lemon")
+  ) {
     return "/images/limejuice.jpg";
   }
 
@@ -110,6 +126,7 @@ function readNumber(
 
     if (value !== undefined && value !== null && value !== "") {
       const number = Number(value);
+
       if (Number.isFinite(number)) return number;
     }
   }
@@ -133,6 +150,7 @@ function getCartRows(response: unknown): Record<string, unknown>[] {
 
     if (nested && typeof nested === "object") {
       const rows = getCartRows(nested);
+
       if (rows.length > 0) return rows;
     }
   }
@@ -209,7 +227,6 @@ export default function Menu() {
   const [cartBusyId, setCartBusyId] = useState<string | null>(null);
   const [cartMessage, setCartMessage] = useState("");
 
-  // Load menu items and then load the cart saved by the Cart API.
   const loadMeals = useCallback(async () => {
     try {
       setLoading(true);
@@ -231,7 +248,9 @@ export default function Menu() {
       }
 
       const uniqueItems = Array.from(
-        new Map(allItems.map((item) => [String(item.id), item])).values(),
+        new Map(
+          allItems.map((item) => [String(item.id), item]),
+        ).values(),
       );
 
       const activeItems = uniqueItems.filter(
@@ -239,19 +258,10 @@ export default function Menu() {
       );
 
       setMeals(activeItems);
-
-      // Load existing backend cart so it survives a page refresh.
-      try {
-        const savedCart = await getCart();
-        setCart(mapCartToEntries(savedCart, activeItems));
-      } catch (cartError) {
-        console.error("Failed to load saved cart:", cartError);
-        setCartMessage(
-          "Menu loaded, but the saved cart could not be loaded. Please check the Cart API.",
-        );
-      }
+      setCart([]);
     } catch (err) {
       console.error("Failed to load website menu:", err);
+
       setError(
         "Menu items could not be loaded. Please check the API connection and try again.",
       );
@@ -303,66 +313,80 @@ export default function Menu() {
     0,
   );
 
-  // Refresh local cart state from the backend after every successful change.
-  const refreshCartFromApi = async () => {
-    const response = await getCart();
-    const entries = mapCartToEntries(response, meals);
-    setCart(entries);
-    return response;
-  };
-
+  // Add item to backend cart.
   const addToCart = async (meal: MenuItem) => {
     if (meal.isAvailable === false || cartBusyId !== null) return;
 
     const mealId = String(meal.id);
 
+    if (!mealId || mealId === "undefined") {
+      setCartMessage("Invalid menu item ID.");
+      return;
+    }
+
     setCartBusyId(mealId);
     setCartMessage("");
 
     try {
-      // Read the latest cart before deciding whether to add or increment.
       const currentCart = await getCart();
       const currentEntries = mapCartToEntries(currentCart, meals);
+
       const existing = currentEntries.find(
         (entry) => String(entry.meal.id) === mealId,
       );
 
       if (existing) {
-        let cartItemId = existing.cartItemId;
-
-        if (!cartItemId) {
-          cartItemId = getCartItemId(currentCart, mealId);
-        }
+        const cartItemId =
+          existing.cartItemId ?? getCartItemId(currentCart, mealId);
 
         if (!cartItemId) {
           throw new Error(
-            "Cart item ID was not returned by the GetCart API.",
+            `Cart item ID not found for menu item: ${mealId}`,
           );
         }
 
-        await updateCartItemQty(cartItemId, existing.quantity + 1);
+        await updateCartItemQty(
+          cartItemId,
+          existing.quantity + 1,
+        );
       } else {
         await addCartItem({
-          menuItemId: String(meal.id),
+          menuItemId: mealId,
           quantity: 1,
         });
       }
 
-      // Confirm the change by fetching the latest cart from the API.
+      // Always fetch the latest backend cart after the operation.
       const updatedCart = await getCart();
-      setCart(mapCartToEntries(updatedCart, meals));
+      const updatedEntries = mapCartToEntries(updatedCart, meals);
+
+      setCart(updatedEntries);
       setCartOpen(true);
       setCartMessage(`${meal.name} added to your cart successfully!`);
     } catch (err) {
       console.error("Failed to add/update cart item:", err);
+
+      if (err && typeof err === "object" && "response" in err) {
+        const apiError = err as {
+          response?: {
+            status?: number;
+            data?: unknown;
+          };
+        };
+
+        console.error("Cart API Status:", apiError.response?.status);
+        console.error("Cart API Response:", apiError.response?.data);
+      }
+
       setCartMessage(
-        "Could not update cart. Check the AddCartItem request in the browser Network tab.",
+        "Could not update cart. Please check the Cart API response.",
       );
     } finally {
       setCartBusyId(null);
     }
   };
 
+  // Update quantity in backend cart.
   const changeQuantity = async (mealId: string, change: number) => {
     const id = String(mealId);
 
@@ -374,12 +398,12 @@ export default function Menu() {
     try {
       const currentCart = await getCart();
       const currentEntries = mapCartToEntries(currentCart, meals);
+
       const entry = currentEntries.find(
         (item) => String(item.meal.id) === id,
       );
 
       if (!entry) {
-        setCart(currentEntries);
         setCartMessage("This item is not present in the current cart.");
         return;
       }
@@ -389,7 +413,7 @@ export default function Menu() {
 
       if (!cartItemId) {
         throw new Error(
-          "Cart item ID was not returned by the GetCart API.",
+          "Cart item ID was not returned by GetCart API.",
         );
       }
 
@@ -403,11 +427,13 @@ export default function Menu() {
         await updateCartItemQty(cartItemId, nextQuantity);
       }
 
-      // Re-read the backend cart to keep the UI in sync.
       const updatedCart = await getCart();
-      setCart(mapCartToEntries(updatedCart, meals));
+      const updatedEntries = mapCartToEntries(updatedCart, meals);
+
+      setCart(updatedEntries);
     } catch (err) {
       console.error("Failed to change cart quantity:", err);
+
       setCartMessage(
         "Could not update quantity. Check the Cart API response.",
       );
@@ -418,7 +444,9 @@ export default function Menu() {
 
   const handleOrderNow = () => {
     if (cart.length === 0) {
-      setCartMessage("Please add at least one meal before placing an order.");
+      setCartMessage(
+        "Please add at least one meal before placing an order.",
+      );
       setCartOpen(true);
       return;
     }
@@ -460,7 +488,6 @@ export default function Menu() {
       "Please confirm my order and delivery details.",
     ].join("\n");
 
-    // Replace this with your actual business WhatsApp number.
     const whatsappNumber = "919999999999";
 
     window.open(
@@ -586,7 +613,8 @@ export default function Menu() {
               <div className="row g-4">
                 {visibleMeals.map((meal) => {
                   const cartEntry = cart.find(
-                    (entry) => String(entry.meal.id) === String(meal.id),
+                    (entry) =>
+                      String(entry.meal.id) === String(meal.id),
                   );
 
                   return (
@@ -604,7 +632,9 @@ export default function Menu() {
                             onError={(event) => {
                               const image = event.currentTarget;
 
-                              if (image.dataset.fallbackApplied === "true") {
+                              if (
+                                image.dataset.fallbackApplied === "true"
+                              ) {
                                 return;
                               }
 
@@ -652,7 +682,10 @@ export default function Menu() {
                                     type="button"
                                     disabled={cartBusyId !== null}
                                     onClick={() =>
-                                      void changeQuantity(String(meal.id), -1)
+                                      void changeQuantity(
+                                        String(meal.id),
+                                        -1,
+                                      )
                                     }
                                     aria-label={`Decrease ${meal.name}`}
                                   >
@@ -665,7 +698,10 @@ export default function Menu() {
                                     type="button"
                                     disabled={cartBusyId !== null}
                                     onClick={() =>
-                                      void changeQuantity(String(meal.id), 1)
+                                      void changeQuantity(
+                                        String(meal.id),
+                                        1,
+                                      )
                                     }
                                     aria-label={`Increase ${meal.name}`}
                                   >
@@ -786,7 +822,10 @@ export default function Menu() {
           >
             <div className="menu-cart-header">
               <div>
-                <span className="menu-section-kicker">YOUR SELECTION</span>
+                <span className="menu-section-kicker">
+                  YOUR SELECTION
+                </span>
+
                 <h2 id="menu-cart-heading">Your Cart</h2>
               </div>
 
@@ -833,7 +872,9 @@ export default function Menu() {
                         onError={(event) => {
                           const image = event.currentTarget;
 
-                          if (image.dataset.fallbackApplied === "true") {
+                          if (
+                            image.dataset.fallbackApplied === "true"
+                          ) {
                             return;
                           }
 
@@ -851,7 +892,10 @@ export default function Menu() {
                             type="button"
                             disabled={cartBusyId !== null}
                             onClick={() =>
-                              void changeQuantity(String(meal.id), -1)
+                              void changeQuantity(
+                                String(meal.id),
+                                -1,
+                              )
                             }
                             aria-label={`Decrease ${meal.name}`}
                           >
@@ -864,7 +908,10 @@ export default function Menu() {
                             type="button"
                             disabled={cartBusyId !== null}
                             onClick={() =>
-                              void changeQuantity(String(meal.id), 1)
+                              void changeQuantity(
+                                String(meal.id),
+                                1,
+                              )
                             }
                             aria-label={`Increase ${meal.name}`}
                           >
@@ -874,7 +921,9 @@ export default function Menu() {
                       </div>
 
                       <strong>
-                        ₹{(Number(meal.price) * quantity).toFixed(2)}
+                        ₹{(
+                          Number(meal.price) * quantity
+                        ).toFixed(2)}
                       </strong>
                     </div>
                   ))}

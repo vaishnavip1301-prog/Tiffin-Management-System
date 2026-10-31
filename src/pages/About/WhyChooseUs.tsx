@@ -1,27 +1,30 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./WhyChooseUs.css";
 
 function WhyChooseUs() {
+  const { t } = useTranslation();
+
   return (
     <main className="why-choose-page">
       <section className="why-choose-hero">
         <div className="container">
-          <span className="why-choose-label">THE AAPLA DABBA DIFFERENCE</span>
+          <span className="why-choose-label">
+            {t("whyChooseUs.hero.label")}
+          </span>
 
           <h1>
-            Everyday Meals,
+            {t("whyChooseUs.hero.title")}
             <br />
-            <span>Made Easier.</span>
+            <span>{t("whyChooseUs.hero.titleHighlight")}</span>
           </h1>
 
-          <p>
-            Good food should fit your everyday life. Discover the
-            values behind our approach to convenient, comforting meals.
-          </p>
+          <p>{t("whyChooseUs.hero.description")}</p>
 
           <Link to="/menu" className="why-choose-btn">
-            Explore Our Menu <i className="bi bi-arrow-right"></i>
+            {t("whyChooseUs.hero.button")}
+            <i className="bi bi-arrow-right"></i>
           </Link>
         </div>
       </section>
@@ -29,12 +32,16 @@ function WhyChooseUs() {
       <section className="why-choose-content">
         <div className="container">
           <div className="why-choose-heading">
-            <span className="why-choose-label">WHY AAPLA DABBA?</span>
-            <h2>Food That Fits Your <span>Everyday Life.</span></h2>
-            <p>
-              We want ordering your everyday meals to feel simple,
-              convenient and satisfying.
-            </p>
+            <span className="why-choose-label">
+              {t("whyChooseUs.content.label")}
+            </span>
+
+            <h2>
+              {t("whyChooseUs.content.title")}
+              <span>{t("whyChooseUs.content.titleHighlight")}</span>
+            </h2>
+
+            <p>{t("whyChooseUs.content.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -43,11 +50,8 @@ function WhyChooseUs() {
                 <div className="why-choose-icon">
                   <i className="bi bi-house-heart"></i>
                 </div>
-                <h3>Homemade-Style Comfort</h3>
-                <p>
-                  Enjoy meals inspired by the familiar flavours and
-                  comfort of food prepared at home.
-                </p>
+                <h3>{t("whyChooseUs.features.homemade.title")}</h3>
+                <p>{t("whyChooseUs.features.homemade.description")}</p>
               </article>
             </div>
 
@@ -56,11 +60,8 @@ function WhyChooseUs() {
                 <div className="why-choose-icon">
                   <i className="bi bi-clock"></i>
                 </div>
-                <h3>Everyday Convenience</h3>
-                <p>
-                  Make your daily meal planning easier with food
-                  options designed for busy routines.
-                </p>
+                <h3>{t("whyChooseUs.features.convenience.title")}</h3>
+                <p>{t("whyChooseUs.features.convenience.description")}</p>
               </article>
             </div>
 
@@ -69,11 +70,8 @@ function WhyChooseUs() {
                 <div className="why-choose-icon">
                   <i className="bi bi-egg-fried"></i>
                 </div>
-                <h3>Food for Every Day</h3>
-                <p>
-                  Explore meal options that can make your everyday
-                  dining routine more enjoyable.
-                </p>
+                <h3>{t("whyChooseUs.features.everyday.title")}</h3>
+                <p>{t("whyChooseUs.features.everyday.description")}</p>
               </article>
             </div>
 
@@ -82,11 +80,8 @@ function WhyChooseUs() {
                 <div className="why-choose-icon">
                   <i className="bi bi-heart"></i>
                 </div>
-                <h3>Prepared with Care</h3>
-                <p>
-                  We value thoughtful preparation and a positive
-                  experience with every meal you choose.
-                </p>
+                <h3>{t("whyChooseUs.features.care.title")}</h3>
+                <p>{t("whyChooseUs.features.care.description")}</p>
               </article>
             </div>
 
@@ -95,11 +90,8 @@ function WhyChooseUs() {
                 <div className="why-choose-icon">
                   <i className="bi bi-list-check"></i>
                 </div>
-                <h3>Easy Meal Choices</h3>
-                <p>
-                  Browse our menu to find meal categories that suit
-                  your preferences and daily needs.
-                </p>
+                <h3>{t("whyChooseUs.features.choices.title")}</h3>
+                <p>{t("whyChooseUs.features.choices.description")}</p>
               </article>
             </div>
 
@@ -108,11 +100,8 @@ function WhyChooseUs() {
                 <div className="why-choose-icon">
                   <i className="bi bi-people"></i>
                 </div>
-                <h3>Made for Everyday Living</h3>
-                <p>
-                  Our idea is simple: make everyday food more
-                  approachable for people with busy schedules.
-                </p>
+                <h3>{t("whyChooseUs.features.lifestyle.title")}</h3>
+                <p>{t("whyChooseUs.features.lifestyle.description")}</p>
               </article>
             </div>
           </div>
@@ -122,13 +111,18 @@ function WhyChooseUs() {
       <section className="why-choose-cta">
         <div className="container why-choose-cta-inner">
           <div>
-            <span className="why-choose-label">READY TO EXPLORE?</span>
-            <h2>Your Next Favourite Meal Awaits.</h2>
-            <p>Take a look at our menu and discover your options.</p>
+            <span className="why-choose-label">
+              {t("whyChooseUs.cta.label")}
+            </span>
+
+            <h2>{t("whyChooseUs.cta.title")}</h2>
+
+            <p>{t("whyChooseUs.cta.description")}</p>
           </div>
 
           <Link to="/menu" className="why-choose-btn">
-            View Menu <i className="bi bi-arrow-right"></i>
+            {t("whyChooseUs.cta.button")}
+            <i className="bi bi-arrow-right"></i>
           </Link>
         </div>
       </section>

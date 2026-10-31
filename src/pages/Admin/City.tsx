@@ -449,14 +449,14 @@ function CityPage() {
 
                       <td>
                         <div className="city-action-buttons">
-                          <button
+                          {/* <button
                             type="button"
                             className="city-action-btn city-view-btn"
                             onClick={() => void handleView(city.id)}
                             disabled={actionId !== null}
                           >
                             {actionId === city.id ? "Loading..." : "View"}
-                          </button>
+                          </button> */}
 
                           <button
                             type="button"

@@ -34,17 +34,20 @@
 
 .aapla-navbar .aapla-logo {
   display: block;
-  width: 60px;
-  height: 60px;
-  min-width: 60px;
-  min-height: 60px;
-  object-fit: cover;
-  object-position: left center;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  min-height: 64px;
+
+  /* Logo display correction */
+  object-fit: contain;
+  object-position: center;
+
   flex-shrink: 0;
   border-radius: 50%;
   background-color: #ffffff;
   border: 3px solid #a8f52b;
-  padding: 0;
+  padding: 3px;
   margin: 0;
   overflow: hidden;
   box-sizing: border-box;
@@ -99,9 +102,7 @@
   line-height: 1.4;
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .aapla-navbar .aapla-nav .nav-link:hover,
@@ -217,9 +218,7 @@
   text-align: left;
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .aapla-navbar .aapla-dropdown-menu li:last-child .dropdown-item {
@@ -247,7 +246,7 @@
 }
 
 /* ========================================
-   LOGIN LINK INSIDE NAVIGATION
+   LOGIN LINK
 ======================================== */
 
 .aapla-navbar .aapla-nav .nav-link.aapla-login-link {
@@ -269,9 +268,7 @@
   white-space: nowrap;
   cursor: pointer;
   box-shadow: none !important;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .aapla-navbar .aapla-nav .nav-link.aapla-login-link:hover,
@@ -287,7 +284,7 @@
 }
 
 /* ========================================
-   LOGIN BUTTON AT FORMER ORDER BUTTON
+   ORDER BUTTON
 ======================================== */
 
 .aapla-navbar .order-btn {
@@ -356,9 +353,7 @@
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .aapla-navbar .aapla-language-switch button.active {
@@ -453,7 +448,7 @@
   }
 }
 
-/* Login close button */
+/* Login Close Button */
 
 .admin-login-modal-backdrop .login-form-close {
   position: absolute;
@@ -473,9 +468,7 @@
   font-size: 25px;
   line-height: 1;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .admin-login-modal-backdrop .login-form-close:hover {
@@ -483,7 +476,7 @@
   color: #ffffff;
 }
 
-/* Login header */
+/* Login Header */
 
 .admin-login-modal-backdrop .login-form-brand {
   text-align: center;
@@ -517,7 +510,7 @@
   font-size: 30px;
 }
 
-/* Login form fields */
+/* Login Form Fields */
 
 .admin-login-modal-backdrop .login-form-card label {
   display: block;
@@ -539,9 +532,7 @@
   outline: none;
   box-shadow: none;
   box-sizing: border-box;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-login-modal-backdrop .login-form-card input:focus {
@@ -554,7 +545,7 @@
   position: relative;
 }
 
-/* Login submit button */
+/* Login Submit Button */
 
 .admin-login-modal-backdrop .login-submit-btn {
   display: flex;
@@ -572,10 +563,7 @@
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .admin-login-modal-backdrop .login-submit-btn:hover {

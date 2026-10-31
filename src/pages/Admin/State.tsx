@@ -400,13 +400,13 @@ function State() {
                     </td>
                     <td>
                       <div className="state-action-buttons">
-                        <button
+                        {/* <button
                           type="button"
                           className="state-view-btn"
                           onClick={() => void handleView(state.id)}
                         >
                           View
-                        </button>
+                        </button> */}
 
                         <button
                           type="button"

@@ -1,5 +1,7 @@
-import { useState } from "react";
+
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./LoginForm.css";
 
 interface LoginFormProps {
@@ -19,8 +21,9 @@ function LoginForm({
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -33,7 +36,7 @@ function LoginForm({
         onLoginSuccess();
         navigate("/admin/dashboard");
       } else {
-        setError("Invalid email or password. Please try again.");
+        setError(t("login.errors.invalidCredentials"));
       }
 
       return;
@@ -47,7 +50,7 @@ function LoginForm({
       onLoginSuccess();
       navigate("/order");
     } else {
-      setError("Please enter your email and password.");
+      setError(t("login.errors.requiredFields"));
     }
   };
 
@@ -57,7 +60,7 @@ function LoginForm({
         type="button"
         className="login-form-close"
         onClick={onClose}
-        aria-label="Close login form"
+        aria-label={t("login.close")}
       >
         &times;
       </button>
@@ -67,13 +70,16 @@ function LoginForm({
           <i className="bi bi-person-circle"></i>
         </div>
 
-        <h2>Login</h2>
-        <p>Login to continue to Aapla Dabba</p>
+        <h2>{t("login.title")}</h2>
+
+        <p>{t("login.subtitle")}</p>
       </div>
 
       <form onSubmit={handleLogin}>
         <div className="login-form-field">
-          <label htmlFor="login-email">Email Address</label>
+          <label htmlFor="login-email">
+            {t("login.emailLabel")}
+          </label>
 
           <div className="login-input-wrapper">
             <i className="bi bi-envelope"></i>
@@ -81,7 +87,7 @@ function LoginForm({
             <input
               id="login-email"
               type="email"
-              placeholder="Enter your email"
+              placeholder={t("login.emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
@@ -91,7 +97,9 @@ function LoginForm({
         </div>
 
         <div className="login-form-field">
-          <label htmlFor="login-password">Password</label>
+          <label htmlFor="login-password">
+            {t("login.passwordLabel")}
+          </label>
 
           <div className="login-input-wrapper">
             <i className="bi bi-lock"></i>
@@ -99,7 +107,7 @@ function LoginForm({
             <input
               id="login-password"
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder={t("login.passwordPlaceholder")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
@@ -110,7 +118,11 @@ function LoginForm({
               type="button"
               className="login-password-toggle"
               onClick={() => setShowPassword(!showPassword)}
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={
+                showPassword
+                  ? t("login.hidePassword")
+                  : t("login.showPassword")
+              }
             >
               <i
                 className={`bi ${
@@ -129,13 +141,14 @@ function LoginForm({
         )}
 
         <button type="submit" className="login-submit-btn">
-          Login <i className="bi bi-arrow-right ms-2"></i>
+          {t("login.submit")}
+          <i className="bi bi-arrow-right ms-2"></i>
         </button>
       </form>
 
       <div className="login-form-footer">
         <i className="bi bi-shield-check me-1"></i>
-        Secure access to your account
+        {t("login.secureMessage")}
       </div>
     </div>
   );

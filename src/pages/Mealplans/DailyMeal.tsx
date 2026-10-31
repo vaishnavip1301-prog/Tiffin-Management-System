@@ -1,78 +1,68 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./DailyMeal.css";
 
 const dailyMeals = [
   {
     id: 1,
-    name: "Daily Veg Dabba",
-    description:
-      "Enjoy fresh chapati, seasonal bhaji, dal and rice prepared with homemade flavours.",
+    key: "vegDabba",
     price: 120,
     image: "/images/tiffin2.jpg",
-    tag: "Daily Favourite",
   },
   {
     id: 2,
-    name: "Homestyle Veg Thali",
-    description:
-      "A delicious combination of fresh vegetables, soft rotis, dal and rice for a satisfying meal.",
+    key: "vegThali",
     price: 140,
     image: "/images/vegthali.jpg",
-    tag: "Most Popular",
   },
   {
     id: 3,
-    name: "Simple Healthy Dabba",
-    description:
-      "Enjoy a wholesome everyday meal made with fresh ingredients and comforting homestyle taste.",
+    key: "healthyDabba",
     price: 100,
     image: "/images/tiffin1.jpg",
-    tag: "Healthy Choice",
   },
-];
+] as const;
 
 function DailyPlan() {
+  const { t } = useTranslation();
+
   return (
     <main className="daily-plan-page">
       <section className="daily-plan-hero">
         <div className="container">
           <div className="daily-plan-hero-content">
             <span className="daily-plan-eyebrow">
-              FRESH FOOD, EVERY DAY
+              {t("dailyPlan.hero.eyebrow")}
             </span>
 
             <h1>
-              Good Food,
+              {t("dailyPlan.hero.titleLine1")}
               <br />
-              <span>Every Single Day.</span>
+              <span>{t("dailyPlan.hero.titleLine2")}</span>
             </h1>
 
-            <p>
-              Enjoy the comfort of gharghuti jevaan with freshly prepared
-              meals from Aapla Dabba. Choose your daily dabba and make
-              every meal feel like home.
-            </p>
+            <p>{t("dailyPlan.hero.description")}</p>
 
             <a href="#daily-meals" className="daily-plan-btn">
-              Explore Daily Meals
+              {t("dailyPlan.hero.button")}
               <i className="bi bi-arrow-down-right ms-2" />
             </a>
 
             <div className="daily-plan-highlights">
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Freshly Prepared
+                {t("dailyPlan.hero.highlight1")}
               </span>
 
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Homemade Taste
+                {t("dailyPlan.hero.highlight2")}
               </span>
 
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Everyday Convenience
+                {t("dailyPlan.hero.highlight3")}
               </span>
             </div>
           </div>
@@ -83,15 +73,12 @@ function DailyPlan() {
         <div className="container">
           <div className="daily-section-heading text-center">
             <span className="daily-plan-eyebrow">
-              TODAY'S GOODNESS
+              {t("dailyPlan.meals.eyebrow")}
             </span>
 
-            <h2>Choose Your Daily Dabba</h2>
+            <h2>{t("dailyPlan.meals.title")}</h2>
 
-            <p>
-              Fresh, delicious and satisfying meals to make your everyday
-              food routine easier.
-            </p>
+            <p>{t("dailyPlan.meals.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -99,29 +86,36 @@ function DailyPlan() {
               <div className="col-12 col-md-6 col-lg-4" key={meal.id}>
                 <article className="daily-meal-card">
                   <div className="daily-meal-image-wrap">
-                    <img src={meal.image} alt={meal.name} />
+                    <img
+                      src={meal.image}
+                      alt={t(`dailyPlan.meals.items.${meal.key}.name`)}
+                    />
 
                     <span className="daily-meal-tag">
-                      {meal.tag}
+                      {t(`dailyPlan.meals.items.${meal.key}.tag`)}
                     </span>
                   </div>
 
                   <div className="daily-meal-content">
-                    <h3>{meal.name}</h3>
+                    <h3>
+                      {t(`dailyPlan.meals.items.${meal.key}.name`)}
+                    </h3>
 
-                    <p>{meal.description}</p>
+                    <p>
+                      {t(`dailyPlan.meals.items.${meal.key}.description`)}
+                    </p>
 
                     <div className="daily-meal-bottom">
                       <div className="daily-meal-price">
                         <strong>₹{meal.price}</strong>
-                        <span>/ meal</span>
+                        <span>{t("dailyPlan.meals.perMeal")}</span>
                       </div>
 
                       <Link
                         to="/contact"
                         className="daily-meal-order-btn"
                       >
-                        Enquire Now
+                        {t("dailyPlan.meals.enquire")}
                         <i className="bi bi-arrow-up-right ms-1" />
                       </Link>
                     </div>
@@ -132,8 +126,7 @@ function DailyPlan() {
           </div>
 
           <p className="daily-plan-note">
-            * Prices are sample prices. Confirm the menu and delivery
-            availability before ordering.
+            {t("dailyPlan.meals.note")}
           </p>
         </div>
       </section>
@@ -142,15 +135,12 @@ function DailyPlan() {
         <div className="container">
           <div className="daily-section-heading text-center">
             <span className="daily-plan-eyebrow">
-              WHY AAPLA DABBA?
+              {t("dailyPlan.benefits.eyebrow")}
             </span>
 
-            <h2>Good Food, Made with Care</h2>
+            <h2>{t("dailyPlan.benefits.title")}</h2>
 
-            <p>
-              Enjoy a simple everyday meal experience with the comfort
-              and flavour of home cooking.
-            </p>
+            <p>{t("dailyPlan.benefits.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -160,12 +150,9 @@ function DailyPlan() {
                   <i className="bi bi-egg-fried" />
                 </div>
 
-                <h3>Fresh Ingredients</h3>
+                <h3>{t("dailyPlan.benefits.freshTitle")}</h3>
 
-                <p>
-                  Meals prepared with fresh ingredients for a delicious
-                  everyday dining experience.
-                </p>
+                <p>{t("dailyPlan.benefits.freshDescription")}</p>
               </div>
             </div>
 
@@ -175,12 +162,9 @@ function DailyPlan() {
                   <i className="bi bi-heart" />
                 </div>
 
-                <h3>Homemade Taste</h3>
+                <h3>{t("dailyPlan.benefits.homeTitle")}</h3>
 
-                <p>
-                  Enjoy comforting flavours inspired by traditional
-                  home-cooked Indian meals.
-                </p>
+                <p>{t("dailyPlan.benefits.homeDescription")}</p>
               </div>
             </div>
 
@@ -190,12 +174,9 @@ function DailyPlan() {
                   <i className="bi bi-bicycle" />
                 </div>
 
-                <h3>Easy Everyday Meals</h3>
+                <h3>{t("dailyPlan.benefits.easyTitle")}</h3>
 
-                <p>
-                  Make your daily food routine simpler with convenient
-                  meal options.
-                </p>
+                <p>{t("dailyPlan.benefits.easyDescription")}</p>
               </div>
             </div>
           </div>
@@ -207,19 +188,16 @@ function DailyPlan() {
           <div className="daily-plan-cta-content">
             <div>
               <span className="daily-plan-eyebrow">
-                GHARGHUTI JEVAAN, ROJ NAVIN
+                {t("dailyPlan.cta.eyebrow")}
               </span>
 
-              <h2>Your daily dose of homemade goodness.</h2>
+              <h2>{t("dailyPlan.cta.title")}</h2>
 
-              <p>
-                Have questions about our daily meals? Contact Aapla Dabba
-                to learn more about available options.
-              </p>
+              <p>{t("dailyPlan.cta.description")}</p>
             </div>
 
             <Link to="/contact" className="daily-plan-btn">
-              Contact Us
+              {t("dailyPlan.cta.button")}
               <i className="bi bi-arrow-up-right ms-2" />
             </Link>
           </div>

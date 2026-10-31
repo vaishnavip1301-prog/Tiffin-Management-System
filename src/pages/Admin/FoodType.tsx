@@ -424,55 +424,29 @@ function FoodTypePage() {
                         </td>
 
                         <td>
-                          <div className="food-type-actions">
-                            <button
-                              type="button"
-                              className="food-type-edit-btn"
-                              onClick={() =>
-                                void handleEdit(item.id)
-                              }
-                              title={`Edit ${item.name}`}
-                              aria-label={`Edit ${item.name}`}
-                              disabled={
-                                saving ||
-                                deletingId !== null
-                              }
-                            >
-                              <i
-                                className="bi bi-pencil-square"
-                                aria-hidden="true"
-                              />
-                              <span>Edit</span>
-                            </button>
+                        <div className="food-type-actions">
+                          <button
+                            type="button"
+                            className="food-type-edit-btn"
+                            onClick={() => void handleEdit(item.id)}
+                            title={`Edit ${item.name}`}
+                            disabled={saving || deletingId !== null}
+                          >
+                            Edit
+                          </button>
 
-                            <button
-                              type="button"
-                              className="food-type-delete-btn"
-                              onClick={() =>
-                                void handleDelete(
-                                  item.id,
-                                  item.name
-                                )
-                              }
-                              title={`Delete ${item.name}`}
-                              aria-label={`Delete ${item.name}`}
-                              disabled={
-                                deletingId !== null ||
-                                saving
-                              }
-                            >
-                              <i
-                                className="bi bi-trash3"
-                                aria-hidden="true"
-                              />
-
-                              <span>
-                                {deletingId === item.id
-                                  ? "Deleting..."
-                                  : "Delete"}
-                              </span>
-                            </button>
-                          </div>
+                          <button
+                            type="button"
+                            className="food-type-delete-btn"
+                            onClick={() =>
+                              void handleDelete(item.id, item.name)
+                            }
+                            title={`Delete ${item.name}`}
+                            disabled={deletingId !== null || saving}
+                          >
+                            {deletingId === item.id ? "Deleting..." : "Delete"}
+                          </button>
+                        </div>
                         </td>
                       </tr>
                     ))

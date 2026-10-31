@@ -1,36 +1,12 @@
 
 import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import "./Contact.css";
 
-const faqs = [
-  {
-    question: "Can I order a daily tiffin?",
-    answer:
-      "Submit an enquiry for daily tiffin and discuss meal availability and timings with us.",
-  },
-  {
-    question: "Are weekly and monthly plans available?",
-    answer:
-      "Select your preferred weekly or monthly plan in the enquiry form.",
-  },
-  {
-    question: "Which areas do you serve?",
-    answer:
-      "Our listed location is Hadapsar, Pune, Maharashtra – 411013. Contact us to enquire about delivery availability in your area.",
-  },
-  {
-    question: "Can I request special meal preferences?",
-    answer:
-      "Yes. Mention your food preferences, meal quantity and timings in the additional requirements field.",
-  },
-  {
-    question: "How can I enquire about pricing?",
-    answer:
-      "Submit the enquiry form with your preferred plan to discuss pricing and availability.",
-  },
-];
+const faqKeys = ["daily", "plans", "areas", "preferences", "pricing"];
 
 function Contact() {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -42,49 +18,44 @@ function Contact() {
   return (
     <main className="contact-page">
       <section className="contact-hero">
-  <div className="container">
-    <div className="contact-hero-layout">
-      <div className="contact-hero-content">
-        <span className="contact-eyebrow">
-          <i className="bi bi-egg-fried"></i> AAPLA DABBA
-        </span>
+        <div className="container">
+          <div className="contact-hero-layout">
+            <div className="contact-hero-content">
+              <span className="contact-eyebrow">
+                <i className="bi bi-egg-fried"></i> AAPLA DABBA
+              </span>
 
-        <h1>
-          Gharachya Chavicha,
-          <span> Rojcha Dabba!</span>
-        </h1>
+              <h1>
+                {t("contact.hero.titleLine1")}
+                <span> {t("contact.hero.titleLine2")}</span>
+              </h1>
 
-        <p>
-          Enjoy the comfort of homemade meals with Aapla Dabba.
-          Enquire about our tiffin plans and find an option that
-          suits your everyday routine.
-        </p>
+              <p>{t("contact.hero.description")}</p>
 
-        <a href="#tiffin-enquiry" className="contact-primary-btn">
-          Enquire About Tiffin
-          <i className="bi bi-arrow-right"></i>
-        </a>
-      </div>
+              <a href="#tiffin-enquiry" className="contact-primary-btn">
+                {t("contact.hero.button")}
+                <i className="bi bi-arrow-right"></i>
+              </a>
+            </div>
 
-      <div className="contact-hero-image">
-        <img
-          src="/images/tiffin2.jpg"
-          alt="Aapla Dabba homemade food"
-        />
-      </div>
-    </div>
-  </div>
-</section>
+            <div className="contact-hero-image">
+              <img
+                src="/images/tiffin2.jpg"
+                alt={t("contact.hero.imageAlt")}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="contact-info-section">
         <div className="container">
           <div className="contact-section-heading">
-            <span className="contact-eyebrow">GET IN TOUCH</span>
-            <h2>Let's Talk About Your Dabba</h2>
-            <p>
-              Have a question about meals or tiffin plans?
-              Share your requirements with us.
-            </p>
+            <span className="contact-eyebrow">
+              {t("contact.info.eyebrow")}
+            </span>
+            <h2>{t("contact.info.title")}</h2>
+            <p>{t("contact.info.description")}</p>
           </div>
 
           <div className="contact-info-grid">
@@ -92,15 +63,16 @@ function Contact() {
               <div className="contact-info-icon">
                 <i className="bi bi-geo-alt"></i>
               </div>
-              <h3>Our Location</h3>
-              <p>Hadapsar, Pune, Maharashtra – 411013</p>
+              <h3>{t("contact.info.locationTitle")}</h3>
+              <p>{t("contact.location")}</p>
               <a
                 href="https://www.google.com/maps/search/?api=1&query=Hadapsar%2C%20Pune%2C%20Maharashtra%20411013"
                 target="_blank"
                 rel="noreferrer"
                 className="contact-card-link"
               >
-                Get Directions <i className="bi bi-arrow-up-right"></i>
+                {t("contact.info.directions")}
+                <i className="bi bi-arrow-up-right"></i>
               </a>
             </article>
 
@@ -108,12 +80,11 @@ function Contact() {
               <div className="contact-info-icon">
                 <i className="bi bi-calendar2-check"></i>
               </div>
-              <h3>Tiffin Plans</h3>
-              <p>
-                Enquire about daily, weekly and monthly meal plans.
-              </p>
+              <h3>{t("contact.info.plansTitle")}</h3>
+              <p>{t("contact.info.plansDescription")}</p>
               <a href="#tiffin-enquiry" className="contact-card-link">
-                Explore Plans <i className="bi bi-arrow-right"></i>
+                {t("contact.info.explorePlans")}
+                <i className="bi bi-arrow-right"></i>
               </a>
             </article>
 
@@ -121,12 +92,11 @@ function Contact() {
               <div className="contact-info-icon">
                 <i className="bi bi-chat-dots"></i>
               </div>
-              <h3>Meal Enquiry</h3>
-              <p>
-                Tell us about your food preferences and delivery requirements.
-              </p>
+              <h3>{t("contact.info.mealTitle")}</h3>
+              <p>{t("contact.info.mealDescription")}</p>
               <a href="#tiffin-enquiry" className="contact-card-link">
-                Send Enquiry <i className="bi bi-arrow-right"></i>
+                {t("contact.info.sendEnquiry")}
+                <i className="bi bi-arrow-right"></i>
               </a>
             </article>
           </div>
@@ -138,99 +108,103 @@ function Contact() {
           <div className="contact-form-layout">
             <div className="contact-form-info">
               <span className="contact-eyebrow">
-                YOUR DABBA STARTS HERE
+                {t("contact.formInfo.eyebrow")}
               </span>
 
-              <h2>Tell Us What You'd Like to Eat!</h2>
+              <h2>{t("contact.formInfo.title")}</h2>
 
-              <p>
-                Fill in your details and preferred plan. Add your
-                delivery area and any special meal requirements.
-              </p>
+              <p>{t("contact.formInfo.description")}</p>
 
               <div className="contact-promise-list">
                 <div className="contact-promise-item">
                   <i className="bi bi-check-circle-fill"></i>
-                  <span>Homestyle meal enquiries</span>
+                  <span>{t("contact.formInfo.promise1")}</span>
                 </div>
 
                 <div className="contact-promise-item">
                   <i className="bi bi-check-circle-fill"></i>
-                  <span>Daily, weekly and monthly plans</span>
+                  <span>{t("contact.formInfo.promise2")}</span>
                 </div>
 
                 <div className="contact-promise-item">
                   <i className="bi bi-check-circle-fill"></i>
-                  <span>Food preferences and delivery enquiries</span>
+                  <span>{t("contact.formInfo.promise3")}</span>
                 </div>
               </div>
 
               <div className="contact-location-note">
                 <i className="bi bi-geo-alt-fill"></i>
                 <div>
-                  <strong>Our Location</strong>
-                  <p>Hadapsar, Pune, Maharashtra – 411013</p>
+                  <strong>{t("contact.info.locationTitle")}</strong>
+                  <p>{t("contact.location")}</p>
                 </div>
               </div>
             </div>
 
             <div className="contact-form-card">
               <div className="contact-form-heading">
-                <h3>Tiffin Enquiry Form</h3>
-                <p>Fields marked with * are required.</p>
+                <h3>{t("contact.form.title")}</h3>
+                <p>{t("contact.form.requiredNote")}</p>
               </div>
 
               {submitted && (
                 <div className="contact-success-message" role="status">
                   <i className="bi bi-check-circle-fill"></i>
-                  Demo submission successful. Connect a backend to save
-                  enquiries permanently.
+                  {t("contact.form.success")}
                 </div>
               )}
 
               <form onSubmit={handleSubmit}>
                 <div className="contact-form-row">
                   <div className="contact-form-group">
-                    <label htmlFor="customerName">Full Name *</label>
+                    <label htmlFor="customerName">
+                      {t("contact.form.fullName")}
+                    </label>
                     <input
                       type="text"
                       id="customerName"
                       name="customerName"
-                      placeholder="Enter your full name"
+                      placeholder={t("contact.form.fullNamePlaceholder")}
                       autoComplete="name"
                       required
                     />
                   </div>
 
                   <div className="contact-form-group">
-                    <label htmlFor="customerPhone">Mobile Number *</label>
+                    <label htmlFor="customerPhone">
+                      {t("contact.form.mobile")}
+                    </label>
                     <input
                       type="tel"
                       id="customerPhone"
                       name="customerPhone"
-                      placeholder="Enter your mobile number"
+                      placeholder={t("contact.form.mobilePlaceholder")}
                       autoComplete="tel"
                       pattern="[0-9+\-\s()]{10,15}"
-                      title="Enter a valid phone number."
+                      title={t("contact.form.phoneValidation")}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="contact-form-group">
-                  <label htmlFor="customerEmail">Email Address</label>
+                  <label htmlFor="customerEmail">
+                    {t("contact.form.email")}
+                  </label>
                   <input
                     type="email"
                     id="customerEmail"
                     name="customerEmail"
-                    placeholder="Enter your email address"
+                    placeholder={t("contact.form.emailPlaceholder")}
                     autoComplete="email"
                   />
                 </div>
 
                 <div className="contact-form-row">
                   <div className="contact-form-group">
-                    <label htmlFor="tiffinPlan">Preferred Plan *</label>
+                    <label htmlFor="tiffinPlan">
+                      {t("contact.form.preferredPlan")}
+                    </label>
                     <select
                       id="tiffinPlan"
                       name="tiffinPlan"
@@ -238,17 +212,27 @@ function Contact() {
                       required
                     >
                       <option value="" disabled>
-                        Select a plan
+                        {t("contact.form.selectPlan")}
                       </option>
-                      <option value="Daily Tiffin">Daily Tiffin</option>
-                      <option value="Weekly Plan">Weekly Plan</option>
-                      <option value="Monthly Plan">Monthly Plan</option>
-                      <option value="Custom Enquiry">Other Enquiry</option>
+                      <option value="Daily Tiffin">
+                        {t("contact.form.dailyPlan")}
+                      </option>
+                      <option value="Weekly Plan">
+                        {t("contact.form.weeklyPlan")}
+                      </option>
+                      <option value="Monthly Plan">
+                        {t("contact.form.monthlyPlan")}
+                      </option>
+                      <option value="Custom Enquiry">
+                        {t("contact.form.otherEnquiry")}
+                      </option>
                     </select>
                   </div>
 
                   <div className="contact-form-group">
-                    <label htmlFor="mealPreference">Meal Preference *</label>
+                    <label htmlFor="mealPreference">
+                      {t("contact.form.mealPreference")}
+                    </label>
                     <select
                       id="mealPreference"
                       name="mealPreference"
@@ -256,14 +240,16 @@ function Contact() {
                       required
                     >
                       <option value="" disabled>
-                        Select preference
+                        {t("contact.form.selectPreference")}
                       </option>
-                      <option value="Vegetarian">Vegetarian</option>
+                      <option value="Vegetarian">
+                        {t("contact.form.vegetarian")}
+                      </option>
                       <option value="Special Meal Enquiry">
-                        Special Meal Enquiry
+                        {t("contact.form.specialMeal")}
                       </option>
                       <option value="Other Requirements">
-                        Other Requirements
+                        {t("contact.form.otherRequirements")}
                       </option>
                     </select>
                   </div>
@@ -271,13 +257,13 @@ function Contact() {
 
                 <div className="contact-form-group">
                   <label htmlFor="deliveryAddress">
-                    Delivery Area / Address *
+                    {t("contact.form.deliveryAddress")}
                   </label>
                   <input
                     type="text"
                     id="deliveryAddress"
                     name="deliveryAddress"
-                    placeholder="Enter your delivery area or address"
+                    placeholder={t("contact.form.addressPlaceholder")}
                     autoComplete="street-address"
                     required
                   />
@@ -285,24 +271,23 @@ function Contact() {
 
                 <div className="contact-form-group">
                   <label htmlFor="additionalRequirements">
-                    Additional Requirements
+                    {t("contact.form.additionalRequirements")}
                   </label>
                   <textarea
                     id="additionalRequirements"
                     name="additionalRequirements"
                     rows={4}
-                    placeholder="Meal timing, quantity or other requirements..."
+                    placeholder={t("contact.form.additionalPlaceholder")}
                   ></textarea>
                 </div>
 
                 <button type="submit" className="contact-submit-btn">
-                  Submit Tiffin Enquiry
+                  {t("contact.form.submit")}
                   <i className="bi bi-arrow-right"></i>
                 </button>
 
                 <p className="contact-form-disclaimer">
-                  This form is currently a frontend demo and does not
-                  save submissions to a database.
+                  {t("contact.form.disclaimer")}
                 </p>
               </form>
             </div>
@@ -313,36 +298,30 @@ function Contact() {
       <section className="contact-benefits-section">
         <div className="container">
           <div className="contact-section-heading">
-            <span className="contact-eyebrow">WHY AAPLA DABBA?</span>
-            <h2>Your Everyday Meal, Made Simple</h2>
-            <p>
-              Tell us what works best for your everyday food routine.
-            </p>
+            <span className="contact-eyebrow">
+              {t("contact.benefits.eyebrow")}
+            </span>
+            <h2>{t("contact.benefits.title")}</h2>
+            <p>{t("contact.benefits.description")}</p>
           </div>
 
           <div className="contact-benefits-grid">
             <article className="contact-benefit-card">
               <i className="bi bi-house-heart"></i>
-              <h3>Homestyle Taste</h3>
-              <p>
-                Enquire about everyday meals inspired by home-cooked food.
-              </p>
+              <h3>{t("contact.benefits.homeTitle")}</h3>
+              <p>{t("contact.benefits.homeDescription")}</p>
             </article>
 
             <article className="contact-benefit-card">
               <i className="bi bi-calendar-week"></i>
-              <h3>Flexible Plans</h3>
-              <p>
-                Explore daily, weekly and monthly plans for your routine.
-              </p>
+              <h3>{t("contact.benefits.flexibleTitle")}</h3>
+              <p>{t("contact.benefits.flexibleDescription")}</p>
             </article>
 
             <article className="contact-benefit-card">
               <i className="bi bi-bicycle"></i>
-              <h3>Delivery Enquiry</h3>
-              <p>
-                Share your area to enquire about delivery availability.
-              </p>
+              <h3>{t("contact.benefits.deliveryTitle")}</h3>
+              <p>{t("contact.benefits.deliveryDescription")}</p>
             </article>
           </div>
         </div>
@@ -351,19 +330,21 @@ function Contact() {
       <section className="contact-faq-section">
         <div className="container">
           <div className="contact-section-heading">
-            <span className="contact-eyebrow">GOT QUESTIONS?</span>
-            <h2>Frequently Asked Questions</h2>
-            <p>Answers to common questions about our tiffin service.</p>
+            <span className="contact-eyebrow">
+              {t("contact.faq.eyebrow")}
+            </span>
+            <h2>{t("contact.faq.title")}</h2>
+            <p>{t("contact.faq.description")}</p>
           </div>
 
           <div className="contact-faq-list">
-            {faqs.map((faq) => (
-              <details className="contact-faq-item" key={faq.question}>
+            {faqKeys.map((key) => (
+              <details className="contact-faq-item" key={key}>
                 <summary>
-                  <span>{faq.question}</span>
+                  <span>{t(`contact.faq.items.${key}.question`)}</span>
                   <i className="bi bi-plus-lg"></i>
                 </summary>
-                <p>{faq.answer}</p>
+                <p>{t(`contact.faq.items.${key}.answer`)}</p>
               </details>
             ))}
           </div>
@@ -374,9 +355,11 @@ function Contact() {
         <div className="container">
           <div className="contact-map-heading">
             <div>
-              <span className="contact-eyebrow">FIND OUR LOCATION</span>
-              <h2>Serving From Hadapsar, Pune</h2>
-              <p>Hadapsar, Pune, Maharashtra – 411013</p>
+              <span className="contact-eyebrow">
+                {t("contact.map.eyebrow")}
+              </span>
+              <h2>{t("contact.map.title")}</h2>
+              <p>{t("contact.location")}</p>
             </div>
 
             <a
@@ -385,14 +368,14 @@ function Contact() {
               rel="noreferrer"
               className="contact-map-link"
             >
-              Open Google Maps
+              {t("contact.map.openMaps")}
               <i className="bi bi-arrow-up-right"></i>
             </a>
           </div>
 
           <div className="contact-map-frame">
             <iframe
-              title="Map showing Hadapsar, Pune"
+              title={t("contact.map.frameTitle")}
               src="https://www.google.com/maps?q=Hadapsar%2C%20Pune%2C%20Maharashtra%20411013&output=embed"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"

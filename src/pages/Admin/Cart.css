@@ -1,7 +1,6 @@
-
 /* =========================================
    AAPLA DABBA - CART MANAGEMENT
-   ========================================= */
+========================================= */
 
 .cart-management {
   width: 100%;
@@ -350,8 +349,6 @@
   min-width: 180px;
 }
 
-/* No M Placeholder */
-
 .cart-product img,
 .cart-image-placeholder {
   display: none;
@@ -385,30 +382,22 @@
 .cart-action-buttons {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   white-space: nowrap;
 }
 
 .cart-action-btn {
-  padding: 7px 9px;
+  min-width: 58px;
+  padding: 7px 13px;
   border: 1px solid transparent;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.cart-view-btn {
-  color: #347653;
-  background: #edf6ef;
-  border-color: #d6e9da;
-}
-
-.cart-view-btn:hover:not(:disabled) {
-  color: #fff;
-  background: #347653;
-}
+/* Edit - Blue */
 
 .cart-edit-btn {
   color: #1769aa;
@@ -419,17 +408,21 @@
 .cart-edit-btn:hover:not(:disabled) {
   color: #fff;
   background: #1769aa;
+  border-color: #1769aa;
 }
 
-.cart-remove-btn {
+/* Delete - Red */
+
+.cart-delete-btn {
   color: #c13f46;
   background: #fff0f0;
   border-color: #f3d6d7;
 }
 
-.cart-remove-btn:hover:not(:disabled) {
+.cart-delete-btn:hover:not(:disabled) {
   color: #fff;
   background: #c13f46;
+  border-color: #c13f46;
 }
 
 /* Pagination */
@@ -454,7 +447,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .cart-page-btn {
@@ -462,13 +455,13 @@
   align-items: center;
   justify-content: center;
   min-width: 82px;
-  min-height: 36px;
-  padding: 8px 14px;
+  min-height: 38px;
+  padding: 9px 16px;
   color: #347653;
   background: #fff;
-  border: 1px solid #d7e3da;
+  border: 1px solid #347653;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -481,16 +474,16 @@
 }
 
 .cart-page-btn:disabled {
-  color: #a0aaa2;
-  background: #f4f6f4;
-  border-color: #e3e8e3;
-  opacity: 0.7;
+  color: #6b7d70;
+  background: #e8eee9;
+  border: 1px solid #cbd8ce;
+  opacity: 1;
   cursor: not-allowed;
 }
 
 .cart-page-number {
-  color: #294c38;
-  font-size: 12px;
+  color: #234d36;
+  font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -575,77 +568,6 @@
     padding: 14px;
   }
 
-  .cart-pagination-actions {
-    width: 100%;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .cart-page-btn {
-    min-width: 75px;
-    padding: 8px 10px;
-  }
-
-  .cart-table th,
-  .cart-table td {
-    padding: 12px;
-  }
-}
-
-/* Previous and Next Pagination Buttons */
-
-.cart-pagination-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.cart-page-btn {
-  min-width: 82px;
-  min-height: 38px;
-  padding: 9px 16px;
-  color: #347653;
-  background-color: #ffffff;
-  border: 1px solid #347653;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  opacity: 1;
-  transition: all 0.2s ease;
-}
-
-/* Hover Effect */
-
-.cart-page-btn:hover:not(:disabled) {
-  color: #ffffff;
-  background-color: #347653;
-  border-color: #347653;
-}
-
-/* Disabled Button */
-
-.cart-page-btn:disabled {
-  color: #6b7d70;
-  background-color: #e8eee9;
-  border: 1px solid #cbd8ce;
-  opacity: 1;
-  cursor: not-allowed;
-}
-
-/* Current Page Number */
-
-.cart-page-number {
-  color: #234d36;
-  font-size: 13px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-/* Mobile Responsive */
-
-@media (max-width: 640px) {
   .cart-pagination-actions {
     width: 100%;
     justify-content: space-between;

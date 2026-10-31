@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import LoginForm from "../pages/Login/LoginForm";
@@ -8,18 +9,10 @@ import "./MainLayout.css";
 
 function MainLayout() {
   const [loginOpen, setLoginOpen] = useState(false);
+  const { t } = useTranslation();
 
   // WhatsApp business number with country code.
-  // Do not include +, spaces, or hyphens.
   const whatsappNumber = "917028565830";
-
-  // const whatsappMessage = encodeURIComponent(
-  //   "Namaste Aapla Dabba! 👋🍱\n\n" +
-  //     "Mala tumchya gharghuti tiffin service baddal mahiti havi aahe.\n\n" +
-  //     "Please share your daily, weekly ani monthly meal plans, " +
-  //     "menu, pricing ani delivery details.\n\n" +
-  //     "Thank you! 😊"
-  // );
 
   return (
     <div className="app-layout">
@@ -38,8 +31,8 @@ function MainLayout() {
           className="floating-whatsapp"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Chat with Aapla Dabba on WhatsApp"
-          title="Chat with us on WhatsApp"
+          aria-label={t("mainLayout.whatsapp.ariaLabel")}
+          title={t("mainLayout.whatsapp.title")}
         >
           <i className="bi bi-whatsapp" />
         </a>
@@ -50,7 +43,9 @@ function MainLayout() {
           onClick={() => setLoginOpen(true)}
         >
           <i className="bi bi-bag-check" />
-          <span>Order Now</span>
+
+          <span>{t("mainLayout.orderNow")}</span>
+
           <i className="bi bi-arrow-up-right" />
         </button>
       </div>

@@ -413,7 +413,6 @@ function MenuCategories() {
                           onClick={() => handleEdit(category)}
                           disabled={saving || deletingId !== null}
                         >
-                          <i className="bi bi-pencil me-1" />
                           Edit
                         </button>
 
@@ -423,10 +422,7 @@ function MenuCategories() {
                           onClick={() => void handleDelete(category.id)}
                           disabled={deletingId !== null || saving}
                         >
-                          <i className="bi bi-trash me-1" />
-                          {deletingId === category.id
-                            ? "Deleting..."
-                            : "Delete"}
+                          {deletingId === category.id ? "Deleting..." : "Delete"}
                         </button>
                       </td>
                     </tr>

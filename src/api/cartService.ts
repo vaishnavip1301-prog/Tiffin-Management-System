@@ -3,7 +3,6 @@ import { cartAxiosInstance } from "./axiosInstance";
 
 const GUEST_CART_TOKEN_KEY = "aaplaDabba_guestCartToken";
 
-// Request types
 export interface CartItemRequest {
   menuItemId: string;
   quantity: number;
@@ -13,7 +12,6 @@ export interface UpdateCartQuantityRequest {
   quantity: number;
 }
 
-// Cart item response
 export interface CartItem {
   cartItemId: string;
   menuItemId: string;
@@ -29,7 +27,6 @@ export interface CartItem {
   [key: string]: unknown;
 }
 
-// Cart response
 export interface CartResponse {
   cartId: string;
   guestCartToken?: string;
@@ -43,7 +40,6 @@ export interface CartResponse {
   [key: string]: unknown;
 }
 
-// Add cart response
 export interface AddCartResponse {
   cartId?: string;
   guestCartToken?: string;
@@ -52,7 +48,6 @@ export interface AddCartResponse {
   [key: string]: unknown;
 }
 
-// Handle APIs that return either direct data or { data: ... }
 function getResponseData<T>(responseData: unknown): T {
   let result = responseData;
 
@@ -81,14 +76,44 @@ export function clearGuestCartToken(): void {
   localStorage.removeItem(GUEST_CART_TOKEN_KEY);
 }
 
-// Common request headers
 function getCartHeaders(token: string) {
   return {
     "X-Guest-Cart-Token": token,
   };
 }
 
-// Get existing token or create a new cart
+// Prevent duplicate cart reset requests during React StrictMode.
+let resetCartPromise: Promise<void> | null = null;
+
+// Delete previous cart and start with a fresh guest cart.
+export async function resetGuestCart(): Promise<void> {
+  if (resetCartPromise) {
+    return resetCartPromise;
+  }
+
+  const token = getGuestCartToken();
+
+  if (!token) {
+    return;
+  }
+
+  // Clear old token immediately so it cannot be reused.
+  clearGuestCartToken();
+
+  resetCartPromise = (async () => {
+    await cartAxiosInstance.delete("/DeleteCart", {
+      headers: getCartHeaders(token),
+    });
+  })();
+
+  try {
+    await resetCartPromise;
+  } finally {
+    resetCartPromise = null;
+  }
+}
+
+// Get existing token or create a new cart.
 export async function ensureGuestCartToken(): Promise<string> {
   const existingToken = getGuestCartToken();
 
@@ -107,7 +132,7 @@ export async function ensureGuestCartToken(): Promise<string> {
   return cart.guestCartToken;
 }
 
-// Create a new guest cart
+// Create a new guest cart.
 export async function createCart(): Promise<AddCartResponse> {
   const response = await cartAxiosInstance.post("/AddCart");
 
@@ -120,7 +145,7 @@ export async function createCart(): Promise<AddCartResponse> {
   return data;
 }
 
-// Get cart with all items
+// Get cart with all items.
 export async function getCart(): Promise<CartResponse> {
   const token = await ensureGuestCartToken();
 
@@ -131,7 +156,7 @@ export async function getCart(): Promise<CartResponse> {
   return getResponseData<CartResponse>(response.data);
 }
 
-// Get one cart item by cart item ID
+// Get one cart item by cart item ID.
 export async function getCartItemById(
   cartItemId: string
 ): Promise<CartItem> {
@@ -151,7 +176,7 @@ export async function getCartItemById(
   return getResponseData<CartItem>(response.data);
 }
 
-// Add menu item to cart
+// Add menu item to cart.
 export async function addCartItem(
   input: CartItemRequest
 ): Promise<CartResponse> {
@@ -176,11 +201,10 @@ export async function addCartItem(
     }
   );
 
-  // Fetch the latest cart from the backend
   return getCart();
 }
 
-// Update cart item quantity
+// Update cart item quantity.
 export async function updateCartItemQty(
   cartItemId: string,
   quantity: number
@@ -206,7 +230,7 @@ export async function updateCartItemQty(
   return getCart();
 }
 
-// Remove an item using its cart item ID
+// Remove item using cart item ID.
 export async function removeCartItem(
   cartItemId: string
 ): Promise<CartResponse> {
@@ -226,7 +250,7 @@ export async function removeCartItem(
   return getCart();
 }
 
-// Remove an item using its menu item ID
+// Remove item using menu item ID.
 export async function removeCartItemByMenuItemId(
   menuItemId: string
 ): Promise<CartResponse> {
@@ -246,7 +270,7 @@ export async function removeCartItemByMenuItemId(
   return getCart();
 }
 
-// Validate cart
+// Validate cart.
 export async function validateCart(): Promise<unknown> {
   const token = await ensureGuestCartToken();
 
@@ -257,18 +281,12 @@ export async function validateCart(): Promise<unknown> {
   return getResponseData<unknown>(response.data);
 }
 
-// Delete the entire cart
+// Delete entire cart and clear its token.
 export async function deleteCart(): Promise<void> {
-  const token = await ensureGuestCartToken();
-
-  await cartAxiosInstance.delete("/DeleteCart", {
-    headers: getCartHeaders(token),
-  });
-
-  clearGuestCartToken();
+  await resetGuestCart();
 }
 
-// Delete cart item using API endpoint
+// Delete cart item using API endpoint.
 export async function deleteCartItem(): Promise<void> {
   const token = await ensureGuestCartToken();
 

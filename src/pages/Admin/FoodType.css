@@ -650,3 +650,67 @@
     font-size: 12px;
   }
 }
+/* Edit and Delete Buttons */
+.food-type-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.food-type-edit-btn,
+.food-type-delete-btn {
+  min-width: 75px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Edit - Blue Hover */
+.food-type-edit-btn {
+  color: #2563eb;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.food-type-edit-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Delete - Red Hover */
+.food-type-delete-btn {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.food-type-delete-btn:hover:not(:disabled) {
+  color: #ffffff;
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+/* Disabled State */
+.food-type-edit-btn:disabled,
+.food-type-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 576px) {
+  .food-type-actions {
+    gap: 6px;
+  }
+
+  .food-type-edit-btn,
+  .food-type-delete-btn {
+    min-width: 65px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}

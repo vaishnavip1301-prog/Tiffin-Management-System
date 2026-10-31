@@ -1,88 +1,87 @@
-
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./Home.css";
 
-const mealPlans = [
-  {
-    name: "Daily Plan",
-    description: "Fresh homemade meals for every day.",
-    price: "₹120",
-    period: "/ day",
-    image:
-      "/images/tiffin2.jpg",
-    icon: "bi-sun",
-    tag: "Flexible",
-  },
-  {
-    name: "Weekly Plan",
-    description: "Your favourite meals, all week long.",
-    price: "₹700",
-    period: "/ week",
-    image:
-      "images/tiffin1.jpg",
-    icon: "bi-calendar-week",
-    tag: "Popular",
-  },
-  {
-    name: "Monthly Plan",
-    description: "Homemade goodness throughout the month.",
-    price: "₹2,800",
-    period: "/ month",
-    image:
-      "images/tiffin.jpg",
-    icon: "bi-calendar-heart",
-    tag: "Best Value",
-  },
-];
-
-const benefits = [
-  {
-    icon: "bi-leaf",
-    title: "Fresh Ingredients",
-    description: "Freshness in every bite",
-  },
-  {
-    icon: "bi-heart",
-    title: "Homemade Taste",
-    description: "Comfort food, just like home",
-  },
-  {
-    icon: "bi-shield-check",
-    title: "Clean & Hygienic",
-    description: "Care in every preparation",
-  },
-  {
-    icon: "bi-truck",
-    title: "Doorstep Delivery",
-    description: "Meals delivered to you",
-  },
-];
-
-const specialDishes = [
-  {
-    name: "Veg Thali",
-    description: "Dal, sabzi, roti & rice",
-    price: "₹120",
-    image:
-      "images/vegthali.jpg",
-  },
-  {
-    name: "Healthy Bowl",
-    description: "Fresh and wholesome",
-    price: "₹100",
-    image:
-      "images/HealthyBowl.jpg",
-  },
-  {
-    name: "Indian Special",
-    description: "Traditional flavours",
-    price: "₹150",
-    image:
-      "images/IndianSpecial.jpg",
-  },
-];
-
 function Home() {
+  const { t } = useTranslation();
+
+  const mealPlans = [
+    {
+      name: t("home.mealPlans.daily.name"),
+      description: t("home.mealPlans.daily.description"),
+      price: "₹120",
+      period: t("home.mealPlans.daily.period"),
+      image: "/images/tiffin2.jpg",
+      icon: "bi-sun",
+      tag: t("home.mealPlans.daily.tag"),
+      link: "/mealplans/dailyplan",
+    },
+    {
+      name: t("home.mealPlans.weekly.name"),
+      description: t("home.mealPlans.weekly.description"),
+      price: "₹700",
+      period: t("home.mealPlans.weekly.period"),
+      image: "/images/tiffin1.jpg",
+      icon: "bi-calendar-week",
+      tag: t("home.mealPlans.weekly.tag"),
+      link: "/mealplans/weeklyplan",
+    },
+    {
+      name: t("home.mealPlans.monthly.name"),
+      description: t("home.mealPlans.monthly.description"),
+      price: "₹2,800",
+      period: t("home.mealPlans.monthly.period"),
+      image: "/images/tiffin.jpg",
+      icon: "bi-calendar-heart",
+      tag: t("home.mealPlans.monthly.tag"),
+      link: "/mealplans/monthlyplan",
+    },
+  ];
+
+  const benefits = [
+    {
+      icon: "bi-leaf",
+      title: t("home.benefits.fresh.title"),
+      description: t("home.benefits.fresh.description"),
+    },
+    {
+      icon: "bi-heart",
+      title: t("home.benefits.homemade.title"),
+      description: t("home.benefits.homemade.description"),
+    },
+    {
+      icon: "bi-shield-check",
+      title: t("home.benefits.hygienic.title"),
+      description: t("home.benefits.hygienic.description"),
+    },
+    {
+      icon: "bi-truck",
+      title: t("home.benefits.delivery.title"),
+      description: t("home.benefits.delivery.description"),
+    },
+  ];
+
+  const specialDishes = [
+    {
+      name: t("home.specialDishes.vegThali.name"),
+      description: t("home.specialDishes.vegThali.description"),
+      price: "₹120",
+      image: "/images/vegthali.jpg",
+    },
+    {
+      name: t("home.specialDishes.healthyBowl.name"),
+      description: t("home.specialDishes.healthyBowl.description"),
+      price: "₹100",
+      image: "/images/HealthyBowl.jpg",
+    },
+    {
+      name: t("home.specialDishes.indianSpecial.name"),
+      description: t("home.specialDishes.indianSpecial.description"),
+      price: "₹150",
+      image: "/images/IndianSpecial.jpg",
+    },
+  ];
+
   return (
     <div className="home-page">
       {/* HERO SECTION */}
@@ -92,29 +91,30 @@ function Home() {
             <div className="col-lg-6 hero-copy">
               <div className="hero-label">
                 <i className="bi bi-leaf-fill"></i>
-                Fresh <span>•</span> Homemade <span>•</span> Healthy
+                {t("home.hero.label")}
               </div>
 
               <h1>
-                Gharachya chavicha,
-                <span> rojcha dabba.</span>
+                {t("home.hero.title")}
+                <span>{t("home.hero.titleHighlight")}</span>
               </h1>
 
               <p className="hero-description">
-                Enjoy fresh, delicious and wholesome homemade meals
-                delivered to your doorstep. Because good food makes
-                every day better.
+                {t("home.hero.description")}
               </p>
 
               <div className="hero-actions">
                 <Link to="/menu" className="btn home-primary-btn">
-                  Explore Our Menu
+                  {t("home.hero.exploreMenu")}
                   <i className="bi bi-arrow-right"></i>
                 </Link>
 
-                <Link to="/plans" className="btn home-outline-btn">
+                <Link
+                  to="/mealplans/dailyplan"
+                  className="btn home-outline-btn"
+                >
                   <i className="bi bi-calendar-check"></i>
-                  View Meal Plans
+                  {t("home.hero.viewPlans")}
                 </Link>
               </div>
 
@@ -123,8 +123,8 @@ function Home() {
                   <i className="bi bi-heart-fill"></i>
                 </span>
                 <span>
-                  <strong>Made with care</strong>
-                  <small>Served with a homely touch</small>
+                  <strong>{t("home.hero.careTitle")}</strong>
+                  <small>{t("home.hero.careDescription")}</small>
                 </span>
               </div>
             </div>
@@ -132,16 +132,16 @@ function Home() {
             <div className="col-lg-6 hero-visual">
               <div className="hero-image-frame">
                 <img
-                  src="images/tiffin4.jpg"
-                  alt="A delicious Indian meal"
+                  src="/images/tiffin4.jpg"
+                  alt={t("home.hero.imageAlt")}
                   className="hero-food-image"
                 />
 
                 <div className="hero-image-badge">
                   <i className="bi bi-stars"></i>
                   <span>
-                    <strong>Homemade</strong>
-                    <small>With love</small>
+                    <strong>{t("home.hero.badgeTitle")}</strong>
+                    <small>{t("home.hero.badgeDescription")}</small>
                   </span>
                 </div>
 
@@ -161,17 +161,10 @@ function Home() {
       {/* BENEFITS */}
       <section className="home-benefits">
         <div className="container-fluid px-4 px-lg-5">
-              <div className="row g-3">
+          <div className="row g-3">
             {benefits.map((benefit, index) => (
-              <div
-                className="col-6 col-lg-3"
-                key={benefit.title}
-                style={undefined}
-              >
-                <div
-                  className="benefit-item"
-                  data-delay={index}
-                >
+              <div className="col-6 col-lg-3" key={benefit.title}>
+                <div className="benefit-item" data-delay={index}>
                   <div className="benefit-icon">
                     <i className={`bi ${benefit.icon}`}></i>
                   </div>
@@ -187,7 +180,7 @@ function Home() {
         </div>
       </section>
 
-          {/* HOMEMADE FOOD VIDEO SECTION */}
+      {/* HOMEMADE FOOD VIDEO SECTION */}
       <section className="home-food-video-section">
         <video
           className="home-food-video"
@@ -199,14 +192,10 @@ function Home() {
           preload="metadata"
           poster="/images/tiffin4.jpg"
         >
-          <source
-            src="/videos/video.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support HTML video.
+          <source src="/videos/video.mp4" type="video/mp4" />
+          {t("home.videoFallback")}
         </video>
       </section>
-
 
       {/* MEAL PLANS */}
       <section className="home-plans section-padding">
@@ -214,22 +203,20 @@ function Home() {
           <div className="section-heading">
             <div>
               <span className="section-eyebrow">
-                <i className="bi bi-flower1"></i> OUR MEAL PLANS
+                <i className="bi bi-flower1"></i>{" "}
+                {t("home.mealPlans.headingLabel")}
               </span>
 
               <h2>
-                Good food for
-                <span> every routine.</span>
+                {t("home.mealPlans.heading")}
+                <span>{t("home.mealPlans.headingHighlight")}</span>
               </h2>
 
-              <p>
-                Choose a plan that fits your lifestyle and enjoy
-                the comfort of homemade meals.
-              </p>
+              <p>{t("home.mealPlans.headingDescription")}</p>
             </div>
 
-            <Link to="/plans" className="section-link">
-              Explore All Plans
+            <Link to="/mealplans/dailyplan" className="section-link">
+              {t("home.mealPlans.exploreAll")}
               <i className="bi bi-arrow-up-right"></i>
             </Link>
           </div>
@@ -237,16 +224,11 @@ function Home() {
           <div className="row g-4">
             {mealPlans.map((plan, index) => (
               <div className="col-md-6 col-lg-4" key={plan.name}>
-                <article
-                  className="meal-plan-card"
-                  data-delay={index}
-                >
+                <article className="meal-plan-card" data-delay={index}>
                   <div className="meal-plan-image-wrap">
                     <img src={plan.image} alt={plan.name} />
 
-                    <span className="meal-plan-tag">
-                      {plan.tag}
-                    </span>
+                    <span className="meal-plan-tag">{plan.tag}</span>
                   </div>
 
                   <div className="meal-plan-content">
@@ -267,11 +249,14 @@ function Home() {
                       </div>
 
                       <Link
-                        to="/plans"
+                        to={plan.link}
                         className="meal-plan-order"
-                        aria-label={`Explore ${plan.name}`}
+                        aria-label={t("home.mealPlans.explorePlan", {
+                          plan: plan.name,
+                        })}
                       >
-                        Explore <i className="bi bi-arrow-right"></i>
+                        {t("home.mealPlans.explore")}
+                        <i className="bi bi-arrow-right"></i>
                       </Link>
                     </div>
                   </div>
@@ -287,21 +272,19 @@ function Home() {
         <div className="container">
           <div className="special-heading">
             <span className="section-eyebrow">
-              <i className="bi bi-fire"></i> FRESHLY PREPARED
+              <i className="bi bi-fire"></i>{" "}
+              {t("home.specialDishes.headingLabel")}
             </span>
 
-            <h2>Today's Special</h2>
+            <h2>{t("home.specialDishes.heading")}</h2>
 
-            <p>A little taste of home, made fresh for you.</p>
+            <p>{t("home.specialDishes.headingDescription")}</p>
           </div>
 
           <div className="row g-4">
             {specialDishes.map((dish, index) => (
               <div className="col-md-6 col-lg-4" key={dish.name}>
-                <article
-                  className="special-card"
-                  data-delay={index}
-                >
+                <article className="special-card" data-delay={index}>
                   <img src={dish.image} alt={dish.name} />
 
                   <div className="special-card-content">
@@ -310,8 +293,15 @@ function Home() {
 
                     <div className="special-card-bottom">
                       <strong>{dish.price}</strong>
-                      <Link to="/menu" aria-label={`View ${dish.name}`}>
-                        View Menu <i className="bi bi-arrow-right"></i>
+
+                      <Link
+                        to="/menu"
+                        aria-label={t("home.specialDishes.viewDish", {
+                          dish: dish.name,
+                        })}
+                      >
+                        {t("home.specialDishes.viewMenu")}
+                        <i className="bi bi-arrow-right"></i>
                       </Link>
                     </div>
                   </div>
@@ -331,15 +321,14 @@ function Home() {
             </div>
 
             <div className="home-cta-copy">
-              <span>Your everyday meal, sorted.</span>
-              <h2>Ready for a gharachya chavicha dabba?</h2>
-              <p>
-                Explore our menu and find a meal plan that works for you.
-              </p>
+              <span>{t("home.cta.label")}</span>
+              <h2>{t("home.cta.title")}</h2>
+              <p>{t("home.cta.description")}</p>
             </div>
 
             <Link to="/contact" className="btn home-cta-btn">
-              Get in Touch <i className="bi bi-arrow-right"></i>
+              {t("home.cta.button")}
+              <i className="bi bi-arrow-right"></i>
             </Link>
           </div>
         </div>

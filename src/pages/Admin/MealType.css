@@ -328,3 +328,30 @@
     min-width: 680px;
   }
 }
+.meal-type-edit-btn {
+  color: #2563eb;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.meal-type-edit-btn:hover:not(:disabled) {
+  color: #fff;
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.meal-type-delete-btn {
+  color: #dc2626;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.meal-type-delete-btn:hover:not(:disabled) {
+  color: #fff;
+  background-color: #dc2626;
+  border-color: #dc2626;
+}

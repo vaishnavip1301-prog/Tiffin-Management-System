@@ -501,26 +501,23 @@ function Area() {
                       </span>
                     </td>
                     <td>
-                      <div className="area-action-buttons">
-                        <button
-                          type="button"
-                          className="area-edit-btn"
-                          title="Edit area"
-                          aria-label={`Edit ${area.name}`}
-                          onClick={() => openEditForm(area)}
-                        >
-                          <i className="bi bi-pencil-square" />
-                        </button>
-                        <button
-                          type="button"
-                          className="area-delete-btn"
-                          title="Delete area"
-                          aria-label={`Delete ${area.name}`}
-                          onClick={() => void handleDelete(area)}
-                        >
-                          <i className="bi bi-trash3" />
-                        </button>
-                      </div>
+                    <div className="area-action-buttons">
+                      <button
+                        type="button"
+                        className="area-edit-btn"
+                        onClick={() => openEditForm(area)}
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="area-delete-btn"
+                        onClick={() => void handleDelete(area)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                     </td>
                   </tr>
                 ))

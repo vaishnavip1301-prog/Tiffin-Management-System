@@ -402,3 +402,68 @@
     flex-wrap: wrap;
   }
 }
+/* Edit and Delete Action Buttons */
+.area-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.area-edit-btn,
+.area-delete-btn {
+  min-width: 75px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Edit Button */
+.area-edit-btn {
+  color: #2563eb;
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.area-edit-btn:hover {
+  color: #ffffff;
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Delete Button */
+.area-delete-btn {
+  color: #dc2626;
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.area-delete-btn:hover {
+  color: #ffffff;
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+/* Keyboard Focus */
+.area-edit-btn:focus-visible,
+.area-delete-btn:focus-visible {
+  outline: 3px solid #94a3b8;
+  outline-offset: 2px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+  .area-action-buttons {
+    gap: 6px;
+  }
+
+  .area-edit-btn,
+  .area-delete-btn {
+    min-width: 65px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}

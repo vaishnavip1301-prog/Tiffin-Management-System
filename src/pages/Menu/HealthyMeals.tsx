@@ -1,105 +1,114 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./HealthyMeals.css";
 
 type HealthyMeal = {
   id: number;
-  name: string;
-  description: string;
+  key: string;
   price: number;
   image: string;
-  tag: string;
 };
 
 const healthyMeals: HealthyMeal[] = [
   {
     id: 1,
-    name: "Healthy Lunch Box",
-    description:
-      "A balanced homemade meal prepared with fresh ingredients for your everyday routine.",
+    key: "lunchBox",
     price: 130,
     image: "/images/t5.jpg",
-    tag: "Healthy Choice",
   },
   {
     id: 2,
-    name: "Fresh Veg Bowl",
-    description:
-      "A wholesome combination of fresh vegetables and delicious home-style flavours.",
+    key: "vegBowl",
     price: 140,
     image: "/images/t6.jpg",
-    tag: "Fresh & Light",
   },
   {
     id: 3,
-    name: "Everyday Healthy Tiffin",
-    description:
-      "Enjoy a comforting meal with seasonal vegetables and familiar homemade taste.",
+    key: "healthyTiffin",
     price: 110,
     image: "/images/t6.jpg",
-    tag: "Everyday Favourite",
   },
 ];
 
 function HealthyMeals() {
+  const { t } = useTranslation();
+
+  const handleExploreMeals = () => {
+    document
+      .getElementById("healthy-meal-list")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <main className="healthy-meals-page">
+      {/* Hero Section */}
       <section className="healthy-meals-hero">
         <div className="container healthy-meals-hero-content">
           <span className="healthy-meals-kicker">
-            FRESH • BALANCED • DELICIOUS
+            {t("healthyMeals.hero.kicker")}
           </span>
 
           <h1>
-            Eat Fresh. <span>Feel Good.</span>
+            {t("healthyMeals.hero.title")}
+            {" "}
+            <span>{t("healthyMeals.hero.titleHighlight")}</span>
           </h1>
 
-          <p>
-            Discover wholesome homemade meals made for your busy everyday
-            routine. Fresh flavours, comforting food and delicious choices
-            from Aapla Dabba.
-          </p>
+          <p>{t("healthyMeals.hero.description")}</p>
 
           <div className="healthy-meals-hero-actions">
             <button
-            type="button"
-            className="healthy-meals-primary-btn"
-            onClick={() => {
-                document
-                .getElementById("healthy-meal-list")
-                ?.scrollIntoView({ behavior: "smooth" });
-            }}
+              type="button"
+              className="healthy-meals-primary-btn"
+              onClick={handleExploreMeals}
             >
-            Explore Healthy Meals
-            <i className="bi bi-arrow-down-right"></i>
+              {t("healthyMeals.hero.exploreButton")}
+              <i className="bi bi-arrow-down-right"></i>
             </button>
 
             <Link to="/menu" className="healthy-meals-secondary-btn">
-              View Full Menu
+              {t("healthyMeals.hero.menuButton")}
             </Link>
           </div>
 
           <div className="healthy-meals-highlights">
-            <span><i className="bi bi-leaf"></i> Fresh Ingredients</span>
-            <span><i className="bi bi-heart"></i> Made with Care</span>
-            <span><i className="bi bi-house-heart"></i> Homemade Taste</span>
+            <span>
+              <i className="bi bi-leaf"></i>
+              {t("healthyMeals.hero.highlight1")}
+            </span>
+
+            <span>
+              <i className="bi bi-heart"></i>
+              {t("healthyMeals.hero.highlight2")}
+            </span>
+
+            <span>
+              <i className="bi bi-house-heart"></i>
+              {t("healthyMeals.hero.highlight3")}
+            </span>
           </div>
         </div>
       </section>
 
+      {/* Introduction */}
       <section className="healthy-meals-intro">
         <div className="container">
-          <span className="healthy-meals-label">A BETTER EVERYDAY MEAL</span>
+          <span className="healthy-meals-label">
+            {t("healthyMeals.intro.eyebrow")}
+          </span>
+
           <h2>
-            Simple Food. <span>Wholesome Choices.</span>
+            {t("healthyMeals.intro.title")}
+            {" "}
+            <span>{t("healthyMeals.intro.titleHighlight")}</span>
           </h2>
-          <p>
-            Make everyday meals easier with satisfying food prepared with
-            care. Explore our selection and find a meal that suits your day.
-          </p>
+
+          <p>{t("healthyMeals.intro.description")}</p>
         </div>
       </section>
 
+      {/* Healthy Meals Catalog */}
       <section
         className="healthy-meals-catalog"
         id="healthy-meal-list"
@@ -107,13 +116,18 @@ function HealthyMeals() {
         <div className="container">
           <div className="healthy-meals-heading">
             <div>
-              <span className="healthy-meals-label">GOODNESS IN EVERY BITE</span>
-              <h2>Explore Healthy Meals</h2>
-              <p>Find your favourite wholesome meal from our selection.</p>
+              <span className="healthy-meals-label">
+                {t("healthyMeals.catalog.eyebrow")}
+              </span>
+
+              <h2>{t("healthyMeals.catalog.title")}</h2>
+
+              <p>{t("healthyMeals.catalog.description")}</p>
             </div>
 
             <Link to="/menu" className="healthy-meals-view-all">
-              View All Meals <i className="bi bi-arrow-right"></i>
+              {t("healthyMeals.catalog.viewAll")}
+              <i className="bi bi-arrow-right"></i>
             </Link>
           </div>
 
@@ -124,35 +138,64 @@ function HealthyMeals() {
                   <div className="healthy-meal-image-wrap">
                     <img
                       src={meal.image}
-                      alt={meal.name}
+                      alt={t(
+                        `healthyMeals.catalog.items.${meal.key}.name`,
+                      )}
                       className="healthy-meal-image"
                       loading="lazy"
                     />
-                    <span className="healthy-meal-tag">{meal.tag}</span>
+
+                    <span className="healthy-meal-tag">
+                      {t(
+                        `healthyMeals.catalog.items.${meal.key}.tag`,
+                      )}
+                    </span>
                   </div>
 
                   <div className="healthy-meal-card-body">
                     <span className="healthy-meal-category">
-                      HEALTHY MEALS
+                      {t("healthyMeals.catalog.category")}
                     </span>
 
-                    <h3>{meal.name}</h3>
-                    <p>{meal.description}</p>
+                    <h3>
+                      {t(
+                        `healthyMeals.catalog.items.${meal.key}.name`,
+                      )}
+                    </h3>
+
+                    <p>
+                      {t(
+                        `healthyMeals.catalog.items.${meal.key}.description`,
+                      )}
+                    </p>
 
                     <div className="healthy-meal-card-footer">
                       <div>
                         <span className="healthy-meal-price-label">
-                          Starting at
+                          {t("healthyMeals.catalog.startingAt")}
                         </span>
+
                         <strong>₹{meal.price}</strong>
-                        <small>per meal</small>
+
+                        <small>
+                          {t("healthyMeals.catalog.perMeal")}
+                        </small>
                       </div>
 
                       <Link
-                        to="/plans"
+                        to="/mealplans/dailyplan"
                         className="healthy-meal-order-btn"
+                        aria-label={t(
+                          "healthyMeals.catalog.orderLabel",
+                          {
+                            name: t(
+                              `healthyMeals.catalog.items.${meal.key}.name`,
+                            ),
+                          },
+                        )}
                       >
-                        Order Now <i className="bi bi-arrow-up-right"></i>
+                        {t("healthyMeals.catalog.orderNow")}
+                        <i className="bi bi-arrow-up-right"></i>
                       </Link>
                     </div>
                   </div>
@@ -163,69 +206,101 @@ function HealthyMeals() {
 
           <p className="healthy-meals-note">
             <i className="bi bi-info-circle"></i>
-            Meal ingredients and availability may vary depending on the day's menu.
+            {t("healthyMeals.catalog.note")}
           </p>
         </div>
       </section>
 
+      {/* Benefits Section */}
       <section className="healthy-meals-benefits">
         <div className="container">
           <div className="healthy-meals-benefits-heading">
-            <span className="healthy-meals-label">WHY AAPLA DABBA</span>
-            <h2>Good Food for Your Everyday Routine</h2>
-            <p>
-              Enjoy the comfort of familiar meals with convenient everyday
-              options.
-            </p>
+            <span className="healthy-meals-label">
+              {t("healthyMeals.benefits.eyebrow")}
+            </span>
+
+            <h2>{t("healthyMeals.benefits.title")}</h2>
+
+            <p>{t("healthyMeals.benefits.description")}</p>
           </div>
 
           <div className="row g-4">
             <div className="col-sm-6 col-lg-3">
               <article className="healthy-benefit-card">
                 <i className="bi bi-leaf"></i>
-                <h3>Fresh Choices</h3>
-                <p>Explore meals featuring vegetables and familiar ingredients.</p>
+
+                <h3>
+                  {t("healthyMeals.benefits.freshTitle")}
+                </h3>
+
+                <p>
+                  {t("healthyMeals.benefits.freshDescription")}
+                </p>
               </article>
             </div>
 
             <div className="col-sm-6 col-lg-3">
               <article className="healthy-benefit-card">
                 <i className="bi bi-house-heart"></i>
-                <h3>Homestyle Flavours</h3>
-                <p>Enjoy comforting food inspired by everyday home cooking.</p>
+
+                <h3>
+                  {t("healthyMeals.benefits.homeTitle")}
+                </h3>
+
+                <p>
+                  {t("healthyMeals.benefits.homeDescription")}
+                </p>
               </article>
             </div>
 
             <div className="col-sm-6 col-lg-3">
               <article className="healthy-benefit-card">
                 <i className="bi bi-clock"></i>
-                <h3>Everyday Convenience</h3>
-                <p>Make meal planning easier when your schedule gets busy.</p>
+
+                <h3>
+                  {t("healthyMeals.benefits.convenienceTitle")}
+                </h3>
+
+                <p>
+                  {t("healthyMeals.benefits.convenienceDescription")}
+                </p>
               </article>
             </div>
 
             <div className="col-sm-6 col-lg-3">
               <article className="healthy-benefit-card">
                 <i className="bi bi-wallet2"></i>
-                <h3>Flexible Options</h3>
-                <p>Choose from different meals to suit your everyday needs.</p>
+
+                <h3>
+                  {t("healthyMeals.benefits.optionsTitle")}
+                </h3>
+
+                <p>
+                  {t("healthyMeals.benefits.optionsDescription")}
+                </p>
               </article>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Final CTA */}
       <section className="healthy-meals-cta">
         <div className="container">
           <div className="healthy-meals-cta-inner">
             <div>
-              <span className="healthy-meals-label">YOUR NEXT MEAL AWAITS</span>
-              <h2>Make Room for Something Fresh.</h2>
-              <p>Explore our complete menu and choose your next favourite.</p>
+              <span className="healthy-meals-label">
+                {t("healthyMeals.cta.eyebrow")}
+              </span>
+
+              <h2>{t("healthyMeals.cta.title")}</h2>
+
+              <p>{t("healthyMeals.cta.description")}</p>
             </div>
 
             <Link to="/menu" className="healthy-meals-cta-btn">
-              Explore Our Menu <i className="bi bi-arrow-right"></i>
+              {t("healthyMeals.cta.button")}
+              <i className="bi bi-arrow-right"></i>
             </Link>
           </div>
         </div>

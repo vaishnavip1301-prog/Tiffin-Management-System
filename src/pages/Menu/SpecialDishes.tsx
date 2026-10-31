@@ -1,47 +1,39 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./SpecialDishes.css";
 
 type SpecialDish = {
   id: number;
-  name: string;
-  description: string;
+  key: string;
   price: number;
   image: string;
-  tag: string;
 };
 
 const specialDishes: SpecialDish[] = [
   {
     id: 1,
-    name: "Maharashtrian Thali",
-    description:
-      "Enjoy a traditional-style meal with chapati, seasonal bhaji, dal, rice and homestyle flavours.",
+    key: "maharashtrianThali",
     price: 160,
     image: "/images/t3.jpg",
-    tag: "Local Favourite",
   },
   {
     id: 2,
-    name: "Special Veg Thali",
-    description:
-      "A satisfying combination of fresh vegetables, chapati, rice and delicious everyday accompaniments.",
+    key: "specialVegThali",
     price: 180,
     image: "/images/t4.jpg",
-    tag: "Customer Favourite",
   },
   {
     id: 3,
-    name: "Premium Family Meal",
-    description:
-      "A generous meal option for sharing with family, featuring a variety of comforting dishes.",
+    key: "premiumFamilyMeal",
     price: 250,
     image: "/images/t6.jpg",
-    tag: "Premium Choice",
   },
 ];
 
 function SpecialDishes() {
+  const { t } = useTranslation();
+
   const exploreDishes = () => {
     document
       .getElementById("special-dishes-list")
@@ -54,18 +46,16 @@ function SpecialDishes() {
       <section className="special-dishes-hero">
         <div className="container special-dishes-hero-content">
           <span className="special-dishes-kicker">
-            SPECIAL • DELICIOUS • MADE WITH CARE
+            {t("specialDishes.hero.kicker")}
           </span>
 
           <h1>
-            Discover Our <span>Special Dishes</span>
+            {t("specialDishes.hero.title")}
+            {" "}
+            <span>{t("specialDishes.hero.titleHighlight")}</span>
           </h1>
 
-          <p>
-            Make every meal memorable with delicious thalis and special
-            homemade food. Discover satisfying flavours prepared with care
-            by Aapla Dabba.
-          </p>
+          <p>{t("specialDishes.hero.description")}</p>
 
           <div className="special-dishes-hero-actions">
             <button
@@ -73,30 +63,29 @@ function SpecialDishes() {
               className="special-dishes-primary-btn"
               onClick={exploreDishes}
             >
-              Explore Special Dishes
+              {t("specialDishes.hero.exploreButton")}
               <i className="bi bi-arrow-down-right"></i>
             </button>
 
-            <Link
-              to="/menu"
-              className="special-dishes-secondary-btn"
-            >
-              View Full Menu
+            <Link to="/menu" className="special-dishes-secondary-btn">
+              {t("specialDishes.hero.menuButton")}
             </Link>
           </div>
 
           <div className="special-dishes-highlights">
             <span>
               <i className="bi bi-egg-fried"></i>
-              Delicious Flavours
+              {t("specialDishes.hero.highlight1")}
             </span>
+
             <span>
               <i className="bi bi-house-heart"></i>
-              Homestyle Taste
+              {t("specialDishes.hero.highlight2")}
             </span>
+
             <span>
               <i className="bi bi-heart"></i>
-              Made with Care
+              {t("specialDishes.hero.highlight3")}
             </span>
           </div>
         </div>
@@ -106,18 +95,16 @@ function SpecialDishes() {
       <section className="special-dishes-intro">
         <div className="container">
           <span className="special-dishes-label">
-            SOMETHING SPECIAL FOR YOU
+            {t("specialDishes.intro.eyebrow")}
           </span>
 
           <h2>
-            Great Food. <span>Memorable Flavours.</span>
+            {t("specialDishes.intro.title")}
+            {" "}
+            <span>{t("specialDishes.intro.titleHighlight")}</span>
           </h2>
 
-          <p>
-            Looking for something beyond your everyday meal? Explore our
-            special dishes, comforting thalis and satisfying meal options
-            for lunch or dinner.
-          </p>
+          <p>{t("specialDishes.intro.description")}</p>
         </div>
       </section>
 
@@ -130,18 +117,16 @@ function SpecialDishes() {
           <div className="special-dishes-heading">
             <div>
               <span className="special-dishes-label">
-                MADE TO SATISFY YOUR CRAVINGS
+                {t("specialDishes.catalog.eyebrow")}
               </span>
 
-              <h2>Our Special Selection</h2>
+              <h2>{t("specialDishes.catalog.title")}</h2>
 
-              <p>
-                Find a delicious meal for your next lunch or dinner.
-              </p>
+              <p>{t("specialDishes.catalog.description")}</p>
             </div>
 
             <Link to="/menu" className="special-dishes-view-all">
-              View All Meals
+              {t("specialDishes.catalog.viewAll")}
               <i className="bi bi-arrow-right"></i>
             </Link>
           </div>
@@ -153,38 +138,63 @@ function SpecialDishes() {
                   <div className="special-dish-image-wrap">
                     <img
                       src={dish.image}
-                      alt={dish.name}
+                      alt={t(
+                        `specialDishes.catalog.items.${dish.key}.name`,
+                      )}
                       className="special-dish-image"
                       loading="lazy"
                     />
 
                     <span className="special-dish-tag">
-                      {dish.tag}
+                      {t(
+                        `specialDishes.catalog.items.${dish.key}.tag`,
+                      )}
                     </span>
                   </div>
 
                   <div className="special-dish-card-body">
                     <span className="special-dish-category">
-                      SPECIAL DISHES
+                      {t("specialDishes.catalog.category")}
                     </span>
 
-                    <h3>{dish.name}</h3>
+                    <h3>
+                      {t(
+                        `specialDishes.catalog.items.${dish.key}.name`,
+                      )}
+                    </h3>
 
-                    <p>{dish.description}</p>
+                    <p>
+                      {t(
+                        `specialDishes.catalog.items.${dish.key}.description`,
+                      )}
+                    </p>
 
                     <div className="special-dish-card-footer">
                       <div className="special-dish-price-wrap">
-                        <span>Starting at</span>
+                        <span>
+                          {t("specialDishes.catalog.startingAt")}
+                        </span>
+
                         <strong>₹{dish.price}</strong>
-                        <small>per meal</small>
+
+                        <small>
+                          {t("specialDishes.catalog.perMeal")}
+                        </small>
                       </div>
 
                       <Link
-                        to="/plans"
+                        to="/menu"
                         className="special-dish-order-btn"
-                        aria-label={`Order ${dish.name}`}
+                        aria-label={t(
+                          "specialDishes.catalog.orderLabel",
+                          {
+                            name: t(
+                              `specialDishes.catalog.items.${dish.key}.name`,
+                            ),
+                          },
+                        )}
                       >
-                        Order Now
+                        {t("specialDishes.catalog.orderNow")}
                         <i className="bi bi-arrow-up-right"></i>
                       </Link>
                     </div>
@@ -196,7 +206,7 @@ function SpecialDishes() {
 
           <p className="special-dishes-note">
             <i className="bi bi-info-circle"></i>
-            Dish availability and meal contents may vary.
+            {t("specialDishes.catalog.note")}
           </p>
         </div>
       </section>
@@ -206,24 +216,25 @@ function SpecialDishes() {
         <div className="container">
           <div className="special-dishes-benefits-heading">
             <span className="special-dishes-label">
-              THE AAPLA DABBA EXPERIENCE
+              {t("specialDishes.benefits.eyebrow")}
             </span>
 
-            <h2>Make Your Meals More Special</h2>
+            <h2>{t("specialDishes.benefits.title")}</h2>
 
-            <p>
-              Enjoy satisfying food choices for days when you want
-              something extra delicious.
-            </p>
+            <p>{t("specialDishes.benefits.description")}</p>
           </div>
 
           <div className="row g-4">
             <div className="col-sm-6 col-lg-3">
               <article className="special-dish-benefit-card">
                 <i className="bi bi-egg-fried"></i>
-                <h3>Delicious Variety</h3>
+
+                <h3>
+                  {t("specialDishes.benefits.varietyTitle")}
+                </h3>
+
                 <p>
-                  Explore different meal combinations and familiar flavours.
+                  {t("specialDishes.benefits.varietyDescription")}
                 </p>
               </article>
             </div>
@@ -231,9 +242,13 @@ function SpecialDishes() {
             <div className="col-sm-6 col-lg-3">
               <article className="special-dish-benefit-card">
                 <i className="bi bi-house-heart"></i>
-                <h3>Homestyle Food</h3>
+
+                <h3>
+                  {t("specialDishes.benefits.homeTitle")}
+                </h3>
+
                 <p>
-                  Enjoy comforting dishes inspired by home-cooked meals.
+                  {t("specialDishes.benefits.homeDescription")}
                 </p>
               </article>
             </div>
@@ -241,9 +256,13 @@ function SpecialDishes() {
             <div className="col-sm-6 col-lg-3">
               <article className="special-dish-benefit-card">
                 <i className="bi bi-people"></i>
-                <h3>Sharing Options</h3>
+
+                <h3>
+                  {t("specialDishes.benefits.sharingTitle")}
+                </h3>
+
                 <p>
-                  Choose suitable meal options for yourself or your family.
+                  {t("specialDishes.benefits.sharingDescription")}
                 </p>
               </article>
             </div>
@@ -251,9 +270,13 @@ function SpecialDishes() {
             <div className="col-sm-6 col-lg-3">
               <article className="special-dish-benefit-card">
                 <i className="bi bi-heart"></i>
-                <h3>Made with Care</h3>
+
+                <h3>
+                  {t("specialDishes.benefits.careTitle")}
+                </h3>
+
                 <p>
-                  Discover meals selected to make everyday dining enjoyable.
+                  {t("specialDishes.benefits.careDescription")}
                 </p>
               </article>
             </div>
@@ -267,18 +290,16 @@ function SpecialDishes() {
           <div className="special-dishes-cta-inner">
             <div>
               <span className="special-dishes-label">
-                YOUR NEXT FAVOURITE MEAL
+                {t("specialDishes.cta.eyebrow")}
               </span>
 
-              <h2>Bring Something Special to Your Table.</h2>
+              <h2>{t("specialDishes.cta.title")}</h2>
 
-              <p>
-                Explore the complete Aapla Dabba menu and find your favourite.
-              </p>
+              <p>{t("specialDishes.cta.description")}</p>
             </div>
 
             <Link to="/menu" className="special-dishes-cta-btn">
-              Explore Our Menu
+              {t("specialDishes.cta.button")}
               <i className="bi bi-arrow-right"></i>
             </Link>
           </div>

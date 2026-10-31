@@ -1,78 +1,68 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./WeeklyPlan.css";
 
 const weeklyMeals = [
   {
     id: 1,
-    name: "Homestyle Weekly Dabba",
-    description:
-      "Enjoy fresh chapati, seasonal bhaji, dal and rice with homemade flavour throughout the week.",
+    key: "homestyleDabba",
     price: 700,
     image: "/images/tiffin1.jpg",
-    tag: "Most Popular",
   },
   {
     id: 2,
-    name: "Special Veg Thali",
-    description:
-      "A satisfying combination of fresh vegetables, soft rotis, dal and rice for your everyday meals.",
+    key: "specialThali",
     price: 840,
     image: "/images/vegthali.jpg",
-    tag: "Homemade Favourite",
   },
   {
     id: 3,
-    name: "Healthy Weekly Meals",
-    description:
-      "Wholesome meals made with fresh ingredients for your busy everyday routine.",
+    key: "healthyMeals",
     price: 700,
     image: "/images/tiffin2.jpg",
-    tag: "Healthy Choice",
   },
 ];
 
 function WeeklyPlan() {
+  const { t } = useTranslation();
+
   return (
     <main className="weekly-plan-page">
       <section className="weekly-plan-hero">
         <div className="container">
           <div className="weekly-plan-hero-content">
             <span className="weekly-plan-eyebrow">
-              YOUR WEEKLY MEAL SOLUTION
+              {t("weeklyPlan.hero.eyebrow")}
             </span>
 
             <h1>
-              One Week,
+              {t("weeklyPlan.hero.titleLine1")}
               <br />
-              <span>Full of Homemade Goodness.</span>
+              <span>{t("weeklyPlan.hero.titleLine2")}</span>
             </h1>
 
-            <p>
-              Make every day delicious with fresh gharghuti jevaan.
-              Choose your weekly meal plan and enjoy homemade comfort
-              without the everyday cooking hassle.
-            </p>
+            <p>{t("weeklyPlan.hero.description")}</p>
 
             <a href="#weekly-meals" className="weekly-plan-btn">
-              Explore Weekly Plans
+              {t("weeklyPlan.hero.button")}
               <i className="bi bi-arrow-down-right ms-2" />
             </a>
 
             <div className="weekly-plan-highlights">
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Freshly Prepared
+                {t("weeklyPlan.hero.highlight1")}
               </span>
 
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Weekly Convenience
+                {t("weeklyPlan.hero.highlight2")}
               </span>
 
               <span>
                 <i className="bi bi-check-circle-fill" />
-                Homemade Taste
+                {t("weeklyPlan.hero.highlight3")}
               </span>
             </div>
           </div>
@@ -83,15 +73,12 @@ function WeeklyPlan() {
         <div className="container">
           <div className="weekly-section-heading text-center">
             <span className="weekly-plan-eyebrow">
-              GOOD FOOD, ALL WEEK
+              {t("weeklyPlan.meals.eyebrow")}
             </span>
 
-            <h2>Choose Your Weekly Dabba</h2>
+            <h2>{t("weeklyPlan.meals.title")}</h2>
 
-            <p>
-              Delicious homemade meals to make your entire week
-              simpler, fresher and more satisfying.
-            </p>
+            <p>{t("weeklyPlan.meals.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -99,31 +86,38 @@ function WeeklyPlan() {
               <div className="col-12 col-md-6 col-lg-4" key={meal.id}>
                 <article className="weekly-meal-card">
                   <div className="weekly-meal-image-wrap">
-                    <img src={meal.image} alt={meal.name} />
+                    <img
+                      src={meal.image}
+                      alt={t(`weeklyPlan.meals.items.${meal.key}.name`)}
+                    />
 
                     <span className="weekly-meal-tag">
-                      {meal.tag}
+                      {t(`weeklyPlan.meals.items.${meal.key}.tag`)}
                     </span>
                   </div>
 
                   <div className="weekly-meal-content">
-                    <h3>{meal.name}</h3>
+                    <h3>
+                      {t(`weeklyPlan.meals.items.${meal.key}.name`)}
+                    </h3>
 
-                    <p>{meal.description}</p>
+                    <p>
+                      {t(`weeklyPlan.meals.items.${meal.key}.description`)}
+                    </p>
 
                     <div className="weekly-meal-bottom">
                       <div className="weekly-meal-price">
                         <strong>
                           ₹{meal.price.toLocaleString("en-IN")}
                         </strong>
-                        <span>/ week</span>
+                        <span>{t("weeklyPlan.meals.perWeek")}</span>
                       </div>
 
                       <Link
                         to="/contact"
                         className="weekly-meal-order-btn"
                       >
-                        Enquire Now
+                        {t("weeklyPlan.meals.enquire")}
                         <i className="bi bi-arrow-up-right ms-1" />
                       </Link>
                     </div>
@@ -134,8 +128,7 @@ function WeeklyPlan() {
           </div>
 
           <p className="weekly-plan-note">
-            * Prices are sample prices. Confirm meal inclusions and
-            delivery details before ordering.
+            {t("weeklyPlan.meals.note")}
           </p>
         </div>
       </section>
@@ -144,15 +137,12 @@ function WeeklyPlan() {
         <div className="container">
           <div className="weekly-section-heading text-center">
             <span className="weekly-plan-eyebrow">
-              MADE FOR YOUR ROUTINE
+              {t("weeklyPlan.benefits.eyebrow")}
             </span>
 
-            <h2>Why Choose a Weekly Plan?</h2>
+            <h2>{t("weeklyPlan.benefits.title")}</h2>
 
-            <p>
-              Enjoy the comfort of homemade food with a simpler
-              weekly meal routine.
-            </p>
+            <p>{t("weeklyPlan.benefits.description")}</p>
           </div>
 
           <div className="row g-4">
@@ -162,12 +152,9 @@ function WeeklyPlan() {
                   <i className="bi bi-calendar-check" />
                 </div>
 
-                <h3>Plan Ahead</h3>
+                <h3>{t("weeklyPlan.benefits.planningTitle")}</h3>
 
-                <p>
-                  Arrange your meals for the week and simplify
-                  your everyday food routine.
-                </p>
+                <p>{t("weeklyPlan.benefits.planningDescription")}</p>
               </div>
             </div>
 
@@ -177,12 +164,9 @@ function WeeklyPlan() {
                   <i className="bi bi-heart" />
                 </div>
 
-                <h3>Homemade Comfort</h3>
+                <h3>{t("weeklyPlan.benefits.homeTitle")}</h3>
 
-                <p>
-                  Enjoy familiar flavours and freshly prepared
-                  meals inspired by home cooking.
-                </p>
+                <p>{t("weeklyPlan.benefits.homeDescription")}</p>
               </div>
             </div>
 
@@ -192,12 +176,9 @@ function WeeklyPlan() {
                   <i className="bi bi-bicycle" />
                 </div>
 
-                <h3>Everyday Convenience</h3>
+                <h3>{t("weeklyPlan.benefits.convenienceTitle")}</h3>
 
-                <p>
-                  Spend less time arranging meals and more time
-                  focusing on your day.
-                </p>
+                <p>{t("weeklyPlan.benefits.convenienceDescription")}</p>
               </div>
             </div>
           </div>
@@ -209,19 +190,16 @@ function WeeklyPlan() {
           <div className="weekly-plan-cta-content">
             <div>
               <span className="weekly-plan-eyebrow">
-                GHARGHUTI JEVAAN, ROJ NAVIN
+                {t("weeklyPlan.cta.eyebrow")}
               </span>
 
-              <h2>Make your week delicious.</h2>
+              <h2>{t("weeklyPlan.cta.title")}</h2>
 
-              <p>
-                Need help choosing your weekly dabba? Get in touch
-                with Aapla Dabba.
-              </p>
+              <p>{t("weeklyPlan.cta.description")}</p>
             </div>
 
             <Link to="/contact" className="weekly-plan-btn">
-              Contact Us
+              {t("weeklyPlan.cta.button")}
               <i className="bi bi-arrow-up-right ms-2" />
             </Link>
           </div>

@@ -1,8 +1,6 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getCart,
-  getCartItemById,
   updateCartItemQty,
   removeCartItem,
   validateCart,
@@ -30,6 +28,7 @@ function CartPage() {
   const [validationResult, setValidationResult] = useState<unknown>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // LOAD CART
   const loadCart = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -54,6 +53,7 @@ function CartPage() {
     void loadCart();
   }, [loadCart]);
 
+  // LOAD MENU NAMES
   useEffect(() => {
     const loadMenuNames = async () => {
       try {
@@ -79,30 +79,27 @@ function CartPage() {
     item.name || menuNames[item.menuItemId] || "Menu name unavailable";
 
   const allItems = cart?.items ?? [];
-  const totalPages = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE));
 
+  const totalPages = Math.max(
+    1,
+    Math.ceil(allItems.length / PAGE_SIZE)
+  );
+
+  // PAGINATION
   const paginatedItems = useMemo(() => {
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     return allItems.slice(startIndex, startIndex + PAGE_SIZE);
   }, [allItems, currentPage]);
 
-  const handleViewItem = async (cartItemId: string) => {
-    setActionId(cartItemId);
+  // EDIT ITEM
+  const handleEditItem = (item: CartItem) => {
+    setSelectedItem(item);
+    setQuantity(String(item.quantity));
     setError("");
     setMessage("");
-
-    try {
-      const item = await getCartItemById(cartItemId);
-      setSelectedItem(item);
-      setQuantity(String(item.quantity));
-    } catch (err) {
-      console.error("Error loading cart item:", err);
-      setError("Unable to load cart item details.");
-    } finally {
-      setActionId(null);
-    }
   };
 
+  // UPDATE QUANTITY
   const handleUpdateQuantity = async (item: CartItem) => {
     const newQuantity = Number(quantity);
 
@@ -133,9 +130,10 @@ function CartPage() {
     }
   };
 
-  const handleRemoveItem = async (cartItemId: string) => {
+  // DELETE CART ITEM
+  const handleDeleteItem = async (cartItemId: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to remove this cart item?"
+      "Are you sure you want to delete this cart item?"
     );
 
     if (!confirmed) return;
@@ -146,24 +144,32 @@ function CartPage() {
 
     try {
       const updatedCart = await removeCartItem(cartItemId);
+
       setCart(updatedCart);
-      setSelectedItem(null);
+
+      if (selectedItem?.cartItemId === cartItemId) {
+        setSelectedItem(null);
+      }
 
       const updatedTotalPages = Math.max(
         1,
         Math.ceil((updatedCart.items?.length ?? 0) / PAGE_SIZE)
       );
 
-      setCurrentPage((page) => Math.min(page, updatedTotalPages));
-      setMessage("Cart item removed successfully.");
+      setCurrentPage((page) =>
+        Math.min(page, updatedTotalPages)
+      );
+
+      setMessage("Cart item deleted successfully.");
     } catch (err) {
-      console.error("Error removing cart item:", err);
-      setError("Unable to remove cart item.");
+      console.error("Error deleting cart item:", err);
+      setError("Unable to delete cart item.");
     } finally {
       setActionId(null);
     }
   };
 
+  // VALIDATE CART
   const handleValidateCart = async () => {
     setActionId("validate");
     setError("");
@@ -182,6 +188,7 @@ function CartPage() {
     }
   };
 
+  // DELETE ENTIRE CART
   const handleDeleteCart = async () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete the entire current guest cart?"
@@ -195,10 +202,12 @@ function CartPage() {
 
     try {
       await deleteCart();
+
       setCart(null);
       setSelectedItem(null);
       setValidationResult(null);
       setCurrentPage(1);
+
       setMessage("Current guest cart deleted successfully.");
     } catch (err) {
       console.error("Error deleting cart:", err);
@@ -212,6 +221,7 @@ function CartPage() {
 
   return (
     <div className="cart-management">
+      {/* HEADER */}
       <div className="cart-header">
         <div>
           <h2>Cart Management</h2>
@@ -234,7 +244,9 @@ function CartPage() {
             onClick={() => void handleValidateCart()}
             disabled={loading || actionId !== null || !guestToken}
           >
-            {actionId === "validate" ? "Validating..." : "Validate Cart"}
+            {actionId === "validate"
+              ? "Validating..."
+              : "Validate Cart"}
           </button>
 
           <button
@@ -248,18 +260,21 @@ function CartPage() {
         </div>
       </div>
 
+      {/* SUCCESS MESSAGE */}
       {message && (
         <div className="cart-alert cart-success" role="status">
           {message}
         </div>
       )}
 
+      {/* ERROR MESSAGE */}
       {error && (
         <div className="cart-alert cart-error" role="alert">
           {error}
         </div>
       )}
 
+      {/* SUMMARY */}
       <div className="cart-summary-grid">
         <div className="cart-summary-card">
           <span>Cart ID</span>
@@ -285,22 +300,27 @@ function CartPage() {
         </div>
       </div>
 
+      {/* GUEST CART TOKEN */}
       <div className="cart-token-card">
         <h3>Guest Cart Token</h3>
+
         <p>
           {guestToken
             ? "A guest cart token is saved in this browser."
             : "No guest cart token is currently saved. Refresh will attempt to create or load a cart."}
         </p>
+
         <div className="cart-token-value">
           {guestToken || "No token available"}
         </div>
       </div>
 
+      {/* EDIT QUANTITY FORM */}
       {selectedItem && (
         <div className="cart-item-details">
           <div className="cart-details-heading">
-            <h3>Cart Item Details</h3>
+            <h3>Edit Cart Item Quantity</h3>
+
             <button
               type="button"
               className="cart-close-btn"
@@ -313,12 +333,15 @@ function CartPage() {
           <p>
             <strong>Name:</strong> {getMenuName(selectedItem)}
           </p>
+
           <p>
             <strong>Item ID:</strong> {selectedItem.cartItemId}
           </p>
+
           <p>
             <strong>Menu Item ID:</strong> {selectedItem.menuItemId}
           </p>
+
           <p>
             <strong>Price:</strong>{" "}
             {selectedItem.currencyCode || cart?.currencyCode || "INR"}{" "}
@@ -329,34 +352,45 @@ function CartPage() {
 
           <div className="cart-quantity-control">
             <label htmlFor="cartQuantity">Quantity</label>
+
             <input
               id="cartQuantity"
               type="number"
               min="1"
               step="1"
               value={quantity}
-              onChange={(event) => setQuantity(event.target.value)}
+              onChange={(event) =>
+                setQuantity(event.target.value)
+              }
             />
 
             <button
               type="button"
               className="cart-btn cart-btn-save"
-              onClick={() => void handleUpdateQuantity(selectedItem)}
+              onClick={() =>
+                void handleUpdateQuantity(selectedItem)
+              }
               disabled={actionId !== null}
             >
-              Update Quantity
+              {actionId === selectedItem.cartItemId
+                ? "Updating..."
+                : "Update Quantity"}
             </button>
           </div>
         </div>
       )}
 
+      {/* VALIDATION RESPONSE */}
       {validationResult !== null && (
         <div className="cart-validation-card">
           <h3>Cart Validation Response</h3>
-          <pre>{JSON.stringify(validationResult, null, 2)}</pre>
+          <pre>
+            {JSON.stringify(validationResult, null, 2)}
+          </pre>
         </div>
       )}
 
+      {/* CART TABLE */}
       <div className="cart-table-card">
         <div className="cart-table-toolbar">
           <div>
@@ -366,16 +400,22 @@ function CartPage() {
         </div>
 
         {loading ? (
-          <div className="cart-loading">Loading cart...</div>
+          <div className="cart-loading">
+            Loading cart...
+          </div>
         ) : !cart ? (
           <div className="cart-empty">
             <strong>No cart data available</strong>
-            <p>Check the Cart API response and guest cart token.</p>
+            <p>
+              Check the Cart API response and guest cart token.
+            </p>
           </div>
         ) : allItems.length === 0 ? (
           <div className="cart-empty">
             <strong>Your cart is empty</strong>
-            <p>Cart items will appear here when available.</p>
+            <p>
+              Cart items will appear here when available.
+            </p>
           </div>
         ) : (
           <>
@@ -397,30 +437,39 @@ function CartPage() {
                   {paginatedItems.map((item, index) => (
                     <tr key={item.cartItemId}>
                       <td>
-                        {(currentPage - 1) * PAGE_SIZE + index + 1}
+                        {(currentPage - 1) * PAGE_SIZE +
+                          index +
+                          1}
                       </td>
 
                       <td className="cart-item-name">
                         <div className="cart-product">
                           <div>
                             <strong>{getMenuName(item)}</strong>
-                            <small>{item.description || "—"}</small>
+                            <small>
+                              {item.description || "—"}
+                            </small>
                           </div>
                         </div>
                       </td>
 
                       <td>{item.categoryName || "—"}</td>
+
                       <td>{item.quantity}</td>
 
                       <td>
-                        {item.currencyCode || cart.currencyCode || "INR"}{" "}
+                        {item.currencyCode ||
+                          cart.currencyCode ||
+                          "INR"}{" "}
                         {Number(
                           item.unitPrice ?? item.price ?? 0
                         ).toFixed(2)}
                       </td>
 
                       <td>
-                        {item.currencyCode || cart.currencyCode || "INR"}{" "}
+                        {item.currencyCode ||
+                          cart.currencyCode ||
+                          "INR"}{" "}
                         {Number(
                           item.lineTotal ??
                             (item.unitPrice ?? item.price ?? 0) *
@@ -428,42 +477,29 @@ function CartPage() {
                         ).toFixed(2)}
                       </td>
 
+                      {/* ONLY EDIT AND DELETE */}
                       <td>
                         <div className="cart-action-buttons">
                           <button
                             type="button"
-                            className="cart-action-btn cart-view-btn"
+                            className="cart-action-btn cart-edit-btn"
+                            onClick={() => handleEditItem(item)}
+                            disabled={actionId !== null}
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            type="button"
+                            className="cart-action-btn cart-delete-btn"
                             onClick={() =>
-                              void handleViewItem(item.cartItemId)
+                              void handleDeleteItem(item.cartItemId)
                             }
                             disabled={actionId !== null}
                           >
                             {actionId === item.cartItemId
-                              ? "Loading..."
-                              : "View"}
-                          </button>
-
-                          <button
-                            type="button"
-                            className="cart-action-btn cart-edit-btn"
-                            onClick={() => {
-                              setSelectedItem(item);
-                              setQuantity(String(item.quantity));
-                            }}
-                            disabled={actionId !== null}
-                          >
-                            Edit Qty
-                          </button>
-
-                          <button
-                            type="button"
-                            className="cart-action-btn cart-remove-btn"
-                            onClick={() =>
-                              void handleRemoveItem(item.cartItemId)
-                            }
-                            disabled={actionId !== null}
-                          >
-                            Remove
+                              ? "Deleting..."
+                              : "Delete"}
                           </button>
                         </div>
                       </td>
@@ -473,11 +509,15 @@ function CartPage() {
               </table>
             </div>
 
+            {/* PAGINATION */}
             <div className="cart-pagination">
               <span>
                 Showing {(currentPage - 1) * PAGE_SIZE + 1}–
-                {Math.min(currentPage * PAGE_SIZE, allItems.length)} of{" "}
-                {allItems.length} items
+                {Math.min(
+                  currentPage * PAGE_SIZE,
+                  allItems.length
+                )}{" "}
+                of {allItems.length} items
               </span>
 
               <div className="cart-pagination-actions">
@@ -485,7 +525,9 @@ function CartPage() {
                   type="button"
                   className="cart-page-btn"
                   onClick={() =>
-                    setCurrentPage((page) => Math.max(1, page - 1))
+                    setCurrentPage((page) =>
+                      Math.max(1, page - 1)
+                    )
                   }
                   disabled={currentPage === 1}
                 >

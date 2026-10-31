@@ -1,10 +1,12 @@
 
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./About.css";
 
 function About() {
   const location = useLocation();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const sections: Record<string, string> = {
@@ -31,172 +33,142 @@ function About() {
 
   return (
     <main className="about-page">
+      {/* HERO SECTION */}
       <section className="about-hero">
         <div className="about-hero-content">
-          <span className="about-label">WELCOME TO AAPLA DABBA</span>
+          <span className="about-label">{t("about.hero.label")}</span>
 
           <h1>
-            The Comfort of Home,
-            <span> Served in Every Dabba.</span>
+            {t("about.hero.title")}
+            <span>{t("about.hero.titleHighlight")}</span>
           </h1>
 
-          <p>
-            Good food brings comfort, happiness and people together.
-            At Aapla Dabba, we bring you fresh, homestyle meals prepared
-            with care to make your everyday meals more enjoyable.
-          </p>
+          <p>{t("about.hero.description")}</p>
 
           <div className="about-buttons">
             <Link to="/about/our-story" className="about-btn-primary">
-              Discover Our Story
+              {t("about.hero.storyButton")}
             </Link>
 
             <Link to="/menu" className="about-btn-secondary">
-              Explore Our Menu
+              {t("about.hero.menuButton")}
             </Link>
           </div>
         </div>
 
         <div className="about-hero-image">
-          <img src="/images/t3.jpg" alt="Homestyle food" />
+          <img src="/images/t3.jpg" alt={t("about.images.hero")} />
 
           <div className="about-image-caption">
-            <span>Made with care</span>
-            <h3>Every meal feels like home.</h3>
+            <span>{t("about.hero.imageCaption")}</span>
+            <h3>{t("about.hero.imageTitle")}</h3>
           </div>
         </div>
       </section>
 
+      {/* OUR STORY */}
       <section className="about-story" id="our-story">
         <div className="about-story-image">
-          <img src="/images/t4.jpg" alt="Aapla Dabba meal" />
+          <img src="/images/t4.jpg" alt={t("about.images.story")} />
         </div>
 
         <div className="about-story-content">
-          <span className="about-label">OUR STORY</span>
+          <span className="about-label">{t("about.story.label")}</span>
 
-          <h2>Every Dabba Has a Little Taste of Home.</h2>
+          <h2>{t("about.story.title")}</h2>
 
-          <p>
-            Aapla Dabba is built around a simple thought: everyone
-            deserves a comforting and satisfying meal, even on the
-            busiest days.
-          </p>
+          <p>{t("about.story.paragraph1")}</p>
 
-          <p>
-            Whether you are working, studying or managing a busy routine,
-            we want to make everyday meals easier with food that feels
-            familiar, filling and comforting.
-          </p>
+          <p>{t("about.story.paragraph2")}</p>
 
-          <p>
-            For us, a good meal is more than just food. It is the warmth,
-            care and comfort that make you feel at home.
-          </p>
+          <p>{t("about.story.paragraph3")}</p>
 
           <Link to="/about/why-choose-us" className="about-text-link">
-            Discover Why Choose Us <span>→</span>
+            {t("about.story.link")} <span>→</span>
           </Link>
         </div>
       </section>
 
+      {/* WHY CHOOSE US */}
       <section className="about-why" id="why-choose-us">
         <div className="about-heading">
-          <span className="about-label">WHY AAPLA DABBA</span>
+          <span className="about-label">{t("about.why.label")}</span>
 
-          <h2>Simple Food. Thoughtful Choices.</h2>
+          <h2>{t("about.why.title")}</h2>
 
-          <p>
-            Everyday meals made with care to fit your routine and bring
-            comfort to your table.
-          </p>
+          <p>{t("about.why.description")}</p>
         </div>
 
         <div className="about-features">
           <article className="about-feature-card">
             <span className="about-feature-number">01</span>
-            <h3>Homestyle Taste</h3>
-            <p>
-              Enjoy familiar flavours and comforting meals inspired by
-              everyday home cooking.
-            </p>
+            <h3>{t("about.why.features.homestyle.title")}</h3>
+            <p>{t("about.why.features.homestyle.description")}</p>
           </article>
 
           <article className="about-feature-card">
             <span className="about-feature-number">02</span>
-            <h3>Fresh Ingredients</h3>
-            <p>
-              We focus on fresh ingredients and thoughtful meal preparation
-              for your everyday food needs.
-            </p>
+            <h3>{t("about.why.features.fresh.title")}</h3>
+            <p>{t("about.why.features.fresh.description")}</p>
           </article>
 
           <article className="about-feature-card">
             <span className="about-feature-number">03</span>
-            <h3>Made with Care</h3>
-            <p>
-              Meals designed around taste, comfort and your everyday routine.
-            </p>
+            <h3>{t("about.why.features.care.title")}</h3>
+            <p>{t("about.why.features.care.description")}</p>
           </article>
 
           <article className="about-feature-card">
             <span className="about-feature-number">04</span>
-            <h3>Easy Meal Choices</h3>
-            <p>
-              Explore meal options that help make your busy days a little
-              simpler.
-            </p>
+            <h3>{t("about.why.features.easy.title")}</h3>
+            <p>{t("about.why.features.easy.description")}</p>
           </article>
         </div>
       </section>
 
+      {/* OUR KITCHEN / FOOD GALLERY */}
       <section className="about-kitchen" id="our-kitchen">
         <div className="about-heading">
-          <span className="about-label">OUR FOOD</span>
+          <span className="about-label">{t("about.kitchen.label")}</span>
 
-          <h2>Made for Your Everyday Moments.</h2>
+          <h2>{t("about.kitchen.title")}</h2>
 
-          <p>
-            Explore the meals that make Aapla Dabba part of your daily
-            routine.
-          </p>
+          <p>{t("about.kitchen.description")}</p>
         </div>
 
         <div className="about-gallery">
           <div className="about-gallery-item about-gallery-large">
-            <img src="/images/t3.jpg" alt="Freshly prepared food" />
+            <img src="/images/t3.jpg" alt={t("about.images.gallery1")} />
           </div>
 
           <div className="about-gallery-item">
-            <img src="/images/meal.jpg" alt="Homestyle meal" />
+            <img src="/images/meal.jpg" alt={t("about.images.gallery2")} />
           </div>
 
           <div className="about-gallery-item">
-            <img src="/images/meal1.jpg" alt="Everyday food" />
+            <img src="/images/meal1.jpg" alt={t("about.images.gallery3")} />
           </div>
 
           <div className="about-gallery-item">
-            <img src="/images/meal2.jpg" alt="Meal ready to serve" />
+            <img src="/images/meal2.jpg" alt={t("about.images.gallery4")} />
           </div>
 
           <div className="about-gallery-item">
-            <img src="/images/t7.jpg" alt="Aapla Dabba food" />
+            <img src="/images/t7.jpg" alt={t("about.images.gallery5")} />
           </div>
         </div>
       </section>
 
+      {/* CTA SECTION */}
       <section className="about-cta">
-        <span className="about-label">YOUR NEXT MEAL AWAITS</span>
+        <span className="about-label">{t("about.cta.label")}</span>
 
-        <h2>Bring Home the Comfort of Aapla Dabba.</h2>
+        <h2>{t("about.cta.title")}</h2>
 
-        <p>
-          Make everyday meals easier with food that feels familiar,
-          comforting and satisfying.
-        </p>
+        <p>{t("about.cta.description")}</p>
 
         <Link to="/menu" className="about-btn-primary">
-          Explore Our Menu
+          {t("about.cta.button")}
         </Link>
       </section>
     </main>

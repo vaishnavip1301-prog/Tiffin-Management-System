@@ -328,3 +328,41 @@
     width: 100%;
   }
 }
+/* Edit Button - Blue Hover */
+.sub-category-edit-btn {
+  background-color: transparent;
+  color: #0d6efd;
+  border: 1px solid #0d6efd;
+  padding: 7px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sub-category-edit-btn:hover {
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+
+/* Delete Button - Red Hover */
+.sub-category-delete-btn {
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  padding: 7px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sub-category-delete-btn:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+/* Disabled Buttons */
+.sub-category-edit-btn:disabled,
+.sub-category-delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

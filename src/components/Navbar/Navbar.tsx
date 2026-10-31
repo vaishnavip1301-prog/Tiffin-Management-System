@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -9,7 +10,7 @@ function Navbar() {
   const [openDropdown, setOpenDropdown] = useState("");
   const [loginOpen, setLoginOpen] = useState(false);
 
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const navigate = useNavigate();
 
   const changeLanguage = (language: "en" | "mr") => {
@@ -54,10 +55,10 @@ function Navbar() {
               className="aapla-logo"
             />
 
-            <span className="brand-text">
-              Aapla <strong>Dabba</strong>
-              <small>GHARGHUTI JEVAAN, ROJ NAVIN</small>
-            </span>
+          <span className="brand-text">
+            {t("navbar.brandName")}
+            <small>{t("navbar.tagline")}</small>
+          </span>
           </Link>
 
           {/* Mobile Toggle */}
@@ -88,7 +89,7 @@ function Navbar() {
                   }
                   onClick={closeMenu}
                 >
-                  Home
+                  {t("navbar.home")}
                 </NavLink>
               </li>
 
@@ -106,7 +107,7 @@ function Navbar() {
                   aria-expanded={openDropdown === "about"}
                   onClick={() => toggleDropdown("about")}
                 >
-                  About Us
+                  {t("navbar.about")}
                   <i
                     className={`bi ms-2 ${
                       openDropdown === "about"
@@ -129,7 +130,7 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-info-circle me-2" />
-                      About Us
+                      {t("navbar.aboutLinks.aboutUs")}
                     </NavLink>
                   </li>
 
@@ -140,7 +141,7 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-book me-2" />
-                      Our Story
+                      {t("navbar.aboutLinks.ourStory")}
                     </NavLink>
                   </li>
 
@@ -151,7 +152,7 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-patch-check me-2" />
-                      Why Choose Us
+                      {t("navbar.aboutLinks.whyChooseUs")}
                     </NavLink>
                   </li>
 
@@ -162,13 +163,13 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-shop me-2" />
-                      Our Kitchen
+                      {t("navbar.aboutLinks.ourKitchen")}
                     </NavLink>
                   </li>
                 </ul>
               </li>
 
-              {/* Our Menu - API Based Menu Page */}
+              {/* Our Menu */}
               <li className="nav-item">
                 <NavLink
                   to="/menu"
@@ -178,7 +179,7 @@ function Navbar() {
                   }
                   onClick={closeMenu}
                 >
-                  Our Menu
+                  {t("navbar.menu")}
                 </NavLink>
               </li>
 
@@ -196,7 +197,7 @@ function Navbar() {
                   aria-expanded={openDropdown === "plans"}
                   onClick={() => toggleDropdown("plans")}
                 >
-                  Meal Plans
+                  {t("navbar.mealPlans")}
                   <i
                     className={`bi ms-2 ${
                       openDropdown === "plans"
@@ -218,7 +219,7 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-calendar-day me-2" />
-                      Daily Plan
+                      {t("navbar.plans.daily")}
                     </Link>
                   </li>
 
@@ -229,7 +230,7 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-calendar-week me-2" />
-                      Weekly Plan
+                      {t("navbar.plans.weekly")}
                     </Link>
                   </li>
 
@@ -240,7 +241,7 @@ function Navbar() {
                       onClick={closeMenu}
                     >
                       <i className="bi bi-calendar-month me-2" />
-                      Monthly Plan
+                      {t("navbar.plans.monthly")}
                     </Link>
                   </li>
                 </ul>
@@ -255,7 +256,7 @@ function Navbar() {
                   }
                   onClick={closeMenu}
                 >
-                  Contact
+                  {t("navbar.contact")}
                 </NavLink>
               </li>
 
@@ -295,7 +296,7 @@ function Navbar() {
                   }}
                 >
                   <i className="bi bi-person-circle me-2" />
-                  Login
+                  {t("navbar.login")}
                 </button>
               </li>
             </ul>
