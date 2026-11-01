@@ -1,6 +1,8 @@
 
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+import type { FormEvent, ChangeEvent } from "react";
+
 import {
   getMenuSubCategories,
   createMenuSubCategory,
@@ -9,11 +11,27 @@ import {
   type MenuSubCategory as MenuSubCategoryData,
   type MenuSubCategoryInput,
 } from "../../api/menuSubCategoryService";
+
 import {
   getMenuCategories,
   type MenuCategory,
 } from "../../api/menuCategoryService";
+
 import "./MenuSubCategory.css";
+
+type LocalizedMenuSubCategory = MenuSubCategoryData & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+  menuCategoryNameEn?: string;
+  menuCategoryNameMr?: string;
+};
+
+type LocalizedMenuCategory = MenuCategory & {
+  nameEn?: string;
+  nameMr?: string;
+};
 
 const emptyForm: MenuSubCategoryInput = {
   name: "",
@@ -23,12 +41,16 @@ const emptyForm: MenuSubCategoryInput = {
 };
 
 function MenuSubCategory() {
+  const { t, i18n } = useTranslation();
+
   const [subCategories, setSubCategories] = useState<
     MenuSubCategoryData[]
   >([]);
+
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [formData, setFormData] =
-    useState<MenuSubCategoryInput>(emptyForm);
+    useState<MenuSubCategoryInput>({ ...emptyForm });
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -36,6 +58,56 @@ function MenuSubCategory() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const currentLanguage = i18n.resolvedLanguage || i18n.language;
+  const isMarathi = currentLanguage.startsWith("mr");
+
+  // Get localized subcategory name
+  const getSubCategoryName = (item: MenuSubCategoryData) => {
+    const category = item as LocalizedMenuSubCategory;
+
+    return (
+      (isMarathi ? category.nameMr : category.nameEn) ||
+      category.name ||
+      "-"
+    );
+  };
+
+  // Get localized subcategory description
+  const getSubCategoryDescription = (item: MenuSubCategoryData) => {
+    const category = item as LocalizedMenuSubCategory;
+
+    return (
+      (isMarathi ? category.descriptionMr : category.descriptionEn) ||
+      category.description ||
+      "—"
+    );
+  };
+
+  // Get localized parent category name
+  const getMenuCategoryName = (item: MenuSubCategoryData) => {
+    const subCategory = item as LocalizedMenuSubCategory;
+
+    return (
+      (isMarathi
+        ? subCategory.menuCategoryNameMr
+        : subCategory.menuCategoryNameEn) ||
+      item.menuCategoryName ||
+      "-"
+    );
+  };
+
+  // Get localized category name for dropdown
+  const getCategoryName = (category: MenuCategory) => {
+    const item = category as LocalizedMenuCategory;
+
+    return (
+      (isMarathi ? item.nameMr : item.nameEn) ||
+      item.name ||
+      "-"
+    );
+  };
+
+  // GET: Load subcategories and categories
   const loadData = async () => {
     setLoading(true);
     setError("");
@@ -46,11 +118,17 @@ function MenuSubCategory() {
         getMenuCategories(),
       ]);
 
-      setSubCategories(subCategoryData);
-      setCategories(categoryData);
+      setSubCategories(
+        Array.isArray(subCategoryData) ? subCategoryData : []
+      );
+
+      setCategories(
+        Array.isArray(categoryData) ? categoryData : []
+      );
     } catch (err) {
       console.error("Failed to load menu subcategories:", err);
-      setError("Failed to load menu subcategories or menu categories.");
+
+      setError(t("menuSubCategory.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -61,7 +139,7 @@ function MenuSubCategory() {
   }, []);
 
   const handleInputChange = (
-    event: React.ChangeEvent<
+    event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
@@ -73,34 +151,41 @@ function MenuSubCategory() {
     }));
   };
 
+  // CREATE form
   const handleCreate = () => {
     setEditingId(null);
-    setFormData(emptyForm);
+    setFormData({ ...emptyForm });
     setError("");
     setSuccess("");
     setShowForm(true);
   };
 
+  // EDIT form
   const handleEdit = (item: MenuSubCategoryData) => {
     setEditingId(item.id);
+
     setFormData({
       name: item.name,
       description: item.description ?? "",
       displayOrder: item.displayOrder,
       menuCategoryId: item.menuCategoryId,
     });
+
     setError("");
     setSuccess("");
     setShowForm(true);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  // CREATE / UPDATE
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     setError("");
     setSuccess("");
 
     if (!formData.menuCategoryId) {
-      setError("Please select a menu category.");
+      setError(t("menuSubCategory.selectCategoryError"));
       return;
     }
 
@@ -116,27 +201,30 @@ function MenuSubCategory() {
 
       if (editingId) {
         await updateMenuSubCategory(payload);
-        setSuccess("Menu subcategory updated successfully.");
+        setSuccess(t("menuSubCategory.updateSuccess"));
       } else {
         await createMenuSubCategory(payload);
-        setSuccess("Menu subcategory created successfully.");
+        setSuccess(t("menuSubCategory.createSuccess"));
       }
 
       setShowForm(false);
       setEditingId(null);
-      setFormData(emptyForm);
+      setFormData({ ...emptyForm });
+
       await loadData();
     } catch (err) {
       console.error("Failed to save menu subcategory:", err);
-      setError("Failed to save menu subcategory. Please check the API.");
+
+      setError(t("menuSubCategory.saveFailed"));
     } finally {
       setSaving(false);
     }
   };
 
+  // DELETE
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this subcategory?"
+      t("menuSubCategory.deleteConfirmation")
     );
 
     if (!confirmed) return;
@@ -146,20 +234,33 @@ function MenuSubCategory() {
 
     try {
       await deleteMenuSubCategory(id);
-      setSuccess("Menu subcategory deleted successfully.");
+
+      setSuccess(t("menuSubCategory.deleteSuccess"));
+
       await loadData();
     } catch (err) {
       console.error("Failed to delete menu subcategory:", err);
-      setError("Failed to delete menu subcategory.");
+
+      setError(t("menuSubCategory.deleteFailed"));
     }
+  };
+
+  // CLOSE form
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setFormData({ ...emptyForm });
+    setError("");
+    setSuccess("");
   };
 
   return (
     <div className="sub-category-page">
       <div className="sub-category-header">
         <div>
-          <h2>Menu Sub Categories</h2>
-          <p>Manage subcategories under each menu category.</p>
+          <h2>{t("menuSubCategory.pageTitle")}</h2>
+
+          <p>{t("menuSubCategory.pageDescription")}</p>
         </div>
 
         <button
@@ -167,28 +268,36 @@ function MenuSubCategory() {
           className="sub-category-add-btn"
           onClick={handleCreate}
         >
-          + Add Sub Category
+          + {t("menuSubCategory.addButton")}
         </button>
       </div>
 
-      {error && <div className="sub-category-alert error">{error}</div>}
+      {error && (
+        <div className="sub-category-alert error">
+          {error}
+        </div>
+      )}
+
       {success && (
-        <div className="sub-category-alert success">{success}</div>
+        <div className="sub-category-alert success">
+          {success}
+        </div>
       )}
 
       {showForm && (
         <form className="sub-category-form" onSubmit={handleSubmit}>
           <div className="sub-category-form-header">
-            <h3>{editingId ? "Edit Sub Category" : "Create Sub Category"}</h3>
+            <h3>
+              {editingId
+                ? t("menuSubCategory.editTitle")
+                : t("menuSubCategory.createTitle")}
+            </h3>
+
             <button
               type="button"
               className="sub-category-close-btn"
-              onClick={() => {
-                setShowForm(false);
-                setEditingId(null);
-                setFormData(emptyForm);
-              }}
-              aria-label="Close form"
+              onClick={handleCloseForm}
+              aria-label={t("menuSubCategory.closeForm")}
             >
               ×
             </button>
@@ -196,7 +305,10 @@ function MenuSubCategory() {
 
           <div className="sub-category-form-grid">
             <div className="sub-category-field">
-              <label htmlFor="menuCategoryId">Menu Category *</label>
+              <label htmlFor="menuCategoryId">
+                {t("menuSubCategory.menuCategory")} *
+              </label>
+
               <select
                 id="menuCategoryId"
                 name="menuCategoryId"
@@ -204,30 +316,39 @@ function MenuSubCategory() {
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Select Menu Category</option>
+                <option value="">
+                  {t("menuSubCategory.selectMenuCategory")}
+                </option>
+
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
-                    {category.name}
+                    {getCategoryName(category)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="sub-category-field">
-              <label htmlFor="name">Sub Category Name *</label>
+              <label htmlFor="name">
+                {t("menuSubCategory.subCategoryName")} *
+              </label>
+
               <input
                 id="name"
                 name="name"
                 type="text"
                 value={formData.name}
                 onChange={handleInputChange}
-                placeholder="Enter subcategory name"
+                placeholder={t("menuSubCategory.namePlaceholder")}
                 required
               />
             </div>
 
             <div className="sub-category-field">
-              <label htmlFor="displayOrder">Display Order *</label>
+              <label htmlFor="displayOrder">
+                {t("menuSubCategory.displayOrder")} *
+              </label>
+
               <input
                 id="displayOrder"
                 name="displayOrder"
@@ -240,13 +361,16 @@ function MenuSubCategory() {
             </div>
 
             <div className="sub-category-field full-width">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">
+                {t("menuSubCategory.description")}
+              </label>
+
               <textarea
                 id="description"
                 name="description"
                 value={formData.description ?? ""}
                 onChange={handleInputChange}
-                placeholder="Enter description"
+                placeholder={t("menuSubCategory.descriptionPlaceholder")}
                 rows={3}
               />
             </div>
@@ -256,20 +380,21 @@ function MenuSubCategory() {
             <button
               type="button"
               className="sub-category-cancel-btn"
-              onClick={() => setShowForm(false)}
+              onClick={handleCloseForm}
             >
-              Cancel
+              {t("menuSubCategory.cancel")}
             </button>
+
             <button
               type="submit"
               className="sub-category-save-btn"
               disabled={saving}
             >
               {saving
-                ? "Saving..."
+                ? t("menuSubCategory.saving")
                 : editingId
-                  ? "Update Sub Category"
-                  : "Create Sub Category"}
+                  ? t("menuSubCategory.updateButton")
+                  : t("menuSubCategory.createButton")}
             </button>
           </div>
         </form>
@@ -277,58 +402,79 @@ function MenuSubCategory() {
 
       <div className="sub-category-table-card">
         <div className="sub-category-table-title">
-          <h3>Sub Category List</h3>
-          <span>{subCategories.length} records</span>
+          <h3>{t("menuSubCategory.listTitle")}</h3>
+
+          <span>
+            {subCategories.length}{" "}
+            {t("menuSubCategory.records")}
+          </span>
         </div>
 
         {loading ? (
-          <div className="sub-category-state">Loading subcategories...</div>
+          <div className="sub-category-state">
+            {t("menuSubCategory.loading")}
+          </div>
         ) : subCategories.length === 0 ? (
-          <div className="sub-category-state">No subcategories found.</div>
+          <div className="sub-category-state">
+            {t("menuSubCategory.noRecords")}
+          </div>
         ) : (
           <div className="sub-category-table-wrapper">
             <table className="sub-category-table">
               <thead>
                 <tr>
-                  <th>Sub Category</th>
-                  <th>Menu Category</th>
-                  <th>Description</th>
-                  <th>Order</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>{t("menuSubCategory.subCategory")}</th>
+                  <th>{t("menuSubCategory.menuCategory")}</th>
+                  <th>{t("menuSubCategory.description")}</th>
+                  <th>{t("menuSubCategory.order")}</th>
+                  <th>{t("menuSubCategory.status")}</th>
+                  <th>{t("menuSubCategory.actions")}</th>
                 </tr>
               </thead>
+
               <tbody>
                 {subCategories.map((item) => (
                   <tr key={item.id}>
-                    <td className="sub-category-name">{item.name}</td>
-                    <td>{item.menuCategoryName}</td>
-                    <td>{item.description || "—"}</td>
+                    <td className="sub-category-name">
+                      {getSubCategoryName(item)}
+                    </td>
+
+                    <td>{getMenuCategoryName(item)}</td>
+
+                    <td>{getSubCategoryDescription(item)}</td>
+
                     <td>{item.displayOrder}</td>
+
                     <td>
                       <span
                         className={`sub-category-status ${
                           item.isActive ? "active" : "inactive"
                         }`}
                       >
-                        {item.isActive ? "Active" : "Inactive"}
+                        {item.isActive
+                          ? t("menuSubCategory.active")
+                          : t("menuSubCategory.inactive")}
                       </span>
                     </td>
+
                     <td>
                       <div className="sub-category-actions">
                         <button
                           type="button"
                           className="sub-category-edit-btn"
                           onClick={() => handleEdit(item)}
+                          disabled={saving}
                         >
-                          Edit
+                          {t("menuSubCategory.edit")}
                         </button>
+
                         <button
                           type="button"
                           className="sub-category-delete-btn"
                           onClick={() => void handleDelete(item.id)}
+                          disabled={saving}
                         >
-                          Delete
+                          {t("menuSubCategory.delete")}
                         </button>
                       </div>
                     </td>

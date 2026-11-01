@@ -1,14 +1,17 @@
-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import type { MenuItem } from "../../api/menuItemService";
 import { getMenuItems } from "../../api/menuItemService";
+
 import {
   addCartItem,
   getCart,
   removeCartItem,
   updateCartItemQty,
 } from "../../api/cartService";
+
 import "./Menu.css";
 
 type CartEntry = {
@@ -17,8 +20,36 @@ type CartEntry = {
   cartItemId?: string;
 };
 
+type LocalizedMenuItem = MenuItem & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+  categoryNameEn?: string;
+  categoryNameMr?: string;
+  subCategoryNameEn?: string;
+  subCategoryNameMr?: string;
+  mealTypeNameEn?: string;
+  mealTypeNameMr?: string;
+  foodTypeNameEn?: string;
+  foodTypeNameMr?: string;
+};
+
 const PAGE_SIZE = 100;
 const FALLBACK_IMAGE = "/images/tiffin.jpg";
+
+const getLocalizedValue = (
+  language: string,
+  english?: string | null,
+  marathi?: string | null,
+  fallback?: string | null
+): string => {
+  if (language.startsWith("mr")) {
+    return marathi || fallback || english || "";
+  }
+
+  return english || fallback || marathi || "";
+};
 
 function getMealImage(meal: MenuItem): string {
   const name = meal.name.toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -61,10 +92,13 @@ function getMealImage(meal: MenuItem): string {
   }
 
   if (name.includes("thali")) return "/images/vegthali.jpg";
+
   if (name.includes("poha") || name.includes("pohe")) {
     return "/images/kandapohe.jpg";
   }
+
   if (name.includes("coffee")) return "/images/filtercoffee.jpg";
+
   if (name.includes("chai") || name.includes("tea")) {
     return "/images/masalachai.jpg";
   }
@@ -160,14 +194,14 @@ function getCartRows(response: unknown): Record<string, unknown>[] {
 
 function getCartItemId(
   response: unknown,
-  mealId: string,
+  mealId: string
 ): string | undefined {
   const row = getCartRows(response).find((item) => {
     const menuItemId = readString(
       item,
       "menuItemId",
       "MenuItemId",
-      "menuItemID",
+      "menuItemID"
     );
 
     return menuItemId === String(mealId);
@@ -180,7 +214,7 @@ function getCartItemId(
 
 function mapCartToEntries(
   response: unknown,
-  menuItems: MenuItem[],
+  menuItems: MenuItem[]
 ): CartEntry[] {
   const rows = getCartRows(response);
 
@@ -189,7 +223,7 @@ function mapCartToEntries(
       row,
       "menuItemId",
       "MenuItemId",
-      "menuItemID",
+      "menuItemID"
     );
 
     const cartItemId = readString(
@@ -197,7 +231,7 @@ function mapCartToEntries(
       "cartItemId",
       "CartItemId",
       "id",
-      "Id",
+      "Id"
     );
 
     const quantity = readNumber(row, "quantity", "Quantity") ?? 1;
@@ -205,7 +239,7 @@ function mapCartToEntries(
     if (!menuItemId || quantity < 1) return [];
 
     const meal = menuItems.find(
-      (item) => String(item.id) === String(menuItemId),
+      (item) => String(item.id) === String(menuItemId)
     );
 
     if (!meal) return [];
@@ -216,9 +250,12 @@ function mapCartToEntries(
 
 export default function Menu() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
+  const language = i18n.language;
 
   const [meals, setMeals] = useState<MenuItem[]>([]);
-  const [activeCategory, setActiveCategory] = useState("All Meals");
+  const [activeCategory, setActiveCategory] = useState("");
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<CartEntry[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
@@ -226,6 +263,72 @@ export default function Menu() {
   const [error, setError] = useState("");
   const [cartBusyId, setCartBusyId] = useState<string | null>(null);
   const [cartMessage, setCartMessage] = useState("");
+
+  const getMealName = (meal: MenuItem) => {
+    const item = meal as LocalizedMenuItem;
+
+    return getLocalizedValue(
+      language,
+      item.nameEn,
+      item.nameMr,
+      item.name
+    );
+  };
+
+  const getMealDescription = (meal: MenuItem) => {
+    const item = meal as LocalizedMenuItem;
+
+    return getLocalizedValue(
+      language,
+      item.descriptionEn,
+      item.descriptionMr,
+      item.description
+    );
+  };
+
+  const getCategoryName = (meal: MenuItem) => {
+    const item = meal as LocalizedMenuItem;
+
+    return getLocalizedValue(
+      language,
+      item.categoryNameEn,
+      item.categoryNameMr,
+      item.categoryName
+    );
+  };
+
+  const getSubCategoryName = (meal: MenuItem) => {
+    const item = meal as LocalizedMenuItem;
+
+    return getLocalizedValue(
+      language,
+      item.subCategoryNameEn,
+      item.subCategoryNameMr,
+      item.subCategoryName
+    );
+  };
+
+  const getMealTypeName = (meal: MenuItem) => {
+    const item = meal as LocalizedMenuItem;
+
+    return getLocalizedValue(
+      language,
+      item.mealTypeNameEn,
+      item.mealTypeNameMr,
+      item.mealTypeName
+    );
+  };
+
+  const getFoodTypeName = (meal: MenuItem) => {
+    const item = meal as LocalizedMenuItem;
+
+    return getLocalizedValue(
+      language,
+      item.foodTypeNameEn,
+      item.foodTypeNameMr,
+      item.foodTypeName
+    );
+  };
 
   const loadMeals = useCallback(async () => {
     try {
@@ -235,7 +338,9 @@ export default function Menu() {
       const firstResponse = await getMenuItems(1, PAGE_SIZE);
       let allItems = firstResponse.items ?? [];
 
-      const totalRecords = firstResponse.totalRecords ?? allItems.length;
+      const totalRecords =
+        firstResponse.totalRecords ?? allItems.length;
+
       const pageSize = firstResponse.pageSize || PAGE_SIZE;
 
       if (pageSize > 0 && allItems.length < totalRecords) {
@@ -249,12 +354,12 @@ export default function Menu() {
 
       const uniqueItems = Array.from(
         new Map(
-          allItems.map((item) => [String(item.id), item]),
-        ).values(),
+          allItems.map((item) => [String(item.id), item])
+        ).values()
       );
 
       const activeItems = uniqueItems.filter(
-        (item) => item.isActive !== false,
+        (item) => item.isActive !== false
       );
 
       setMeals(activeItems);
@@ -262,13 +367,11 @@ export default function Menu() {
     } catch (err) {
       console.error("Failed to load website menu:", err);
 
-      setError(
-        "Menu items could not be loaded. Please check the API connection and try again.",
-      );
+      setError(t("menu.messages.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadMeals();
@@ -276,51 +379,56 @@ export default function Menu() {
 
   const categories = useMemo(() => {
     const names = meals
-      .map((meal) => meal.categoryName?.trim())
+      .map((meal) => getCategoryName(meal)?.trim())
       .filter((name): name is string => Boolean(name));
 
-    return ["All Meals", ...new Set(names)];
-  }, [meals]);
+    return [t("menu.filters.allMeals"), ...new Set(names)];
+  }, [meals, language, t]);
+
+  useEffect(() => {
+    setActiveCategory(t("menu.filters.allMeals"));
+  }, [language, t]);
 
   const visibleMeals = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return meals.filter((meal) => {
       const categoryMatches =
-        activeCategory === "All Meals" ||
-        meal.categoryName?.trim() === activeCategory;
+        activeCategory === t("menu.filters.allMeals") ||
+        getCategoryName(meal)?.trim() === activeCategory;
 
       const searchMatches = [
-        meal.name,
-        meal.description ?? "",
-        meal.categoryName ?? "",
-        meal.subCategoryName ?? "",
-        meal.mealTypeName ?? "",
-        meal.foodTypeName ?? "",
+        getMealName(meal),
+        getMealDescription(meal),
+        getCategoryName(meal),
+        getSubCategoryName(meal),
+        getMealTypeName(meal),
+        getFoodTypeName(meal),
       ].some((value) => value.toLowerCase().includes(query));
 
       return categoryMatches && searchMatches;
     });
-  }, [meals, activeCategory, search]);
+  }, [meals, activeCategory, search, language, t]);
 
   const cartCount = cart.reduce(
     (total, entry) => total + entry.quantity,
-    0,
+    0
   );
 
   const cartTotal = cart.reduce(
-    (total, entry) => total + Number(entry.meal.price) * entry.quantity,
-    0,
+    (total, entry) =>
+      total + Number(entry.meal.price) * entry.quantity,
+    0
   );
 
-  // Add item to backend cart.
+  // ADD ITEM TO BACKEND CART
   const addToCart = async (meal: MenuItem) => {
     if (meal.isAvailable === false || cartBusyId !== null) return;
 
     const mealId = String(meal.id);
 
     if (!mealId || mealId === "undefined") {
-      setCartMessage("Invalid menu item ID.");
+      setCartMessage(t("menu.messages.invalidItemId"));
       return;
     }
 
@@ -332,7 +440,7 @@ export default function Menu() {
       const currentEntries = mapCartToEntries(currentCart, meals);
 
       const existing = currentEntries.find(
-        (entry) => String(entry.meal.id) === mealId,
+        (entry) => String(entry.meal.id) === mealId
       );
 
       if (existing) {
@@ -341,13 +449,13 @@ export default function Menu() {
 
         if (!cartItemId) {
           throw new Error(
-            `Cart item ID not found for menu item: ${mealId}`,
+            `Cart item ID not found for menu item: ${mealId}`
           );
         }
 
         await updateCartItemQty(
           cartItemId,
-          existing.quantity + 1,
+          existing.quantity + 1
         );
       } else {
         await addCartItem({
@@ -356,13 +464,16 @@ export default function Menu() {
         });
       }
 
-      // Always fetch the latest backend cart after the operation.
       const updatedCart = await getCart();
       const updatedEntries = mapCartToEntries(updatedCart, meals);
 
       setCart(updatedEntries);
       setCartOpen(true);
-      setCartMessage(`${meal.name} added to your cart successfully!`);
+      setCartMessage(
+        t("menu.messages.addedToCart", {
+          name: getMealName(meal),
+        })
+      );
     } catch (err) {
       console.error("Failed to add/update cart item:", err);
 
@@ -378,15 +489,13 @@ export default function Menu() {
         console.error("Cart API Response:", apiError.response?.data);
       }
 
-      setCartMessage(
-        "Could not update cart. Please check the Cart API response.",
-      );
+      setCartMessage(t("menu.messages.cartUpdateFailed"));
     } finally {
       setCartBusyId(null);
     }
   };
 
-  // Update quantity in backend cart.
+  // UPDATE QUANTITY IN BACKEND CART
   const changeQuantity = async (mealId: string, change: number) => {
     const id = String(mealId);
 
@@ -400,11 +509,11 @@ export default function Menu() {
       const currentEntries = mapCartToEntries(currentCart, meals);
 
       const entry = currentEntries.find(
-        (item) => String(item.meal.id) === id,
+        (item) => String(item.meal.id) === id
       );
 
       if (!entry) {
-        setCartMessage("This item is not present in the current cart.");
+        setCartMessage(t("menu.messages.itemNotInCart"));
         return;
       }
 
@@ -413,7 +522,7 @@ export default function Menu() {
 
       if (!cartItemId) {
         throw new Error(
-          "Cart item ID was not returned by GetCart API.",
+          "Cart item ID was not returned by GetCart API."
         );
       }
 
@@ -434,9 +543,7 @@ export default function Menu() {
     } catch (err) {
       console.error("Failed to change cart quantity:", err);
 
-      setCartMessage(
-        "Could not update quantity. Check the Cart API response.",
-      );
+      setCartMessage(t("menu.messages.quantityUpdateFailed"));
     } finally {
       setCartBusyId(null);
     }
@@ -444,9 +551,7 @@ export default function Menu() {
 
   const handleOrderNow = () => {
     if (cart.length === 0) {
-      setCartMessage(
-        "Please add at least one meal before placing an order.",
-      );
+      setCartMessage(t("menu.messages.addMealBeforeOrder"));
       setCartOpen(true);
       return;
     }
@@ -456,7 +561,7 @@ export default function Menu() {
         cartItems: cart.map(({ meal, quantity, cartItemId }) => ({
           id: String(meal.id),
           menuItemId: String(meal.id),
-          name: meal.name,
+          name: getMealName(meal),
           price: Number(meal.price),
           quantity,
           cartItemId,
@@ -473,19 +578,19 @@ export default function Menu() {
 
     const lines = cart.map(
       ({ meal, quantity }) =>
-        `${meal.name} x ${quantity} = Rs. ${(
+        `${getMealName(meal)} x ${quantity} = Rs. ${(
           Number(meal.price) * quantity
-        ).toFixed(2)}`,
+        ).toFixed(2)}`
     );
 
     const message = [
-      "Hello Aapla Dabba!",
-      "I would like to order:",
+      t("menu.whatsapp.greeting"),
+      t("menu.whatsapp.orderRequest"),
       "",
       ...lines,
       "",
-      `Total: Rs. ${cartTotal.toFixed(2)}`,
-      "Please confirm my order and delivery details.",
+      `${t("menu.whatsapp.total")}: Rs. ${cartTotal.toFixed(2)}`,
+      t("menu.whatsapp.confirmation"),
     ].join("\n");
 
     const whatsappNumber = "919999999999";
@@ -493,7 +598,7 @@ export default function Menu() {
     window.open(
       `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
       "_blank",
-      "noopener,noreferrer",
+      "noopener,noreferrer"
     );
   };
 
@@ -514,35 +619,33 @@ export default function Menu() {
 
         <div className="container menu-hero-content">
           <span className="menu-kicker">
-            FRESH • HOMEMADE • DELICIOUS
+            {t("menu.hero.kicker")}
           </span>
 
-          <h1>Our Menu</h1>
+          <h1>{t("menu.hero.title")}</h1>
 
-          <p>
-            Everyday comfort food, prepared with care and delivered fresh.
-          </p>
+          <p>{t("menu.hero.description")}</p>
 
           <div className="menu-breadcrumb">
-            <a href="/">Home</a>
+            <a href="/">{t("menu.breadcrumb.home")}</a>
             <span>/</span>
-            <span>All Meals</span>
+            <span>{t("menu.breadcrumb.allMeals")}</span>
           </div>
         </div>
       </section>
 
       <section className="menu-intro">
         <div className="container">
-          <span className="menu-section-kicker">MADE WITH LOVE</span>
+          <span className="menu-section-kicker">
+            {t("menu.intro.kicker")}
+          </span>
 
           <h2>
-            Good Food. <span>Good Mood.</span>
+            {t("menu.intro.heading")}{" "}
+            <span>{t("menu.intro.headingHighlight")}</span>
           </h2>
 
-          <p>
-            Explore our daily tiffins, healthy meals and special dishes.
-            Choose your favourites and add them to your cart.
-          </p>
+          <p>{t("menu.intro.description")}</p>
         </div>
       </section>
 
@@ -550,8 +653,8 @@ export default function Menu() {
         <div className="container">
           <div className="menu-toolbar">
             <div>
-              <h2>Explore All Meals</h2>
-              <p>Fresh food for your everyday routine.</p>
+              <h2>{t("menu.catalog.title")}</h2>
+              <p>{t("menu.catalog.description")}</p>
             </div>
 
             <label className="menu-search">
@@ -561,8 +664,8 @@ export default function Menu() {
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search meals..."
-                aria-label="Search meals"
+                placeholder={t("menu.catalog.searchPlaceholder")}
+                aria-label={t("menu.catalog.searchLabel")}
               />
             </label>
           </div>
@@ -588,14 +691,14 @@ export default function Menu() {
 
           {loading && (
             <div className="menu-no-results">
-              <h3>Loading menu...</h3>
-              <p>Please wait while we fetch the latest meals.</p>
+              <h3>{t("menu.loading.title")}</h3>
+              <p>{t("menu.loading.description")}</p>
             </div>
           )}
 
           {!loading && error && (
             <div className="menu-no-results">
-              <h3>Unable to load menu</h3>
+              <h3>{t("menu.errors.title")}</h3>
               <p>{error}</p>
 
               <button
@@ -603,7 +706,7 @@ export default function Menu() {
                 className="menu-reset-button"
                 onClick={() => void loadMeals()}
               >
-                Try Again
+                {t("menu.buttons.tryAgain")}
               </button>
             </div>
           )}
@@ -614,7 +717,7 @@ export default function Menu() {
                 {visibleMeals.map((meal) => {
                   const cartEntry = cart.find(
                     (entry) =>
-                      String(entry.meal.id) === String(meal.id),
+                      String(entry.meal.id) === String(meal.id)
                   );
 
                   return (
@@ -626,7 +729,7 @@ export default function Menu() {
                         <div className="meal-image-wrap">
                           <img
                             src={getMealImage(meal)}
-                            alt={meal.name}
+                            alt={getMealName(meal)}
                             className="meal-image"
                             loading="lazy"
                             onError={(event) => {
@@ -645,21 +748,22 @@ export default function Menu() {
 
                           {meal.isAvailable === false && (
                             <span className="meal-tag">
-                              Currently Unavailable
+                              {t("menu.meal.unavailable")}
                             </span>
                           )}
                         </div>
 
                         <div className="meal-card-body">
                           <span className="meal-category">
-                            {meal.categoryName || "Our Menu"}
+                            {getCategoryName(meal) ||
+                              t("menu.meal.defaultCategory")}
                           </span>
 
-                          <h3>{meal.name}</h3>
+                          <h3>{getMealName(meal)}</h3>
 
                           <p>
-                            {meal.description ||
-                              "Freshly prepared with care by Aapla Dabba."}
+                            {getMealDescription(meal) ||
+                              t("menu.meal.defaultDescription")}
                           </p>
 
                           <div className="meal-card-bottom">
@@ -673,7 +777,7 @@ export default function Menu() {
                                 className="meal-add-button"
                                 disabled
                               >
-                                Unavailable
+                                {t("menu.meal.unavailable")}
                               </button>
                             ) : cartEntry ? (
                               <div className="menu-card-order-actions">
@@ -684,10 +788,13 @@ export default function Menu() {
                                     onClick={() =>
                                       void changeQuantity(
                                         String(meal.id),
-                                        -1,
+                                        -1
                                       )
                                     }
-                                    aria-label={`Decrease ${meal.name}`}
+                                    aria-label={t(
+                                      "menu.meal.decrease",
+                                      { name: getMealName(meal) }
+                                    )}
                                   >
                                     −
                                   </button>
@@ -700,10 +807,13 @@ export default function Menu() {
                                     onClick={() =>
                                       void changeQuantity(
                                         String(meal.id),
-                                        1,
+                                        1
                                       )
                                     }
-                                    aria-label={`Increase ${meal.name}`}
+                                    aria-label={t(
+                                      "menu.meal.increase",
+                                      { name: getMealName(meal) }
+                                    )}
                                   >
                                     +
                                   </button>
@@ -714,7 +824,7 @@ export default function Menu() {
                                   className="menu-order-now-button"
                                   onClick={handleOrderNow}
                                 >
-                                  Order Now
+                                  {t("menu.buttons.orderNow")}
                                 </button>
                               </div>
                             ) : (
@@ -725,8 +835,8 @@ export default function Menu() {
                                 onClick={() => void addToCart(meal)}
                               >
                                 {cartBusyId === String(meal.id)
-                                  ? "Adding..."
-                                  : "Add to Cart +"}
+                                  ? t("menu.buttons.adding")
+                                  : t("menu.buttons.addToCart")}
                               </button>
                             )}
                           </div>
@@ -741,14 +851,14 @@ export default function Menu() {
                 <div className="menu-no-results">
                   <h3>
                     {meals.length === 0
-                      ? "No menu items available"
-                      : "No meals found"}
+                      ? t("menu.empty.noItems")
+                      : t("menu.empty.noMealsFound")}
                   </h3>
 
                   <p>
                     {meals.length === 0
-                      ? "Menu items added by the admin will appear here when available in the API."
-                      : "Try another search or select a different category."}
+                      ? t("menu.empty.noItemsDescription")
+                      : t("menu.empty.noMealsDescription")}
                   </p>
 
                   <button
@@ -756,10 +866,10 @@ export default function Menu() {
                     className="menu-reset-button"
                     onClick={() => {
                       setSearch("");
-                      setActiveCategory("All Meals");
+                      setActiveCategory(t("menu.filters.allMeals"));
                     }}
                   >
-                    Show All Meals
+                    {t("menu.buttons.showAllMeals")}
                   </button>
                 </div>
               )}
@@ -779,11 +889,11 @@ export default function Menu() {
           <div className="menu-cta-inner">
             <div>
               <span className="menu-section-kicker">
-                YOUR NEXT MEAL AWAITS
+                {t("menu.cta.kicker")}
               </span>
 
-              <h2>Craving a homemade meal?</h2>
-              <p>Choose your favourite meals and place your order.</p>
+              <h2>{t("menu.cta.title")}</h2>
+              <p>{t("menu.cta.description")}</p>
             </div>
 
             <button
@@ -791,7 +901,7 @@ export default function Menu() {
               className="menu-cta-button"
               onClick={() => setCartOpen(true)}
             >
-              View Cart ({cartCount})
+              {t("menu.buttons.viewCart", { count: cartCount })}
             </button>
           </div>
         </div>
@@ -801,10 +911,10 @@ export default function Menu() {
         type="button"
         className="menu-floating-cart"
         onClick={() => setCartOpen(true)}
-        aria-label={`Open cart, ${cartCount} items`}
+        aria-label={t("menu.buttons.openCart", { count: cartCount })}
       >
         <span aria-hidden="true">🛒</span>
-        <span>Cart</span>
+        <span>{t("menu.buttons.cart")}</span>
         <span className="menu-cart-badge">{cartCount}</span>
       </button>
 
@@ -823,17 +933,19 @@ export default function Menu() {
             <div className="menu-cart-header">
               <div>
                 <span className="menu-section-kicker">
-                  YOUR SELECTION
+                  {t("menu.cart.kicker")}
                 </span>
 
-                <h2 id="menu-cart-heading">Your Cart</h2>
+                <h2 id="menu-cart-heading">
+                  {t("menu.cart.title")}
+                </h2>
               </div>
 
               <button
                 type="button"
                 className="menu-cart-close"
                 onClick={() => setCartOpen(false)}
-                aria-label="Close cart"
+                aria-label={t("menu.buttons.closeCart")}
               >
                 ×
               </button>
@@ -845,20 +957,20 @@ export default function Menu() {
               onClick={handleAddMoreItems}
             >
               <span aria-hidden="true">＋</span>
-              Add More Items
+              {t("menu.buttons.addMoreItems")}
             </button>
 
             {cart.length === 0 ? (
               <div className="menu-cart-empty">
-                <h3>Your cart is empty</h3>
-                <p>Add a meal from our menu to get started.</p>
+                <h3>{t("menu.cart.emptyTitle")}</h3>
+                <p>{t("menu.cart.emptyDescription")}</p>
 
                 <button
                   type="button"
                   className="menu-reset-button"
                   onClick={handleAddMoreItems}
                 >
-                  Explore Menu
+                  {t("menu.buttons.exploreMenu")}
                 </button>
               </div>
             ) : (
@@ -868,7 +980,7 @@ export default function Menu() {
                     <div className="menu-cart-row" key={meal.id}>
                       <img
                         src={getMealImage(meal)}
-                        alt={meal.name}
+                        alt={getMealName(meal)}
                         onError={(event) => {
                           const image = event.currentTarget;
 
@@ -884,8 +996,12 @@ export default function Menu() {
                       />
 
                       <div className="menu-cart-row-info">
-                        <h3>{meal.name}</h3>
-                        <p>₹{Number(meal.price).toFixed(2)} each</p>
+                        <h3>{getMealName(meal)}</h3>
+
+                        <p>
+                          ₹{Number(meal.price).toFixed(2)}{" "}
+                          {t("menu.cart.each")}
+                        </p>
 
                         <div className="menu-quantity">
                           <button
@@ -894,10 +1010,12 @@ export default function Menu() {
                             onClick={() =>
                               void changeQuantity(
                                 String(meal.id),
-                                -1,
+                                -1
                               )
                             }
-                            aria-label={`Decrease ${meal.name}`}
+                            aria-label={t("menu.meal.decrease", {
+                              name: getMealName(meal),
+                            })}
                           >
                             −
                           </button>
@@ -910,10 +1028,12 @@ export default function Menu() {
                             onClick={() =>
                               void changeQuantity(
                                 String(meal.id),
-                                1,
+                                1
                               )
                             }
-                            aria-label={`Increase ${meal.name}`}
+                            aria-label={t("menu.meal.increase", {
+                              name: getMealName(meal),
+                            })}
                           >
                             +
                           </button>
@@ -931,7 +1051,7 @@ export default function Menu() {
 
                 <div className="menu-cart-footer">
                   <div className="menu-cart-total">
-                    <span>Total</span>
+                    <span>{t("menu.cart.total")}</span>
                     <strong>₹{cartTotal.toFixed(2)}</strong>
                   </div>
 
@@ -940,7 +1060,7 @@ export default function Menu() {
                     className="menu-order-now-button"
                     onClick={handleOrderNow}
                   >
-                    Order Now
+                    {t("menu.buttons.orderNow")}
                   </button>
 
                   <button
@@ -948,12 +1068,10 @@ export default function Menu() {
                     className="menu-whatsapp-button"
                     onClick={orderOnWhatsApp}
                   >
-                    Order on WhatsApp
+                    {t("menu.buttons.orderWhatsApp")}
                   </button>
 
-                  <p>
-                    Delivery charges, if applicable, are confirmed separately.
-                  </p>
+                  <p>{t("menu.cart.deliveryNote")}</p>
                 </div>
               </>
             )}

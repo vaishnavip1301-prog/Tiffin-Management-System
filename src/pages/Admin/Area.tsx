@@ -1,7 +1,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
+
 import {
   getAreas,
   addArea,
@@ -10,6 +12,7 @@ import {
   type Area as AreaData,
   type AreaInput,
 } from "../../api/areaService";
+
 import "./Area.css";
 
 const API_URL = "https://tiffinapis.ysaasinfotech.com";
@@ -27,6 +30,8 @@ const emptyForm: AreaInput = {
 };
 
 function Area() {
+  const { t } = useTranslation();
+
   const [areas, setAreas] = useState<AreaData[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [formData, setFormData] = useState<AreaInput>(emptyForm);
@@ -49,9 +54,7 @@ function Area() {
       setAreas(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Areas API error:", err);
-      setError(
-        "Unable to load areas. Please verify the Areas API endpoint and try again."
-      );
+      setError("areasLoadError");
     } finally {
       setLoading(false);
     }
@@ -148,7 +151,7 @@ function Area() {
       !formData.name.trim() ||
       !formData.postalCode.trim()
     ) {
-      setError("Please fill in all required fields.");
+      setError("requiredFields");
       return;
     }
 
@@ -164,10 +167,10 @@ function Area() {
 
       if (editingId) {
         await updateArea(editingId, payload);
-        setSuccess("Area updated successfully.");
+        setSuccess("areaUpdated");
       } else {
         await addArea(payload);
-        setSuccess("Area added successfully.");
+        setSuccess("areaAdded");
       }
 
       setShowForm(false);
@@ -176,9 +179,7 @@ function Area() {
       await loadAreas();
     } catch (err) {
       console.error("Save Area API error:", err);
-      setError(
-        "Unable to save area. Please check the API endpoint and required request fields."
-      );
+      setError("areaSaveError");
     } finally {
       setSaving(false);
     }
@@ -186,7 +187,7 @@ function Area() {
 
   const handleDelete = async (area: AreaData) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${area.name}"?`
+      t("area.deleteConfirmation", { name: area.name })
     );
 
     if (!confirmed) return;
@@ -196,11 +197,11 @@ function Area() {
 
     try {
       await deleteArea(area.id);
-      setSuccess("Area deleted successfully.");
+      setSuccess("areaDeleted");
       await loadAreas();
     } catch (err) {
       console.error("Delete Area API error:", err);
-      setError("Unable to delete area. Please try again.");
+      setError("areaDeleteError");
     }
   };
 
@@ -208,9 +209,11 @@ function Area() {
     <div className="area-management">
       <div className="area-page-header">
         <div>
-          <span className="area-eyebrow">LOCATION MANAGEMENT</span>
-          <h2>Area Management</h2>
-          <p>Manage areas, cities, postal codes and area status.</p>
+          <span className="area-eyebrow">
+            {t("area.eyebrow")}
+          </span>
+          <h2>{t("area.title")}</h2>
+          <p>{t("area.description")}</p>
         </div>
 
         <button
@@ -218,18 +221,18 @@ function Area() {
           className="area-primary-btn"
           onClick={openAddForm}
         >
-          <i className="bi bi-plus-lg" /> Add Area
+          <i className="bi bi-plus-lg" /> {t("area.addArea")}
         </button>
       </div>
 
       {error && (
         <div className="area-alert area-alert-error" role="alert">
           <i className="bi bi-exclamation-circle" />
-          <span>{error}</span>
+          <span>{t(`area.${error}`)}</span>
           <button
             type="button"
             onClick={() => setError("")}
-            aria-label="Dismiss error"
+            aria-label={t("area.dismissError")}
           >
             <i className="bi bi-x-lg" />
           </button>
@@ -239,11 +242,11 @@ function Area() {
       {success && (
         <div className="area-alert area-alert-success" role="status">
           <i className="bi bi-check-circle" />
-          <span>{success}</span>
+          <span>{t(`area.${success}`)}</span>
           <button
             type="button"
             onClick={() => setSuccess("")}
-            aria-label="Dismiss message"
+            aria-label={t("area.dismissMessage")}
           >
             <i className="bi bi-x-lg" />
           </button>
@@ -254,8 +257,10 @@ function Area() {
         <section className="area-form-card">
           <div className="area-form-heading">
             <div>
-              <h3>{editingId ? "Update Area" : "Add New Area"}</h3>
-              <p>Enter the area details below.</p>
+              <h3>
+                {editingId ? t("area.updateArea") : t("area.addNewArea")}
+              </h3>
+              <p>{t("area.formDescription")}</p>
             </div>
 
             <button
@@ -266,7 +271,7 @@ function Area() {
                 setEditingId(null);
                 setError("");
               }}
-              aria-label="Close form"
+              aria-label={t("area.closeForm")}
             >
               <i className="bi bi-x-lg" />
             </button>
@@ -275,7 +280,9 @@ function Area() {
           <form onSubmit={handleSubmit}>
             <div className="area-form-grid">
               <div className="area-field">
-                <label htmlFor="area-city">City *</label>
+                <label htmlFor="area-city">
+                  {t("area.city")} *
+                </label>
                 <select
                   id="area-city"
                   name="cityId"
@@ -283,30 +290,34 @@ function Area() {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select City</option>
+                  <option value="">{t("area.selectCity")}</option>
+
                   {cities.map((city) => (
                     <option key={city.id} value={city.id}>
                       {city.name}
                     </option>
                   ))}
+
                   {formData.cityId &&
                     !cities.some((city) => city.id === formData.cityId) && (
                       <option value={formData.cityId}>
                         {areas.find(
                           (area) => area.cityId === formData.cityId
-                        )?.cityName ?? "Selected City"}
+                        )?.cityName ?? t("area.selectedCity")}
                       </option>
                     )}
                 </select>
               </div>
 
               <div className="area-field">
-                <label htmlFor="area-name">Area Name *</label>
+                <label htmlFor="area-name">
+                  {t("area.areaName")} *
+                </label>
                 <input
                   id="area-name"
                   name="name"
                   type="text"
-                  placeholder="Enter area name"
+                  placeholder={t("area.enterAreaName")}
                   value={formData.name}
                   onChange={handleInputChange}
                   required
@@ -315,12 +326,14 @@ function Area() {
               </div>
 
               <div className="area-field">
-                <label htmlFor="area-postal-code">Postal Code *</label>
+                <label htmlFor="area-postal-code">
+                  {t("area.postalCode")} *
+                </label>
                 <input
                   id="area-postal-code"
                   name="postalCode"
                   type="text"
-                  placeholder="Enter postal code"
+                  placeholder={t("area.enterPostalCode")}
                   value={formData.postalCode}
                   onChange={handleInputChange}
                   required
@@ -329,15 +342,17 @@ function Area() {
               </div>
 
               <div className="area-field">
-                <label htmlFor="area-status">Status *</label>
+                <label htmlFor="area-status">
+                  {t("area.status")} *
+                </label>
                 <select
                   id="area-status"
                   name="isActive"
                   value={String(formData.isActive)}
                   onChange={handleInputChange}
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="true">{t("area.active")}</option>
+                  <option value="false">{t("area.inactive")}</option>
                 </select>
               </div>
             </div>
@@ -353,7 +368,7 @@ function Area() {
                 }}
                 disabled={saving}
               >
-                Cancel
+                {t("area.cancel")}
               </button>
 
               <button
@@ -364,7 +379,7 @@ function Area() {
                 {saving ? (
                   <>
                     <span className="area-spinner" />
-                    Saving...
+                    {t("area.saving")}
                   </>
                 ) : (
                   <>
@@ -373,7 +388,9 @@ function Area() {
                         editingId ? "bi-check-lg" : "bi-plus-lg"
                       }`}
                     />
-                    {editingId ? "Update Area" : "Save Area"}
+                    {editingId
+                      ? t("area.updateArea")
+                      : t("area.saveArea")}
                   </>
                 )}
               </button>
@@ -385,8 +402,10 @@ function Area() {
       <section className="area-list-card">
         <div className="area-list-heading">
           <div>
-            <h3>Areas List</h3>
-            <p>{filteredAreas.length} area(s) found</p>
+            <h3>{t("area.areasList")}</h3>
+            <p>
+              {t("area.areasFound", { count: filteredAreas.length })}
+            </p>
           </div>
 
           <button
@@ -403,7 +422,7 @@ function Area() {
                 loading ? "area-spinning" : ""
               }`}
             />
-            Refresh
+            {t("area.refresh")}
           </button>
         </div>
 
@@ -412,18 +431,19 @@ function Area() {
             <i className="bi bi-search" />
             <input
               type="search"
-              placeholder="Search area, city or postal code..."
+              placeholder={t("area.searchPlaceholder")}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
             />
           </div>
 
           <select
-            aria-label="Filter by city"
+            aria-label={t("area.filterByCity")}
             value={cityFilter}
             onChange={(event) => setCityFilter(event.target.value)}
           >
-            <option value="all">All Cities</option>
+            <option value="all">{t("area.allCities")}</option>
+
             {Array.from(
               new Map(
                 areas.map((area) => [
@@ -439,13 +459,13 @@ function Area() {
           </select>
 
           <select
-            aria-label="Filter by status"
+            aria-label={t("area.filterByStatus")}
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
           >
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="all">{t("area.allStatus")}</option>
+            <option value="active">{t("area.active")}</option>
+            <option value="inactive">{t("area.inactive")}</option>
           </select>
         </div>
 
@@ -453,12 +473,12 @@ function Area() {
           <table className="area-table">
             <thead>
               <tr>
-                <th>Area Name</th>
-                <th>City</th>
-                <th>State</th>
-                <th>Postal Code</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{t("area.areaName")}</th>
+                <th>{t("area.city")}</th>
+                <th>{t("area.state")}</th>
+                <th>{t("area.postalCode")}</th>
+                <th>{t("area.status")}</th>
+                <th>{t("area.actions")}</th>
               </tr>
             </thead>
 
@@ -466,13 +486,16 @@ function Area() {
               {loading ? (
                 <tr>
                   <td colSpan={6} className="area-table-message">
-                    <span className="area-spinner" /> Loading areas...
+                    <span className="area-spinner" />
+                    {t("area.loadingAreas")}
                   </td>
                 </tr>
               ) : filteredAreas.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="area-table-message">
-                    {error ? "Unable to load areas." : "No areas found."}
+                    {error
+                      ? t("area.areasCouldNotLoad")
+                      : t("area.noAreasFound")}
                   </td>
                 </tr>
               ) : (
@@ -486,9 +509,11 @@ function Area() {
                         <strong>{area.name}</strong>
                       </div>
                     </td>
+
                     <td>{area.cityName || "—"}</td>
                     <td>{area.stateName || "—"}</td>
                     <td>{area.postalCode || "—"}</td>
+
                     <td>
                       <span
                         className={`area-status ${
@@ -497,27 +522,30 @@ function Area() {
                             : "area-status-inactive"
                         }`}
                       >
-                        {area.isActive ? "Active" : "Inactive"}
+                        {area.isActive
+                          ? t("area.active")
+                          : t("area.inactive")}
                       </span>
                     </td>
-                    <td>
-                    <div className="area-action-buttons">
-                      <button
-                        type="button"
-                        className="area-edit-btn"
-                        onClick={() => openEditForm(area)}
-                      >
-                        Edit
-                      </button>
 
-                      <button
-                        type="button"
-                        className="area-delete-btn"
-                        onClick={() => void handleDelete(area)}
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    <td>
+                      <div className="area-action-buttons">
+                        <button
+                          type="button"
+                          className="area-edit-btn"
+                          onClick={() => openEditForm(area)}
+                        >
+                          {t("area.edit")}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="area-delete-btn"
+                          onClick={() => void handleDelete(area)}
+                        >
+                          {t("area.delete")}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

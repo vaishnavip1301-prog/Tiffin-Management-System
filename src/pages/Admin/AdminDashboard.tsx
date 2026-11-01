@@ -1,17 +1,23 @@
 
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="admin-dashboard-content">
       <div className="dashboard-welcome">
         <div>
-          <span className="dashboard-eyebrow">ADMIN OVERVIEW</span>
-          <h2>Welcome back, Admin! 👋</h2>
-          <p>Manage your Aapla Dabba website from one place.</p>
+          <span className="dashboard-eyebrow">
+            {t("adminDashboard.overview")}
+          </span>
+
+          <h2>{t("adminDashboard.welcome")}</h2>
+
+          <p>{t("adminDashboard.description")}</p>
         </div>
 
         <button
@@ -19,7 +25,7 @@ function AdminDashboard() {
           onClick={() => navigate("/admin/kitchen")}
         >
           <i className="bi bi-shop me-2" />
-          Manage Kitchens
+          {t("adminDashboard.manageKitchens")}
         </button>
       </div>
 
@@ -28,44 +34,44 @@ function AdminDashboard() {
           <div className="dashboard-stat-icon kitchen-icon">
             <i className="bi bi-shop" />
           </div>
-          <p>Total Kitchens</p>
-          <h3>Kitchen Management</h3>
-          <span>Create and update kitchen details</span>
+          <p>{t("adminDashboard.totalKitchens")}</p>
+          <h3>{t("adminDashboard.kitchenManagement")}</h3>
+          <span>{t("adminDashboard.kitchenDescription")}</span>
         </div>
 
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-icon menu-icon">
             <i className="bi bi-egg-fried" />
           </div>
-          <p>Menu Management</p>
-          <h3>Manage Menu</h3>
-          <span>Organize meals and dishes</span>
+          <p>{t("adminDashboard.menuManagement")}</p>
+          <h3>{t("adminDashboard.manageMenu")}</h3>
+          <span>{t("adminDashboard.menuDescription")}</span>
         </div>
 
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-icon order-icon">
             <i className="bi bi-receipt" />
           </div>
-          <p>Order Management</p>
-          <h3>Manage Orders</h3>
-          <span>Review customer orders</span>
+          <p>{t("adminDashboard.orderManagement")}</p>
+          <h3>{t("adminDashboard.manageOrders")}</h3>
+          <span>{t("adminDashboard.orderDescription")}</span>
         </div>
 
         <div className="dashboard-stat-card">
           <div className="dashboard-stat-icon customer-icon">
             <i className="bi bi-people" />
           </div>
-          <p>Customers</p>
-          <h3>Customer Management</h3>
-          <span>Manage customer information</span>
+          <p>{t("adminDashboard.customers")}</p>
+          <h3>{t("adminDashboard.customerManagement")}</h3>
+          <span>{t("adminDashboard.customerDescription")}</span>
         </div>
       </div>
 
       <div className="dashboard-panel">
         <div className="dashboard-panel-heading">
           <div>
-            <h4>Quick Actions</h4>
-            <p>Frequently used admin tools</p>
+            <h4>{t("adminDashboard.quickActions")}</h4>
+            <p>{t("adminDashboard.quickActionsDescription")}</p>
           </div>
           <i className="bi bi-lightning-charge" />
         </div>
@@ -77,10 +83,12 @@ function AdminDashboard() {
           <span className="action-icon">
             <i className="bi bi-shop" />
           </span>
+
           <span>
-            <strong>Kitchen Management</strong>
-            <small>Create, view and update kitchens</small>
+            <strong>{t("adminDashboard.kitchenManagement")}</strong>
+            <small>{t("adminDashboard.kitchenActionDescription")}</small>
           </span>
+
           <i className="bi bi-arrow-up-right ms-auto" />
         </button>
       </div>

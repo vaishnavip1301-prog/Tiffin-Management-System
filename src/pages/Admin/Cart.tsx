@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   getCart,
   updateCartItemQty,
@@ -9,6 +11,7 @@ import {
   type CartResponse,
   type CartItem,
 } from "../../api/cartService";
+
 import { getMenuItems } from "../../api/menuItemService";
 import "./Cart.css";
 
@@ -16,7 +19,38 @@ const PAGE_SIZE = 10;
 
 type MenuNameMap = Record<string, string>;
 
+type LocalizedMenuItem = {
+  id?: string;
+  name?: string;
+  nameEn?: string;
+  nameMr?: string;
+};
+
+type LocalizedCartItem = CartItem & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string;
+  descriptionMr?: string;
+  categoryNameEn?: string;
+  categoryNameMr?: string;
+};
+
+const getLocalizedValue = (
+  language: string,
+  english?: string | null,
+  marathi?: string | null,
+  fallback?: string | null
+) => {
+  if (language.startsWith("mr")) {
+    return marathi || fallback || english || "";
+  }
+
+  return english || fallback || marathi || "";
+};
+
 function CartPage() {
+  const { t, i18n } = useTranslation();
+
   const [cart, setCart] = useState<CartResponse | null>(null);
   const [menuNames, setMenuNames] = useState<MenuNameMap>({});
   const [loading, setLoading] = useState(false);
@@ -27,6 +61,8 @@ function CartPage() {
   const [error, setError] = useState("");
   const [validationResult, setValidationResult] = useState<unknown>(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const language = i18n.language;
 
   // LOAD CART
   const loadCart = useCallback(async () => {
@@ -41,13 +77,11 @@ function CartPage() {
     } catch (err) {
       console.error("Error loading cart:", err);
       setCart(null);
-      setError(
-        "Unable to load cart. Check the Cart API and guest cart token."
-      );
+      setError(t("cart.messages.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadCart();
@@ -61,8 +95,15 @@ function CartPage() {
         const names: MenuNameMap = {};
 
         (response.items ?? []).forEach((menuItem) => {
-          if (menuItem.id && menuItem.name) {
-            names[menuItem.id] = menuItem.name;
+          const localizedItem = menuItem as LocalizedMenuItem;
+
+          if (localizedItem.id) {
+            names[localizedItem.id] = getLocalizedValue(
+              language,
+              localizedItem.nameEn,
+              localizedItem.nameMr,
+              localizedItem.name
+            );
           }
         });
 
@@ -73,10 +114,46 @@ function CartPage() {
     };
 
     void loadMenuNames();
-  }, []);
+  }, [language]);
 
-  const getMenuName = (item: CartItem) =>
-    item.name || menuNames[item.menuItemId] || "Menu name unavailable";
+  const getMenuName = (item: CartItem) => {
+    const localizedItem = item as LocalizedCartItem;
+
+    return (
+      getLocalizedValue(
+        language,
+        localizedItem.nameEn,
+        localizedItem.nameMr,
+        localizedItem.name
+      ) ||
+      menuNames[item.menuItemId] ||
+      t("cart.messages.menuNameUnavailable")
+    );
+  };
+
+  const getItemDescription = (item: CartItem) => {
+    const localizedItem = item as LocalizedCartItem;
+
+    return getLocalizedValue(
+      language,
+      localizedItem.descriptionEn,
+      localizedItem.descriptionMr,
+      localizedItem.description
+    ) || "—";
+  };
+
+  const getCategoryName = (item: CartItem) => {
+    const localizedItem = item as LocalizedCartItem;
+
+    return (
+      getLocalizedValue(
+        language,
+        localizedItem.categoryNameEn,
+        localizedItem.categoryNameMr,
+        localizedItem.categoryName
+      ) || "—"
+    );
+  };
 
   const allItems = cart?.items ?? [];
 
@@ -104,7 +181,7 @@ function CartPage() {
     const newQuantity = Number(quantity);
 
     if (!Number.isInteger(newQuantity) || newQuantity < 1) {
-      setError("Quantity must be a positive integer.");
+      setError(t("cart.messages.invalidQuantity"));
       return;
     }
 
@@ -121,10 +198,10 @@ function CartPage() {
       setCart(updatedCart);
       setSelectedItem(null);
       setCurrentPage(1);
-      setMessage("Cart item quantity updated successfully.");
+      setMessage(t("cart.messages.quantityUpdated"));
     } catch (err) {
       console.error("Error updating cart quantity:", err);
-      setError("Unable to update cart item quantity.");
+      setError(t("cart.messages.quantityUpdateFailed"));
     } finally {
       setActionId(null);
     }
@@ -133,7 +210,7 @@ function CartPage() {
   // DELETE CART ITEM
   const handleDeleteItem = async (cartItemId: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this cart item?"
+      t("cart.confirmations.deleteItem")
     );
 
     if (!confirmed) return;
@@ -160,10 +237,10 @@ function CartPage() {
         Math.min(page, updatedTotalPages)
       );
 
-      setMessage("Cart item deleted successfully.");
+      setMessage(t("cart.messages.itemDeleted"));
     } catch (err) {
       console.error("Error deleting cart item:", err);
-      setError("Unable to delete cart item.");
+      setError(t("cart.messages.itemDeleteFailed"));
     } finally {
       setActionId(null);
     }
@@ -179,10 +256,10 @@ function CartPage() {
     try {
       const result = await validateCart();
       setValidationResult(result);
-      setMessage("Cart validation request completed.");
+      setMessage(t("cart.messages.validationCompleted"));
     } catch (err) {
       console.error("Error validating cart:", err);
-      setError("Unable to validate cart.");
+      setError(t("cart.messages.validationFailed"));
     } finally {
       setActionId(null);
     }
@@ -191,7 +268,7 @@ function CartPage() {
   // DELETE ENTIRE CART
   const handleDeleteCart = async () => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete the entire current guest cart?"
+      t("cart.confirmations.deleteCart")
     );
 
     if (!confirmed) return;
@@ -208,10 +285,10 @@ function CartPage() {
       setValidationResult(null);
       setCurrentPage(1);
 
-      setMessage("Current guest cart deleted successfully.");
+      setMessage(t("cart.messages.cartDeleted"));
     } catch (err) {
       console.error("Error deleting cart:", err);
-      setError("Unable to delete cart.");
+      setError(t("cart.messages.cartDeleteFailed"));
     } finally {
       setActionId(null);
     }
@@ -224,8 +301,8 @@ function CartPage() {
       {/* HEADER */}
       <div className="cart-header">
         <div>
-          <h2>Cart Management</h2>
-          <p>View and manage the current guest cart.</p>
+          <h2>{t("cart.pageTitle")}</h2>
+          <p>{t("cart.pageDescription")}</p>
         </div>
 
         <div className="cart-header-actions">
@@ -235,7 +312,9 @@ function CartPage() {
             onClick={() => void loadCart()}
             disabled={loading || actionId !== null}
           >
-            {loading ? "Loading..." : "↻ Refresh"}
+            {loading
+              ? t("cart.buttons.loading")
+              : `↻ ${t("cart.buttons.refresh")}`}
           </button>
 
           <button
@@ -245,8 +324,8 @@ function CartPage() {
             disabled={loading || actionId !== null || !guestToken}
           >
             {actionId === "validate"
-              ? "Validating..."
-              : "Validate Cart"}
+              ? t("cart.buttons.validating")
+              : t("cart.buttons.validateCart")}
           </button>
 
           <button
@@ -255,7 +334,7 @@ function CartPage() {
             onClick={() => void handleDeleteCart()}
             disabled={loading || actionId !== null || !guestToken}
           >
-            Delete Cart
+            {t("cart.buttons.deleteCart")}
           </button>
         </div>
       </div>
@@ -277,22 +356,22 @@ function CartPage() {
       {/* SUMMARY */}
       <div className="cart-summary-grid">
         <div className="cart-summary-card">
-          <span>Cart ID</span>
+          <span>{t("cart.summary.cartId")}</span>
           <strong>{cart?.cartId || "—"}</strong>
         </div>
 
         <div className="cart-summary-card">
-          <span>Total Items</span>
+          <span>{t("cart.summary.totalItems")}</span>
           <strong>{allItems.length}</strong>
         </div>
 
         <div className="cart-summary-card">
-          <span>Total Quantity</span>
+          <span>{t("cart.summary.totalQuantity")}</span>
           <strong>{cart?.totalQuantity ?? 0}</strong>
         </div>
 
         <div className="cart-summary-card">
-          <span>Subtotal</span>
+          <span>{t("cart.summary.subtotal")}</span>
           <strong>
             {cart?.currencyCode || "INR"}{" "}
             {Number(cart?.subtotal ?? 0).toFixed(2)}
@@ -302,16 +381,16 @@ function CartPage() {
 
       {/* GUEST CART TOKEN */}
       <div className="cart-token-card">
-        <h3>Guest Cart Token</h3>
+        <h3>{t("cart.token.title")}</h3>
 
         <p>
           {guestToken
-            ? "A guest cart token is saved in this browser."
-            : "No guest cart token is currently saved. Refresh will attempt to create or load a cart."}
+            ? t("cart.token.saved")
+            : t("cart.token.notSaved")}
         </p>
 
         <div className="cart-token-value">
-          {guestToken || "No token available"}
+          {guestToken || t("cart.token.unavailable")}
         </div>
       </div>
 
@@ -319,7 +398,7 @@ function CartPage() {
       {selectedItem && (
         <div className="cart-item-details">
           <div className="cart-details-heading">
-            <h3>Edit Cart Item Quantity</h3>
+            <h3>{t("cart.edit.title")}</h3>
 
             <button
               type="button"
@@ -331,19 +410,22 @@ function CartPage() {
           </div>
 
           <p>
-            <strong>Name:</strong> {getMenuName(selectedItem)}
+            <strong>{t("cart.edit.name")}:</strong>{" "}
+            {getMenuName(selectedItem)}
           </p>
 
           <p>
-            <strong>Item ID:</strong> {selectedItem.cartItemId}
+            <strong>{t("cart.edit.itemId")}:</strong>{" "}
+            {selectedItem.cartItemId}
           </p>
 
           <p>
-            <strong>Menu Item ID:</strong> {selectedItem.menuItemId}
+            <strong>{t("cart.edit.menuItemId")}:</strong>{" "}
+            {selectedItem.menuItemId}
           </p>
 
           <p>
-            <strong>Price:</strong>{" "}
+            <strong>{t("cart.edit.price")}:</strong>{" "}
             {selectedItem.currencyCode || cart?.currencyCode || "INR"}{" "}
             {Number(
               selectedItem.unitPrice ?? selectedItem.price ?? 0
@@ -351,7 +433,9 @@ function CartPage() {
           </p>
 
           <div className="cart-quantity-control">
-            <label htmlFor="cartQuantity">Quantity</label>
+            <label htmlFor="cartQuantity">
+              {t("cart.edit.quantity")}
+            </label>
 
             <input
               id="cartQuantity"
@@ -373,8 +457,8 @@ function CartPage() {
               disabled={actionId !== null}
             >
               {actionId === selectedItem.cartItemId
-                ? "Updating..."
-                : "Update Quantity"}
+                ? t("cart.buttons.updating")
+                : t("cart.buttons.updateQuantity")}
             </button>
           </div>
         </div>
@@ -383,7 +467,7 @@ function CartPage() {
       {/* VALIDATION RESPONSE */}
       {validationResult !== null && (
         <div className="cart-validation-card">
-          <h3>Cart Validation Response</h3>
+          <h3>{t("cart.validation.title")}</h3>
           <pre>
             {JSON.stringify(validationResult, null, 2)}
           </pre>
@@ -394,28 +478,26 @@ function CartPage() {
       <div className="cart-table-card">
         <div className="cart-table-toolbar">
           <div>
-            <h3>Cart Items</h3>
-            <span>{allItems.length} items found</span>
+            <h3>{t("cart.table.title")}</h3>
+            <span>
+              {allItems.length} {t("cart.table.itemsFound")}
+            </span>
           </div>
         </div>
 
         {loading ? (
           <div className="cart-loading">
-            Loading cart...
+            {t("cart.table.loading")}
           </div>
         ) : !cart ? (
           <div className="cart-empty">
-            <strong>No cart data available</strong>
-            <p>
-              Check the Cart API response and guest cart token.
-            </p>
+            <strong>{t("cart.table.noCartData")}</strong>
+            <p>{t("cart.table.checkCartApi")}</p>
           </div>
         ) : allItems.length === 0 ? (
           <div className="cart-empty">
-            <strong>Your cart is empty</strong>
-            <p>
-              Cart items will appear here when available.
-            </p>
+            <strong>{t("cart.table.emptyCart")}</strong>
+            <p>{t("cart.table.emptyCartDescription")}</p>
           </div>
         ) : (
           <>
@@ -423,13 +505,13 @@ function CartPage() {
               <table className="cart-table">
                 <thead>
                   <tr>
-                    <th>Sr. No.</th>
-                    <th>Menu Name</th>
-                    <th>Category</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Line Total</th>
-                    <th>Actions</th>
+                    <th>{t("cart.table.serialNumber")}</th>
+                    <th>{t("cart.table.menuName")}</th>
+                    <th>{t("cart.table.category")}</th>
+                    <th>{t("cart.table.quantity")}</th>
+                    <th>{t("cart.table.unitPrice")}</th>
+                    <th>{t("cart.table.lineTotal")}</th>
+                    <th>{t("cart.table.actions")}</th>
                   </tr>
                 </thead>
 
@@ -447,13 +529,13 @@ function CartPage() {
                           <div>
                             <strong>{getMenuName(item)}</strong>
                             <small>
-                              {item.description || "—"}
+                              {getItemDescription(item)}
                             </small>
                           </div>
                         </div>
                       </td>
 
-                      <td>{item.categoryName || "—"}</td>
+                      <td>{getCategoryName(item)}</td>
 
                       <td>{item.quantity}</td>
 
@@ -477,7 +559,6 @@ function CartPage() {
                         ).toFixed(2)}
                       </td>
 
-                      {/* ONLY EDIT AND DELETE */}
                       <td>
                         <div className="cart-action-buttons">
                           <button
@@ -486,7 +567,7 @@ function CartPage() {
                             onClick={() => handleEditItem(item)}
                             disabled={actionId !== null}
                           >
-                            Edit
+                            {t("cart.buttons.edit")}
                           </button>
 
                           <button
@@ -498,8 +579,8 @@ function CartPage() {
                             disabled={actionId !== null}
                           >
                             {actionId === item.cartItemId
-                              ? "Deleting..."
-                              : "Delete"}
+                              ? t("cart.buttons.deleting")
+                              : t("cart.buttons.delete")}
                           </button>
                         </div>
                       </td>
@@ -512,12 +593,14 @@ function CartPage() {
             {/* PAGINATION */}
             <div className="cart-pagination">
               <span>
-                Showing {(currentPage - 1) * PAGE_SIZE + 1}–
+                {t("cart.pagination.showing")}{" "}
+                {(currentPage - 1) * PAGE_SIZE + 1}–
                 {Math.min(
                   currentPage * PAGE_SIZE,
                   allItems.length
                 )}{" "}
-                of {allItems.length} items
+                {t("cart.pagination.of")} {allItems.length}{" "}
+                {t("cart.pagination.items")}
               </span>
 
               <div className="cart-pagination-actions">
@@ -531,11 +614,12 @@ function CartPage() {
                   }
                   disabled={currentPage === 1}
                 >
-                  Previous
+                  {t("cart.pagination.previous")}
                 </button>
 
                 <span className="cart-page-number">
-                  Page {currentPage} of {totalPages}
+                  {t("cart.pagination.page")} {currentPage}{" "}
+                  {t("cart.pagination.of")} {totalPages}
                 </span>
 
                 <button
@@ -548,7 +632,7 @@ function CartPage() {
                   }
                   disabled={currentPage === totalPages}
                 >
-                  Next
+                  {t("cart.pagination.next")}
                 </button>
               </div>
             </div>

@@ -1,6 +1,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getCities,
@@ -26,6 +27,8 @@ const emptyForm: CityInput = {
 };
 
 function CityPage() {
+  const { t } = useTranslation();
+
   const [cities, setCities] = useState<City[]>([]);
   const [states, setStates] = useState<State[]>([]);
   const [formData, setFormData] = useState<CityInput>(emptyForm);
@@ -55,7 +58,7 @@ function CityPage() {
     } catch (err) {
       console.error("Error loading states:", err);
       setStates([]);
-      setError("Unable to load states. Please check the States API.");
+      setError("statesLoadError");
     }
 
     try {
@@ -64,7 +67,7 @@ function CityPage() {
     } catch (err) {
       console.error("Error loading cities:", err);
       setCities([]);
-      setError("Unable to load cities. Please check the Cities API endpoint.");
+      setError("citiesLoadError");
     } finally {
       setLoading(false);
     }
@@ -106,7 +109,7 @@ function CityPage() {
       setShowForm(true);
     } catch (err) {
       console.error("Error fetching city:", err);
-      setError("Unable to load city details.");
+      setError("cityDetailsError");
     } finally {
       setActionId(null);
     }
@@ -131,7 +134,7 @@ function CityPage() {
       setShowForm(true);
     } catch (err) {
       console.error("Error viewing city:", err);
-      setError("Unable to load city details.");
+      setError("cityDetailsError");
     } finally {
       setActionId(null);
     }
@@ -146,12 +149,12 @@ function CityPage() {
     event.preventDefault();
 
     if (!formData.name.trim()) {
-      setError("Please enter a city name.");
+      setError("cityNameRequired");
       return;
     }
 
     if (!formData.stateId) {
-      setError("Please select a state.");
+      setError("stateRequired");
       return;
     }
 
@@ -168,10 +171,10 @@ function CityPage() {
 
       if (editingId) {
         await updateCity(editingId, payload);
-        setMessage("City updated successfully.");
+        setMessage("cityUpdated");
       } else {
         await addCity(payload);
-        setMessage("City added successfully.");
+        setMessage("cityAdded");
       }
 
       setShowForm(false);
@@ -180,16 +183,14 @@ function CityPage() {
       await loadData();
     } catch (err) {
       console.error("Error saving city:", err);
-      setError("Unable to save city. Please check the API request.");
+      setError("citySaveError");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this city?"
-    );
+    const confirmed = window.confirm(t("city.deleteConfirmation"));
 
     if (!confirmed) return;
 
@@ -199,12 +200,12 @@ function CityPage() {
 
     try {
       await deleteCity(id);
-      setMessage("City deleted successfully.");
+      setMessage("cityDeleted");
 
       await loadData();
     } catch (err) {
       console.error("Error deleting city:", err);
-      setError("Unable to delete city. Please check the API request.");
+      setError("cityDeleteError");
     } finally {
       setActionId(null);
     }
@@ -225,10 +226,12 @@ function CityPage() {
 
   return (
     <div className="city-management">
+
+      {/* Header */}
       <div className="city-header">
         <div>
-          <h2>City Management</h2>
-          <p>Manage cities and their associated states.</p>
+          <h2>{t("city.title")}</h2>
+          <p>{t("city.description")}</p>
         </div>
 
         <div className="city-header-actions">
@@ -238,7 +241,7 @@ function CityPage() {
             onClick={() => void loadData()}
             disabled={loading}
           >
-            {loading ? "Loading..." : "↻ Refresh"}
+            {loading ? t("city.loading") : t("city.refresh")}
           </button>
 
           <button
@@ -246,39 +249,43 @@ function CityPage() {
             className="city-btn city-btn-add"
             onClick={openAddForm}
           >
-            + Add City
+            {t("city.addCity")}
           </button>
         </div>
       </div>
 
+      {/* Success Message */}
       {message && (
         <div className="city-alert city-success" role="status">
-          {message}
+          {t(`city.${message}`)}
         </div>
       )}
 
+      {/* Error Message */}
       {error && (
         <div className="city-alert city-error" role="alert">
-          {error}
+          {t(`city.${error}`)}
         </div>
       )}
 
+      {/* Add / Edit / View Form */}
       {showForm && (
         <div className="city-form-card">
+
           <div className="city-form-heading">
             <h3>
               {viewingId
-                ? "View City"
+                ? t("city.viewCity")
                 : editingId
-                  ? "Edit City"
-                  : "Add New City"}
+                  ? t("city.editCity")
+                  : t("city.addNewCity")}
             </h3>
 
             <button
               type="button"
               className="city-close-btn"
               onClick={closeForm}
-              aria-label="Close form"
+              aria-label={t("city.close")}
             >
               ×
             </button>
@@ -286,12 +293,17 @@ function CityPage() {
 
           <form onSubmit={handleSubmit}>
             <div className="city-form-grid">
+
+              {/* City Name */}
               <div className="city-form-group">
-                <label htmlFor="cityName">City Name *</label>
+                <label htmlFor="cityName">
+                  {t("city.cityName")} *
+                </label>
+
                 <input
                   id="cityName"
                   type="text"
-                  placeholder="Enter city name"
+                  placeholder={t("city.enterCityName")}
                   value={formData.name}
                   onChange={(event) =>
                     setFormData({
@@ -304,8 +316,12 @@ function CityPage() {
                 />
               </div>
 
+              {/* State */}
               <div className="city-form-group">
-                <label htmlFor="cityState">State *</label>
+                <label htmlFor="cityState">
+                  {t("city.state")} *
+                </label>
+
                 <select
                   id="cityState"
                   value={formData.stateId}
@@ -318,7 +334,9 @@ function CityPage() {
                   required
                   disabled={!!viewingId || saving}
                 >
-                  <option value="">Select State</option>
+                  <option value="">
+                    {t("city.selectState")}
+                  </option>
 
                   {states.map((state) => (
                     <option key={state.id} value={state.id}>
@@ -328,8 +346,12 @@ function CityPage() {
                 </select>
               </div>
 
+              {/* Status */}
               <div className="city-form-group city-status-group">
-                <label htmlFor="cityStatus">Status</label>
+                <label htmlFor="cityStatus">
+                  {t("city.status")}
+                </label>
+
                 <select
                   id="cityStatus"
                   value={formData.isActive ? "true" : "false"}
@@ -341,12 +363,19 @@ function CityPage() {
                   }
                   disabled={!!viewingId || saving}
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="true">
+                    {t("city.active")}
+                  </option>
+
+                  <option value="false">
+                    {t("city.inactive")}
+                  </option>
                 </select>
               </div>
+
             </div>
 
+            {/* Form Buttons */}
             <div className="city-form-actions">
               <button
                 type="button"
@@ -354,7 +383,7 @@ function CityPage() {
                 onClick={closeForm}
                 disabled={saving}
               >
-                Close
+                {t("city.close")}
               </button>
 
               {!viewingId && (
@@ -364,10 +393,10 @@ function CityPage() {
                   disabled={saving}
                 >
                   {saving
-                    ? "Saving..."
+                    ? t("city.saving")
                     : editingId
-                      ? "Update City"
-                      : "Save City"}
+                      ? t("city.updateCity")
+                      : t("city.saveCity")}
                 </button>
               )}
             </div>
@@ -375,28 +404,38 @@ function CityPage() {
         </div>
       )}
 
+      {/* Cities Table */}
       <div className="city-table-card">
+
         <div className="city-table-toolbar">
           <div>
-            <h3>All Cities</h3>
-            <span>{filteredCities.length} cities found</span>
+            <h3>{t("city.allCities")}</h3>
+
+            <span>
+              {t("city.citiesFound", {
+                count: filteredCities.length,
+              })}
+            </span>
           </div>
 
+          {/* Search and Filter */}
           <div className="city-filters">
             <input
               type="search"
-              placeholder="Search city or state..."
+              placeholder={t("city.searchPlaceholder")}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              aria-label="Search cities"
+              aria-label={t("city.searchCities")}
             />
 
             <select
               value={filterState}
               onChange={(event) => setFilterState(event.target.value)}
-              aria-label="Filter by state"
+              aria-label={t("city.filterByState")}
             >
-              <option value="">All States</option>
+              <option value="">
+                {t("city.allStates")}
+              </option>
 
               {states.map((state) => (
                 <option key={state.id} value={state.id}>
@@ -407,18 +446,22 @@ function CityPage() {
           </div>
         </div>
 
+        {/* Table */}
         {loading ? (
-          <div className="city-loading">Loading cities...</div>
+          <div className="city-loading">
+            {t("city.loadingCities")}
+          </div>
         ) : (
           <div className="city-table-wrapper">
             <table className="city-table">
+
               <thead>
                 <tr>
-                  <th>City Name</th>
-                  <th>State</th>
-                  <th>Status</th>
-                  <th>Created Date</th>
-                  <th>Actions</th>
+                  <th>{t("city.cityName")}</th>
+                  <th>{t("city.state")}</th>
+                  <th>{t("city.status")}</th>
+                  <th>{t("city.createdDate")}</th>
+                  <th>{t("city.actions")}</th>
                 </tr>
               </thead>
 
@@ -426,8 +469,14 @@ function CityPage() {
                 {filteredCities.length > 0 ? (
                   filteredCities.map((city) => (
                     <tr key={city.id}>
-                      <td className="city-name-cell">{city.name}</td>
-                      <td>{city.stateName || "-"}</td>
+
+                      <td className="city-name-cell">
+                        {city.name}
+                      </td>
+
+                      <td>
+                        {city.stateName || "-"}
+                      </td>
 
                       <td>
                         <span
@@ -435,7 +484,9 @@ function CityPage() {
                             city.isActive ? "active" : "inactive"
                           }`}
                         >
-                          {city.isActive ? "Active" : "Inactive"}
+                          {city.isActive
+                            ? t("city.active")
+                            : t("city.inactive")}
                         </span>
                       </td>
 
@@ -449,14 +500,20 @@ function CityPage() {
 
                       <td>
                         <div className="city-action-buttons">
-                          {/* <button
+
+                          {/* View Button (Optional) */}
+                          {/* 
+                          <button
                             type="button"
                             className="city-action-btn city-view-btn"
                             onClick={() => void handleView(city.id)}
                             disabled={actionId !== null}
                           >
-                            {actionId === city.id ? "Loading..." : "View"}
-                          </button> */}
+                            {actionId === city.id
+                              ? t("city.loading")
+                              : t("city.view")}
+                          </button>
+                          */}
 
                           <button
                             type="button"
@@ -464,7 +521,7 @@ function CityPage() {
                             onClick={() => void openEditForm(city.id)}
                             disabled={actionId !== null}
                           >
-                            Edit
+                            {t("city.edit")}
                           </button>
 
                           <button
@@ -473,8 +530,9 @@ function CityPage() {
                             onClick={() => void handleDelete(city.id)}
                             disabled={actionId !== null}
                           >
-                            Delete
+                            {t("city.delete")}
                           </button>
+
                         </div>
                       </td>
                     </tr>
@@ -483,14 +541,15 @@ function CityPage() {
                   <tr>
                     <td colSpan={5} className="city-empty">
                       {error
-                        ? "Cities could not be loaded."
+                        ? t("city.citiesCouldNotLoad")
                         : search || filterState
-                          ? "No matching cities found."
-                          : "No cities found."}
+                          ? t("city.noMatchingCities")
+                          : t("city.noCitiesFound")}
                     </td>
                   </tr>
                 )}
               </tbody>
+
             </table>
           </div>
         )}

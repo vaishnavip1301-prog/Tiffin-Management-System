@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { ChangeEvent, FormEvent } from "react";
 
 import {
@@ -54,12 +55,42 @@ const foodTypes = [
   { id: "20000000-0000-0000-0000-000000000002", name: "Vegetarian" },
 ];
 
+type LocalizedMenuItem = MenuItem & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+  categoryNameEn?: string;
+  categoryNameMr?: string;
+  subCategoryNameEn?: string;
+  subCategoryNameMr?: string;
+  mealTypeNameEn?: string;
+  mealTypeNameMr?: string;
+  foodTypeNameEn?: string;
+  foodTypeNameMr?: string;
+};
+
+type LocalizedMenuCategory = MenuCategory & {
+  nameEn?: string;
+  nameMr?: string;
+};
+
+type LocalizedMenuSubCategory = MenuSubCategory & {
+  nameEn?: string;
+  nameMr?: string;
+};
+
 function MenuItemPage() {
+  const { t, i18n } = useTranslation();
+
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [subCategories, setSubCategories] = useState<MenuSubCategory[]>([]);
 
-  const [formData, setFormData] = useState<MenuItemInput>(emptyForm);
+  const [formData, setFormData] = useState<MenuItemInput>({
+    ...emptyForm,
+  });
+
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
@@ -74,8 +105,83 @@ function MenuItemPage() {
   const [pageNumber, setPageNumber] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
 
+  const currentLanguage = i18n.resolvedLanguage || i18n.language;
+  const isMarathi = currentLanguage.startsWith("mr");
+
   const totalPages = Math.max(1, Math.ceil(totalRecords / PAGE_SIZE));
 
+  // Localized menu item fields
+  const getItemName = (item: MenuItem) => {
+    const data = item as LocalizedMenuItem;
+
+    return (
+      (isMarathi ? data.nameMr : data.nameEn) ||
+      data.name ||
+      "-"
+    );
+  };
+
+  const getItemDescription = (item: MenuItem) => {
+    const data = item as LocalizedMenuItem;
+
+    return (
+      (isMarathi ? data.descriptionMr : data.descriptionEn) ||
+      data.description ||
+      t("menuItem.noDescription")
+    );
+  };
+
+  const getCategoryName = (category: MenuCategory) => {
+    const data = category as LocalizedMenuCategory;
+
+    return (
+      (isMarathi ? data.nameMr : data.nameEn) ||
+      data.name ||
+      "-"
+    );
+  };
+
+  const getSubCategoryName = (category: MenuSubCategory) => {
+    const data = category as LocalizedMenuSubCategory;
+
+    return (
+      (isMarathi ? data.nameMr : data.nameEn) ||
+      data.name ||
+      "-"
+    );
+  };
+
+  const getItemCategoryName = (item: MenuItem) => {
+    const data = item as LocalizedMenuItem;
+
+    return (
+      (isMarathi ? data.categoryNameMr : data.categoryNameEn) ||
+      data.categoryName ||
+      "-"
+    );
+  };
+
+  const getItemMealTypeName = (item: MenuItem) => {
+    const data = item as LocalizedMenuItem;
+
+    return (
+      (isMarathi ? data.mealTypeNameMr : data.mealTypeNameEn) ||
+      data.mealTypeName ||
+      "-"
+    );
+  };
+
+  const getItemFoodTypeName = (item: MenuItem) => {
+    const data = item as LocalizedMenuItem;
+
+    return (
+      (isMarathi ? data.foodTypeNameMr : data.foodTypeNameEn) ||
+      data.foodTypeName ||
+      "-"
+    );
+  };
+
+  // GET: Load menu items
   const loadMenuItems = useCallback(async () => {
     try {
       setLoading(true);
@@ -87,25 +193,29 @@ function MenuItemPage() {
       setTotalRecords(response.totalRecords ?? 0);
     } catch (err) {
       console.error("Failed to load menu items:", err);
-      setError("Menu items could not be loaded. Please check the API.");
+
+      setError(t("menuItem.loadItemsFailed"));
     } finally {
       setLoading(false);
     }
-  }, [pageNumber]);
+  }, [pageNumber, t]);
 
+  // GET: Load categories
   const loadCategories = useCallback(async () => {
     try {
       setLoadingCategories(true);
 
       const response = await getMenuCategories();
+
       setCategories(Array.isArray(response) ? response : []);
     } catch (err) {
       console.error("Failed to load categories:", err);
-      setError("Categories could not be loaded. Please check the API.");
+
+      setError(t("menuItem.loadCategoriesFailed"));
     } finally {
       setLoadingCategories(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadMenuItems();
@@ -115,6 +225,7 @@ function MenuItemPage() {
     void loadCategories();
   }, [loadCategories]);
 
+  // GET: Load subcategories based on selected category
   useEffect(() => {
     const categoryId = formData.menuCategoryId;
 
@@ -148,9 +259,8 @@ function MenuItemPage() {
 
         if (!cancelled) {
           setSubCategories([]);
-          setError(
-            "Subcategories could not be loaded. Check the API endpoint and response."
-          );
+
+          setError(t("menuItem.loadSubCategoriesFailed"));
         }
       } finally {
         if (!cancelled) {
@@ -164,8 +274,9 @@ function MenuItemPage() {
     return () => {
       cancelled = true;
     };
-  }, [formData.menuCategoryId]);
+  }, [formData.menuCategoryId, t]);
 
+  // Handle input changes
   const handleChange = (
     event: ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -179,6 +290,7 @@ function MenuItemPage() {
         menuCategoryId: value,
         menuSubCategoryId: "",
       }));
+
       return;
     }
 
@@ -191,8 +303,9 @@ function MenuItemPage() {
     }));
   };
 
+  // Reset form
   const resetForm = () => {
-    setFormData(emptyForm);
+    setFormData({ ...emptyForm });
     setSubCategories([]);
     setEditingId(null);
     setShowForm(false);
@@ -200,11 +313,13 @@ function MenuItemPage() {
     setError("");
   };
 
+  // CREATE
   const handleCreate = () => {
     resetForm();
     setShowForm(true);
   };
 
+  // EDIT
   const handleEdit = async (id: string) => {
     try {
       setError("");
@@ -231,12 +346,15 @@ function MenuItemPage() {
       setShowForm(true);
     } catch (err) {
       console.error("Failed to load menu item:", err);
-      setError("Menu item details could not be loaded.");
+
+      setError(t("menuItem.loadItemDetailsFailed"));
     }
   };
 
+  // CREATE / UPDATE
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     setMessage("");
     setError("");
 
@@ -247,24 +365,22 @@ function MenuItemPage() {
       !formData.mealTypeId ||
       !formData.foodTypeId
     ) {
-      setError(
-        "Please enter Kitchen ID and select Category, Subcategory, Meal Type and Food Type."
-      );
+      setError(t("menuItem.requiredSelections"));
       return;
     }
 
     if (!formData.name.trim()) {
-      setError("Menu item name is required.");
+      setError(t("menuItem.nameRequired"));
       return;
     }
 
     if (formData.price <= 0) {
-      setError("Please enter a price greater than zero.");
+      setError(t("menuItem.invalidPrice"));
       return;
     }
 
     if (formData.preparationTimeMinutes < 0) {
-      setError("Preparation time cannot be negative.");
+      setError(t("menuItem.invalidPreparationTime"));
       return;
     }
 
@@ -284,13 +400,14 @@ function MenuItemPage() {
           id: editingId,
         } as MenuItemInput);
 
-        setMessage("Menu item updated successfully.");
+        setMessage(t("menuItem.updateSuccess"));
       } else {
         await createMenuItem(payload);
-        setMessage("Menu item created successfully.");
+
+        setMessage(t("menuItem.createSuccess"));
       }
 
-      setFormData(emptyForm);
+      setFormData({ ...emptyForm });
       setSubCategories([]);
       setEditingId(null);
       setShowForm(false);
@@ -298,16 +415,16 @@ function MenuItemPage() {
       await loadMenuItems();
     } catch (err) {
       console.error("Failed to save menu item:", err);
-      setError(
-        "Menu item could not be saved. Please check the API request format."
-      );
+
+      setError(t("menuItem.saveFailed"));
     } finally {
       setSaving(false);
     }
   };
 
+  // DELETE
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this menu item?")) {
+    if (!window.confirm(t("menuItem.deleteConfirmation"))) {
       return;
     }
 
@@ -316,7 +433,8 @@ function MenuItemPage() {
       setMessage("");
 
       await deleteMenuItem(id);
-      setMessage("Menu item deleted successfully.");
+
+      setMessage(t("menuItem.deleteSuccess"));
 
       if (menuItems.length === 1 && pageNumber > 1) {
         setPageNumber((previous) => previous - 1);
@@ -325,15 +443,18 @@ function MenuItemPage() {
       }
     } catch (err) {
       console.error("Failed to delete menu item:", err);
-      setError("Menu item could not be deleted.");
+
+      setError(t("menuItem.deleteFailed"));
     }
   };
 
+  // Pagination
   const pageNumbers = useMemo(() => {
     const start = Math.max(
       1,
       Math.min(pageNumber - 2, totalPages - 4)
     );
+
     const end = Math.min(totalPages, start + 4);
 
     return Array.from(
@@ -346,8 +467,8 @@ function MenuItemPage() {
     <div className="menu-item-page">
       <div className="menu-item-header">
         <div>
-          <h2>Menu Item Management</h2>
-          <p>Manage your kitchen menu items.</p>
+          <h2>{t("menuItem.pageTitle")}</h2>
+          <p>{t("menuItem.pageDescription")}</p>
         </div>
 
         <button
@@ -355,32 +476,47 @@ function MenuItemPage() {
           className="menu-item-create-btn"
           onClick={handleCreate}
         >
-          + Add Menu Item
+          + {t("menuItem.addButton")}
         </button>
       </div>
 
-      {message && <div className="menu-item-message">{message}</div>}
-      {error && <div className="menu-item-error">{error}</div>}
+      {message && (
+        <div className="menu-item-message">{message}</div>
+      )}
+
+      {error && (
+        <div className="menu-item-error">{error}</div>
+      )}
 
       {showForm && (
         <form className="menu-item-form" onSubmit={handleSubmit}>
-          <h3>{editingId ? "Update Menu Item" : "Create Menu Item"}</h3>
+          <h3>
+            {editingId
+              ? t("menuItem.updateTitle")
+              : t("menuItem.createTitle")}
+          </h3>
 
           <div className="menu-item-form-grid">
             <div className="menu-item-field">
-              <label htmlFor="kitchenId">Kitchen ID *</label>
+              <label htmlFor="kitchenId">
+                {t("menuItem.kitchenId")} *
+              </label>
+
               <input
                 id="kitchenId"
                 name="kitchenId"
                 value={formData.kitchenId}
                 onChange={handleChange}
-                placeholder="Enter kitchen ID"
+                placeholder={t("menuItem.kitchenIdPlaceholder")}
                 required
               />
             </div>
 
             <div className="menu-item-field">
-              <label htmlFor="menuCategoryId">Category *</label>
+              <label htmlFor="menuCategoryId">
+                {t("menuItem.category")} *
+              </label>
+
               <select
                 id="menuCategoryId"
                 name="menuCategoryId"
@@ -391,22 +527,25 @@ function MenuItemPage() {
               >
                 <option value="">
                   {loadingCategories
-                    ? "Loading categories..."
-                    : "Select Category"}
+                    ? t("menuItem.loadingCategories")
+                    : t("menuItem.selectCategory")}
                 </option>
 
                 {categories
                   .filter((category) => category.isActive !== false)
                   .map((category) => (
                     <option key={category.id} value={category.id}>
-                      {category.name}
+                      {getCategoryName(category)}
                     </option>
                   ))}
               </select>
             </div>
 
             <div className="menu-item-field">
-              <label htmlFor="menuSubCategoryId">Subcategory *</label>
+              <label htmlFor="menuSubCategoryId">
+                {t("menuItem.subcategory")} *
+              </label>
+
               <select
                 id="menuSubCategoryId"
                 name="menuSubCategoryId"
@@ -419,36 +558,42 @@ function MenuItemPage() {
               >
                 <option value="">
                   {!formData.menuCategoryId
-                    ? "Select Category First"
+                    ? t("menuItem.selectCategoryFirst")
                     : loadingSubCategories
-                      ? "Loading subcategories..."
+                      ? t("menuItem.loadingSubcategories")
                       : subCategories.length === 0
-                        ? "No subcategories found"
-                        : "Select Subcategory"}
+                        ? t("menuItem.noSubcategories")
+                        : t("menuItem.selectSubcategory")}
                 </option>
 
                 {subCategories.map((subcategory) => (
                   <option key={subcategory.id} value={subcategory.id}>
-                    {subcategory.name}
+                    {getSubCategoryName(subcategory)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="menu-item-field">
-              <label htmlFor="name">Menu Item Name *</label>
+              <label htmlFor="name">
+                {t("menuItem.itemName")} *
+              </label>
+
               <input
                 id="name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="e.g. Veg Thali"
+                placeholder={t("menuItem.itemNamePlaceholder")}
                 required
               />
             </div>
 
             <div className="menu-item-field">
-              <label htmlFor="mealTypeId">Meal Type *</label>
+              <label htmlFor="mealTypeId">
+                {t("menuItem.mealType")} *
+              </label>
+
               <select
                 id="mealTypeId"
                 name="mealTypeId"
@@ -456,17 +601,23 @@ function MenuItemPage() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Select Meal Type</option>
+                <option value="">
+                  {t("menuItem.selectMealType")}
+                </option>
+
                 {mealTypes.map((type) => (
                   <option key={type.id} value={type.id}>
-                    {type.name}
+                    {t(`menuItem.mealTypes.${type.name}`)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="menu-item-field">
-              <label htmlFor="foodTypeId">Food Type *</label>
+              <label htmlFor="foodTypeId">
+                {t("menuItem.foodType")} *
+              </label>
+
               <select
                 id="foodTypeId"
                 name="foodTypeId"
@@ -474,17 +625,23 @@ function MenuItemPage() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Select Food Type</option>
+                <option value="">
+                  {t("menuItem.selectFoodType")}
+                </option>
+
                 {foodTypes.map((type) => (
                   <option key={type.id} value={type.id}>
-                    {type.name}
+                    {t(`menuItem.foodTypes.${type.name}`)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="menu-item-field">
-              <label htmlFor="price">Price (₹) *</label>
+              <label htmlFor="price">
+                {t("menuItem.price")} (₹) *
+              </label>
+
               <input
                 id="price"
                 name="price"
@@ -499,8 +656,9 @@ function MenuItemPage() {
 
             <div className="menu-item-field">
               <label htmlFor="preparationTimeMinutes">
-                Preparation Time (Minutes) *
+                {t("menuItem.preparationTime")} *
               </label>
+
               <input
                 id="preparationTimeMinutes"
                 name="preparationTimeMinutes"
@@ -513,30 +671,39 @@ function MenuItemPage() {
             </div>
 
             <div className="menu-item-field menu-item-full-width">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">
+                {t("menuItem.description")}
+              </label>
+
               <textarea
                 id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Enter menu item description"
+                placeholder={t("menuItem.descriptionPlaceholder")}
                 rows={3}
               />
             </div>
 
             <div className="menu-item-field menu-item-full-width">
-              <label htmlFor="imageUrl">Image URL (Optional)</label>
+              <label htmlFor="imageUrl">
+                {t("menuItem.imageUrl")}
+              </label>
+
               <input
                 id="imageUrl"
                 name="imageUrl"
                 value={formData.imageUrl ?? ""}
                 onChange={handleChange}
-                placeholder="Enter image URL"
+                placeholder={t("menuItem.imageUrlPlaceholder")}
               />
             </div>
 
             <div className="menu-item-field menu-item-checkbox">
-              <label htmlFor="isAvailable">Available</label>
+              <label htmlFor="isAvailable">
+                {t("menuItem.available")}
+              </label>
+
               <input
                 id="isAvailable"
                 name="isAvailable"
@@ -555,10 +722,10 @@ function MenuItemPage() {
           <div className="menu-item-form-actions">
             <button type="submit" disabled={saving}>
               {saving
-                ? "Saving..."
+                ? t("menuItem.saving")
                 : editingId
-                  ? "Update Menu Item"
-                  : "Create Menu Item"}
+                  ? t("menuItem.updateButton")
+                  : t("menuItem.createButton")}
             </button>
 
             <button
@@ -566,7 +733,7 @@ function MenuItemPage() {
               className="menu-item-cancel-btn"
               onClick={resetForm}
             >
-              Cancel
+              {t("menuItem.cancel")}
             </button>
           </div>
         </form>
@@ -574,36 +741,48 @@ function MenuItemPage() {
 
       <div className="menu-item-table-container">
         {loading ? (
-          <p className="menu-item-loading">Loading menu items...</p>
+          <p className="menu-item-loading">
+            {t("menuItem.loadingItems")}
+          </p>
         ) : menuItems.length === 0 ? (
-          <p className="menu-item-empty">No menu items found.</p>
+          <p className="menu-item-empty">
+            {t("menuItem.noItems")}
+          </p>
         ) : (
           <table className="menu-item-table">
             <thead>
               <tr>
-                <th>Sr. No.</th>
-                <th>Menu Item</th>
-                <th>Category</th>
-                <th>Meal Type</th>
-                <th>Food Type</th>
-                <th>Price</th>
-                <th>Available</th>
-                <th>Actions</th>
+                <th>{t("menuItem.serialNumber")}</th>
+                <th>{t("menuItem.menuItem")}</th>
+                <th>{t("menuItem.category")}</th>
+                <th>{t("menuItem.mealType")}</th>
+                <th>{t("menuItem.foodType")}</th>
+                <th>{t("menuItem.price")}</th>
+                <th>{t("menuItem.available")}</th>
+                <th>{t("menuItem.actions")}</th>
               </tr>
             </thead>
 
             <tbody>
               {menuItems.map((item, index) => (
                 <tr key={item.id}>
-                  <td>{(pageNumber - 1) * PAGE_SIZE + index + 1}</td>
                   <td>
-                    <strong>{item.name}</strong>
-                    <small>{item.description || "No description"}</small>
+                    {(pageNumber - 1) * PAGE_SIZE + index + 1}
                   </td>
-                  <td>{item.categoryName || "-"}</td>
-                  <td>{item.mealTypeName || "-"}</td>
-                  <td>{item.foodTypeName || "-"}</td>
+
+                  <td>
+                    <strong>{getItemName(item)}</strong>
+                    <small>{getItemDescription(item)}</small>
+                  </td>
+
+                  <td>{getItemCategoryName(item)}</td>
+
+                  <td>{getItemMealTypeName(item)}</td>
+
+                  <td>{getItemFoodTypeName(item)}</td>
+
                   <td>₹{Number(item.price).toFixed(2)}</td>
+
                   <td>
                     <span
                       className={
@@ -612,25 +791,30 @@ function MenuItemPage() {
                           : "menu-item-status unavailable"
                       }
                     >
-                      {item.isAvailable ? "Available" : "Unavailable"}
+                      {item.isAvailable
+                        ? t("menuItem.available")
+                        : t("menuItem.unavailable")}
                     </span>
                   </td>
+
                   <td>
                     <div className="menu-item-actions">
                       <button
                         type="button"
                         className="menu-item-edit-btn"
                         onClick={() => void handleEdit(item.id)}
+                        disabled={saving}
                       >
-                        Edit
+                        {t("menuItem.edit")}
                       </button>
 
                       <button
                         type="button"
                         className="menu-item-delete-btn"
                         onClick={() => void handleDelete(item.id)}
+                        disabled={saving}
                       >
-                        Delete
+                        {t("menuItem.delete")}
                       </button>
                     </div>
                   </td>
@@ -643,7 +827,8 @@ function MenuItemPage() {
 
       <div className="menu-item-pagination">
         <span>
-          Total Records: {totalRecords} | Page {pageNumber} of {totalPages}
+          {t("menuItem.totalRecords")}: {totalRecords} |{" "}
+          {t("menuItem.page")} {pageNumber} {t("menuItem.of")} {totalPages}
         </span>
 
         <div className="menu-item-page-buttons">
@@ -652,7 +837,7 @@ function MenuItemPage() {
             disabled={pageNumber === 1 || loading}
             onClick={() => setPageNumber(1)}
           >
-            First
+            {t("menuItem.first")}
           </button>
 
           <button
@@ -660,7 +845,7 @@ function MenuItemPage() {
             disabled={pageNumber === 1 || loading}
             onClick={() => setPageNumber((page) => page - 1)}
           >
-            Previous
+            {t("menuItem.previous")}
           </button>
 
           {pageNumbers.map((page) => (
@@ -680,7 +865,7 @@ function MenuItemPage() {
             disabled={pageNumber === totalPages || loading}
             onClick={() => setPageNumber((page) => page + 1)}
           >
-            Next
+            {t("menuItem.next")}
           </button>
 
           <button
@@ -688,7 +873,7 @@ function MenuItemPage() {
             disabled={pageNumber === totalPages || loading}
             onClick={() => setPageNumber(totalPages)}
           >
-            Last
+            {t("menuItem.last")}
           </button>
         </div>
       </div>

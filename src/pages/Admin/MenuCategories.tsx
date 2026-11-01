@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { ChangeEvent, FormEvent } from "react";
 
 import {
@@ -13,6 +14,13 @@ import {
 
 import "./MenuCategories.css";
 
+type LocalizedMenuCategory = MenuCategory & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+};
+
 const emptyForm: MenuCategoryInput = {
   name: "",
   kitchenId: "",
@@ -21,6 +29,8 @@ const emptyForm: MenuCategoryInput = {
 };
 
 function MenuCategories() {
+  const { t, i18n } = useTranslation();
+
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [formData, setFormData] =
     useState<MenuCategoryInput>({ ...emptyForm });
@@ -35,6 +45,31 @@ function MenuCategories() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  const currentLanguage = i18n.resolvedLanguage || i18n.language;
+  const isMarathi = currentLanguage.startsWith("mr");
+
+  // Get localized category name
+  const getCategoryName = (category: MenuCategory) => {
+    const item = category as LocalizedMenuCategory;
+
+    return (
+      (isMarathi ? item.nameMr : item.nameEn) ||
+      item.name ||
+      "-"
+    );
+  };
+
+  // Get localized category description
+  const getCategoryDescription = (category: MenuCategory) => {
+    const item = category as LocalizedMenuCategory;
+
+    return (
+      (isMarathi ? item.descriptionMr : item.descriptionEn) ||
+      item.description ||
+      "-"
+    );
+  };
+
   // GET: Load categories
   const loadCategories = useCallback(async () => {
     try {
@@ -48,12 +83,11 @@ function MenuCategories() {
       );
     } catch (err) {
       console.error("Get Menu Categories error:", err);
-
-      setError("Failed to load menu categories. Please check the API.");
+      setError(t("menuCategories.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadCategories();
@@ -112,10 +146,10 @@ function MenuCategories() {
 
       if (editingCategory) {
         await updateMenuCategory(editingCategory.id, formData);
-        setMessage("Menu category updated successfully.");
+        setMessage(t("menuCategories.updateSuccess"));
       } else {
         await createMenuCategory(formData);
-        setMessage("Menu category created successfully.");
+        setMessage(t("menuCategories.createSuccess"));
       }
 
       setFormData({ ...emptyForm });
@@ -125,9 +159,7 @@ function MenuCategories() {
     } catch (err) {
       console.error("Save Menu Category error:", err);
 
-      setError(
-        "Failed to save menu category. Check the API response and try again."
-      );
+      setError(t("menuCategories.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -136,7 +168,7 @@ function MenuCategories() {
   // DELETE
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this menu category?"
+      t("menuCategories.deleteConfirmation")
     );
 
     if (!confirmed) return;
@@ -148,7 +180,7 @@ function MenuCategories() {
 
       await deleteMenuCategory(id);
 
-      setMessage("Menu category deleted successfully.");
+      setMessage(t("menuCategories.deleteSuccess"));
 
       if (editingCategory?.id === id) {
         resetForm();
@@ -157,7 +189,7 @@ function MenuCategories() {
       await loadCategories();
     } catch (err) {
       console.error("Delete Menu Category error:", err);
-      setError("Failed to delete menu category.");
+      setError(t("menuCategories.deleteFailed"));
     } finally {
       setDeletingId(null);
     }
@@ -167,9 +199,12 @@ function MenuCategories() {
     <div className="container-fluid py-4 menu-categories-page">
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
-          <h2 className="menu-page-title">Menu Categories</h2>
+          <h2 className="menu-page-title">
+            {t("menuCategories.pageTitle")}
+          </h2>
+
           <p className="text-muted mb-0">
-            Create and manage your kitchen menu categories.
+            {t("menuCategories.pageDescription")}
           </p>
         </div>
 
@@ -178,7 +213,7 @@ function MenuCategories() {
           className="btn category-primary-btn"
           onClick={resetForm}
         >
-          + Add Category
+          + {t("menuCategories.addCategory")}
         </button>
       </div>
 
@@ -199,14 +234,14 @@ function MenuCategories() {
         <div className="card-body p-4">
           <h5 className="category-section-title">
             {editingCategory
-              ? "Update Menu Category"
-              : "Create Menu Category"}
+              ? t("menuCategories.updateTitle")
+              : t("menuCategories.createTitle")}
           </h5>
 
           <p className="text-muted mb-4">
             {editingCategory
-              ? "Update the category information below."
-              : "Fill in the category information below."}
+              ? t("menuCategories.updateDescription")
+              : t("menuCategories.createDescription")}
           </p>
 
           <form onSubmit={handleSubmit}>
@@ -214,7 +249,7 @@ function MenuCategories() {
               {editingCategory && (
                 <div className="col-12">
                   <label className="form-label" htmlFor="categoryId">
-                    Category ID
+                    {t("menuCategories.categoryId")}
                   </label>
 
                   <input
@@ -229,7 +264,8 @@ function MenuCategories() {
 
               <div className="col-md-6">
                 <label className="form-label" htmlFor="categoryName">
-                  Category Name <span className="required-star">*</span>
+                  {t("menuCategories.categoryName")}{" "}
+                  <span className="required-star">*</span>
                 </label>
 
                 <input
@@ -239,14 +275,15 @@ function MenuCategories() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Enter category name"
+                  placeholder={t("menuCategories.categoryNamePlaceholder")}
                   required
                 />
               </div>
 
               <div className="col-md-6">
                 <label className="form-label" htmlFor="kitchenId">
-                  Kitchen ID <span className="required-star">*</span>
+                  {t("menuCategories.kitchenId")}{" "}
+                  <span className="required-star">*</span>
                 </label>
 
                 <input
@@ -256,7 +293,7 @@ function MenuCategories() {
                   name="kitchenId"
                   value={formData.kitchenId ?? ""}
                   onChange={handleChange}
-                  placeholder="Enter kitchen ID"
+                  placeholder={t("menuCategories.kitchenIdPlaceholder")}
                   required
                 />
               </div>
@@ -266,7 +303,7 @@ function MenuCategories() {
                   className="form-label"
                   htmlFor="categoryDescription"
                 >
-                  Description
+                  {t("menuCategories.description")}
                 </label>
 
                 <textarea
@@ -275,7 +312,7 @@ function MenuCategories() {
                   name="description"
                   value={formData.description ?? ""}
                   onChange={handleChange}
-                  placeholder="Enter category description"
+                  placeholder={t("menuCategories.descriptionPlaceholder")}
                   rows={3}
                 />
               </div>
@@ -299,7 +336,7 @@ function MenuCategories() {
                     className="form-check-label"
                     htmlFor="categoryActive"
                   >
-                    Active Category
+                    {t("menuCategories.activeCategory")}
                   </label>
                 </div>
               </div>
@@ -311,10 +348,10 @@ function MenuCategories() {
                   disabled={saving}
                 >
                   {saving
-                    ? "Saving..."
+                    ? t("menuCategories.saving")
                     : editingCategory
-                      ? "Update Category"
-                      : "Create Menu Category"}
+                      ? t("menuCategories.updateCategory")
+                      : t("menuCategories.createCategory")}
                 </button>
 
                 {editingCategory && (
@@ -324,7 +361,7 @@ function MenuCategories() {
                     onClick={resetForm}
                     disabled={saving}
                   >
-                    Cancel
+                    {t("menuCategories.cancel")}
                   </button>
                 )}
               </div>
@@ -336,7 +373,7 @@ function MenuCategories() {
       {/* Category list */}
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <h5 className="category-section-title mb-0">
-          All Menu Categories
+          {t("menuCategories.allCategories")}
         </h5>
 
         <button
@@ -346,7 +383,9 @@ function MenuCategories() {
           disabled={loading}
         >
           <i className="bi bi-arrow-clockwise me-1" />
-          {loading ? "Loading..." : "Refresh"}
+          {loading
+            ? t("menuCategories.loading")
+            : t("menuCategories.refresh")}
         </button>
       </div>
 
@@ -357,10 +396,13 @@ function MenuCategories() {
               className="spinner-border category-spinner"
               role="status"
             >
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">
+                {t("menuCategories.loading")}
+              </span>
             </div>
+
             <p className="text-muted mt-3 mb-0">
-              Loading categories...
+              {t("menuCategories.loadingCategories")}
             </p>
           </div>
         </div>
@@ -370,11 +412,11 @@ function MenuCategories() {
             <table className="table table-hover align-middle mb-0">
               <thead>
                 <tr>
-                  <th>Category Name</th>
-                  <th>Description</th>
-                  <th>Kitchen ID</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>{t("menuCategories.categoryName")}</th>
+                  <th>{t("menuCategories.description")}</th>
+                  <th>{t("menuCategories.kitchenId")}</th>
+                  <th>{t("menuCategories.status")}</th>
+                  <th>{t("menuCategories.actions")}</th>
                 </tr>
               </thead>
 
@@ -383,10 +425,12 @@ function MenuCategories() {
                   categories.map((category) => (
                     <tr key={category.id}>
                       <td className="fw-semibold">
-                        {category.name}
+                        {getCategoryName(category)}
                       </td>
 
-                      <td>{category.description || "-"}</td>
+                      <td>
+                        {getCategoryDescription(category)}
+                      </td>
 
                       <td className="category-kitchen-id">
                         {category.kitchenId || "-"}
@@ -401,8 +445,8 @@ function MenuCategories() {
                           }`}
                         >
                           {category.isActive === false
-                            ? "Inactive"
-                            : "Active"}
+                            ? t("menuCategories.inactive")
+                            : t("menuCategories.active")}
                         </span>
                       </td>
 
@@ -413,7 +457,7 @@ function MenuCategories() {
                           onClick={() => handleEdit(category)}
                           disabled={saving || deletingId !== null}
                         >
-                          Edit
+                          {t("menuCategories.edit")}
                         </button>
 
                         <button
@@ -422,7 +466,9 @@ function MenuCategories() {
                           onClick={() => void handleDelete(category.id)}
                           disabled={deletingId !== null || saving}
                         >
-                          {deletingId === category.id ? "Deleting..." : "Delete"}
+                          {deletingId === category.id
+                            ? t("menuCategories.deleting")
+                            : t("menuCategories.delete")}
                         </button>
                       </td>
                     </tr>
@@ -433,7 +479,7 @@ function MenuCategories() {
                       colSpan={5}
                       className="text-center py-5 text-muted"
                     >
-                      No menu categories found.
+                      {t("menuCategories.noCategories")}
                     </td>
                   </tr>
                 )}

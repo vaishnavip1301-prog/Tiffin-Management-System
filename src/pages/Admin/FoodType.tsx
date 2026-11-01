@@ -1,5 +1,8 @@
+
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   getFoodTypes,
   getFoodTypeById,
@@ -9,7 +12,15 @@ import {
   type FoodType,
   type FoodTypeInput,
 } from "../../api/foodTypeService";
+
 import "./FoodType.css";
+
+type LocalizedFoodType = FoodType & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+};
 
 const emptyForm: FoodTypeInput = {
   name: "",
@@ -18,6 +29,10 @@ const emptyForm: FoodTypeInput = {
 };
 
 function FoodTypePage() {
+  const { t, i18n } = useTranslation();
+
+  const isMarathi = i18n.language.startsWith("mr");
+
   const [foodTypes, setFoodTypes] = useState<FoodType[]>([]);
   const [formData, setFormData] = useState<FoodTypeInput>({
     ...emptyForm,
@@ -30,6 +45,26 @@ function FoodTypePage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const getFoodTypeName = (item: FoodType) => {
+    const localizedItem = item as LocalizedFoodType;
+
+    if (isMarathi) {
+      return localizedItem.nameMr || item.name || "";
+    }
+
+    return localizedItem.nameEn || item.name || "";
+  };
+
+  const getFoodTypeDescription = (item: FoodType) => {
+    const localizedItem = item as LocalizedFoodType;
+
+    if (isMarathi) {
+      return localizedItem.descriptionMr || item.description || "—";
+    }
+
+    return localizedItem.descriptionEn || item.description || "—";
+  };
+
   const loadFoodTypes = useCallback(async () => {
     setLoading(true);
 
@@ -39,13 +74,11 @@ function FoodTypePage() {
       setError("");
     } catch (err) {
       console.error("Food Type GET error:", err);
-      setError(
-        "Failed to load food types. Please check the API connection."
-      );
+      setError(t("foodType.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadFoodTypes();
@@ -93,6 +126,7 @@ function FoodTypePage() {
     try {
       const item = await getFoodTypeById(id);
 
+      // Keep original API values in the form.
       setFormData({
         name: item.name ?? "",
         description: item.description ?? "",
@@ -103,7 +137,7 @@ function FoodTypePage() {
       setShowForm(true);
     } catch (err) {
       console.error("Food Type GET by ID error:", err);
-      setError("Failed to load the selected food type.");
+      setError(t("foodType.detailsLoadFailed"));
     }
   };
 
@@ -119,17 +153,12 @@ function FoodTypePage() {
     const displayOrder = Number(formData.displayOrder);
 
     if (!name) {
-      setError("Food Type Name is required.");
+      setError(t("foodType.requiredName"));
       return;
     }
 
-    if (
-      !Number.isInteger(displayOrder) ||
-      displayOrder < 1
-    ) {
-      setError(
-        "Display Order must be a positive whole number."
-      );
+    if (!Number.isInteger(displayOrder) || displayOrder < 1) {
+      setError(t("foodType.invalidDisplayOrder"));
       return;
     }
 
@@ -144,30 +173,25 @@ function FoodTypePage() {
     try {
       if (editingId) {
         await updateFoodType(editingId, payload);
-        setMessage("Food Type updated successfully.");
+        setMessage(t("foodType.updateSuccess"));
       } else {
         await createFoodType(payload);
-        setMessage("Food Type created successfully.");
+        setMessage(t("foodType.createSuccess"));
       }
 
       resetForm();
       await loadFoodTypes();
     } catch (err) {
       console.error("Food Type save error:", err);
-      setError(
-        "Failed to save Food Type. Please check the API response."
-      );
+      setError(t("foodType.saveFailed"));
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDelete = async (
-    id: string,
-    name: string
-  ) => {
+  const handleDelete = async (id: string, name: string) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${name}"?`
+      t("foodType.deleteConfirmation", { name })
     );
 
     if (!confirmed) return;
@@ -178,7 +202,7 @@ function FoodTypePage() {
 
     try {
       await deleteFoodType(id);
-      setMessage("Food Type deleted successfully.");
+      setMessage(t("foodType.deleteSuccess"));
 
       if (editingId === id) {
         resetForm();
@@ -187,9 +211,7 @@ function FoodTypePage() {
       await loadFoodTypes();
     } catch (err) {
       console.error("Food Type DELETE error:", err);
-      setError(
-        "Failed to delete Food Type. Please check the API response."
-      );
+      setError(t("foodType.deleteFailed"));
     } finally {
       setDeletingId(null);
     }
@@ -199,10 +221,8 @@ function FoodTypePage() {
     <main className="food-type-page">
       <header className="food-type-header">
         <div>
-          <h2>Food Type Management</h2>
-          <p>
-            Manage food classifications for Aapla Dabba.
-          </p>
+          <h2>{t("foodType.pageTitle")}</h2>
+          <p>{t("foodType.pageDescription")}</p>
         </div>
 
         <button
@@ -210,28 +230,19 @@ function FoodTypePage() {
           className="food-type-create-btn"
           onClick={handleCreate}
         >
-          <i
-            className="bi bi-plus-lg"
-            aria-hidden="true"
-          />
-          <span>Create Food Type</span>
+          <i className="bi bi-plus-lg" aria-hidden="true" />
+          <span>{t("foodType.createButton")}</span>
         </button>
       </header>
 
       {message && (
-        <div
-          className="food-type-alert success"
-          role="status"
-        >
+        <div className="food-type-alert success" role="status">
           {message}
         </div>
       )}
 
       {error && (
-        <div
-          className="food-type-alert error"
-          role="alert"
-        >
+        <div className="food-type-alert error" role="alert">
           {error}
         </div>
       )}
@@ -241,8 +252,8 @@ function FoodTypePage() {
           <div className="food-type-form-heading">
             <h3>
               {editingId
-                ? "Edit Food Type"
-                : "Create Food Type"}
+                ? t("foodType.editTitle")
+                : t("foodType.createTitle")}
             </h3>
 
             <button
@@ -250,13 +261,10 @@ function FoodTypePage() {
               className="food-type-close-btn"
               onClick={resetForm}
               disabled={saving}
-              aria-label="Close form"
-              title="Close"
+              aria-label={t("foodType.closeForm")}
+              title={t("foodType.closeForm")}
             >
-              <i
-                className="bi bi-x-lg"
-                aria-hidden="true"
-              />
+              <i className="bi bi-x-lg" aria-hidden="true" />
             </button>
           </div>
 
@@ -264,7 +272,7 @@ function FoodTypePage() {
             <div className="food-type-form-grid">
               <div className="food-type-field">
                 <label htmlFor="foodTypeName">
-                  Food Type Name *
+                  {t("foodType.name")} *
                 </label>
 
                 <input
@@ -273,7 +281,7 @@ function FoodTypePage() {
                   type="text"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="e.g. Vegetarian"
+                  placeholder={t("foodType.namePlaceholder")}
                   maxLength={100}
                   required
                 />
@@ -281,7 +289,7 @@ function FoodTypePage() {
 
               <div className="food-type-field">
                 <label htmlFor="foodTypeOrder">
-                  Display Order *
+                  {t("foodType.displayOrder")} *
                 </label>
 
                 <input
@@ -298,7 +306,7 @@ function FoodTypePage() {
 
               <div className="food-type-field full-width">
                 <label htmlFor="foodTypeDescription">
-                  Description
+                  {t("foodType.description")}
                 </label>
 
                 <textarea
@@ -306,7 +314,7 @@ function FoodTypePage() {
                   name="description"
                   value={formData.description ?? ""}
                   onChange={handleChange}
-                  placeholder="Enter a short description"
+                  placeholder={t("foodType.descriptionPlaceholder")}
                   rows={3}
                   maxLength={500}
                 />
@@ -320,7 +328,7 @@ function FoodTypePage() {
                 onClick={resetForm}
                 disabled={saving}
               >
-                Cancel
+                {t("foodType.cancel")}
               </button>
 
               <button
@@ -329,10 +337,10 @@ function FoodTypePage() {
                 disabled={saving}
               >
                 {saving
-                  ? "Saving..."
+                  ? t("foodType.saving")
                   : editingId
-                    ? "Update Food Type"
-                    : "Create Food Type"}
+                    ? t("foodType.updateButton")
+                    : t("foodType.createButton")}
               </button>
             </div>
           </form>
@@ -341,65 +349,59 @@ function FoodTypePage() {
 
       <section className="food-type-table-card">
         <div className="food-type-table-heading">
-          <h3>Food Types</h3>
+          <h3>{t("foodType.tableTitle")}</h3>
 
           <span>
-            {foodTypes.length}{" "}
-            {foodTypes.length === 1 ? "record" : "records"}
+            {t("foodType.recordCount", {
+              count: foodTypes.length,
+            })}
           </span>
         </div>
 
         {loading ? (
-          <div
-            className="food-type-loading"
-            role="status"
-          >
+          <div className="food-type-loading" role="status">
             <span
               className="food-type-spinner"
               aria-hidden="true"
             />
-            Loading food types...
+            {t("foodType.loading")}
           </div>
         ) : (
           <div className="food-type-table-wrapper">
             <table className="food-type-table">
               <thead>
                 <tr>
-                  <th scope="col">Sr. No.</th>
-                  <th scope="col">Food Type</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Display Order</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Actions</th>
+                  <th scope="col">{t("foodType.serialNumber")}</th>
+                  <th scope="col">{t("foodType.name")}</th>
+                  <th scope="col">{t("foodType.description")}</th>
+                  <th scope="col">{t("foodType.displayOrder")}</th>
+                  <th scope="col">{t("foodType.status")}</th>
+                  <th scope="col">{t("foodType.actions")}</th>
                 </tr>
               </thead>
 
               <tbody>
                 {foodTypes.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={6}
-                      className="food-type-empty"
-                    >
-                      No food types found.
+                    <td colSpan={6} className="food-type-empty">
+                      {t("foodType.noRecords")}
                     </td>
                   </tr>
                 ) : (
                   [...foodTypes]
                     .sort(
-                      (a, b) =>
-                        a.displayOrder - b.displayOrder
+                      (a, b) => a.displayOrder - b.displayOrder
                     )
                     .map((item, index) => (
                       <tr key={item.id}>
                         <td>{index + 1}</td>
 
                         <td className="food-type-name">
-                          {item.name}
+                          {getFoodTypeName(item)}
                         </td>
 
                         <td className="food-type-description">
-                          {item.description?.trim() || "—"}
+                          {getFoodTypeDescription(item)}
                         </td>
 
                         <td>{item.displayOrder}</td>
@@ -407,9 +409,7 @@ function FoodTypePage() {
                         <td>
                           <span
                             className={`food-type-status ${
-                              item.isActive
-                                ? "active"
-                                : "inactive"
+                              item.isActive ? "active" : "inactive"
                             }`}
                           >
                             <span
@@ -418,35 +418,44 @@ function FoodTypePage() {
                             />
 
                             {item.isActive
-                              ? "Active"
-                              : "Inactive"}
+                              ? t("foodType.active")
+                              : t("foodType.inactive")}
                           </span>
                         </td>
 
                         <td>
-                        <div className="food-type-actions">
-                          <button
-                            type="button"
-                            className="food-type-edit-btn"
-                            onClick={() => void handleEdit(item.id)}
-                            title={`Edit ${item.name}`}
-                            disabled={saving || deletingId !== null}
-                          >
-                            Edit
-                          </button>
+                          <div className="food-type-actions">
+                            <button
+                              type="button"
+                              className="food-type-edit-btn"
+                              onClick={() => void handleEdit(item.id)}
+                              title={t("foodType.editItem", {
+                                name: getFoodTypeName(item),
+                              })}
+                              disabled={saving || deletingId !== null}
+                            >
+                              {t("foodType.edit")}
+                            </button>
 
-                          <button
-                            type="button"
-                            className="food-type-delete-btn"
-                            onClick={() =>
-                              void handleDelete(item.id, item.name)
-                            }
-                            title={`Delete ${item.name}`}
-                            disabled={deletingId !== null || saving}
-                          >
-                            {deletingId === item.id ? "Deleting..." : "Delete"}
-                          </button>
-                        </div>
+                            <button
+                              type="button"
+                              className="food-type-delete-btn"
+                              onClick={() =>
+                                void handleDelete(
+                                  item.id,
+                                  getFoodTypeName(item)
+                                )
+                              }
+                              title={t("foodType.deleteItem", {
+                                name: getFoodTypeName(item),
+                              })}
+                              disabled={deletingId !== null || saving}
+                            >
+                              {deletingId === item.id
+                                ? t("foodType.deleting")
+                                : t("foodType.delete")}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))

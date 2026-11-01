@@ -1,5 +1,7 @@
+
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   getKitchen,
@@ -27,6 +29,8 @@ const emptyForm = {
 type KitchenForm = typeof emptyForm;
 
 function Kitchen() {
+  const { t } = useTranslation();
+
   const [kitchens, setKitchens] = useState<KitchenData[]>([]);
   const [formData, setFormData] = useState<KitchenForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -57,13 +61,13 @@ function Kitchen() {
       setKitchens(records);
 
       if (showMessage) {
-        setMessage("Kitchen list refreshed successfully.");
+        setMessage("listRefreshed");
         setMessageType("success");
       }
     } catch (error) {
       console.error("Get Kitchen API error:", error);
 
-      setMessage("Kitchen data could not be loaded. Please check the API endpoint.");
+      setMessage("loadFailed");
       setMessageType("danger");
     } finally {
       setLoading(false);
@@ -127,7 +131,7 @@ function Kitchen() {
     try {
       await updateKitchen(editingId, payload);
 
-      setMessage("Kitchen updated successfully.");
+      setMessage("updateSuccess");
       setMessageType("success");
 
       resetForm();
@@ -135,9 +139,7 @@ function Kitchen() {
     } catch (error) {
       console.error("Update Kitchen API error:", error);
 
-      setMessage(
-        "Kitchen update failed. Please check the UpdateKitchen API and request fields."
-      );
+      setMessage("updateFailed");
       setMessageType("danger");
     } finally {
       setSaving(false);
@@ -173,9 +175,11 @@ function Kitchen() {
       {/* Page heading */}
       <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
         <div>
-          <h2 className="fw-bold mb-1">Kitchen Management</h2>
+          <h2 className="fw-bold mb-1">
+            {t("kitchen.pageTitle")}
+          </h2>
           <p className="text-secondary mb-0">
-            View and update kitchen information.
+            {t("kitchen.pageDescription")}
           </p>
         </div>
 
@@ -186,7 +190,7 @@ function Kitchen() {
           disabled={loading}
         >
           <i className="bi bi-arrow-clockwise me-1" />
-          {loading ? "Loading..." : "Refresh"}
+          {loading ? t("kitchen.loading") : t("kitchen.refresh")}
         </button>
       </div>
 
@@ -196,11 +200,11 @@ function Kitchen() {
           className={`alert alert-${messageType} alert-dismissible fade show`}
           role="alert"
         >
-          {message}
+          {t(`kitchen.${message}`)}
           <button
             type="button"
             className="btn-close"
-            aria-label="Close"
+            aria-label={t("kitchen.close")}
             onClick={() => setMessage("")}
           />
         </div>
@@ -212,9 +216,11 @@ function Kitchen() {
           <div className="col-12 kitchen-form-wrapper">
             <div className="card border-0 shadow-sm rounded-4">
               <div className="card-header bg-white border-0 px-4 pt-4">
-                <h5 className="fw-bold mb-1">Update Kitchen</h5>
+                <h5 className="fw-bold mb-1">
+                  {t("kitchen.updateKitchen")}
+                </h5>
                 <p className="text-secondary small mb-0">
-                  Edit the kitchen information below.
+                  {t("kitchen.updateDescription")}
                 </p>
               </div>
 
@@ -223,7 +229,7 @@ function Kitchen() {
                   <div className="row g-3">
                     <div className="col-12">
                       <label className="form-label fw-semibold">
-                        Kitchen ID
+                        {t("kitchen.kitchenId")}
                       </label>
                       <input
                         className="form-control"
@@ -235,34 +241,34 @@ function Kitchen() {
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Kitchen Name *
+                        {t("kitchen.kitchenName")} *
                       </label>
                       <input
                         className="form-control"
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="Enter kitchen name"
+                        placeholder={t("kitchen.enterKitchenName")}
                         required
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Owner Name
+                        {t("kitchen.ownerName")}
                       </label>
                       <input
                         className="form-control"
                         name="ownerName"
                         value={formData.ownerName}
                         onChange={handleChange}
-                        placeholder="Enter owner name"
+                        placeholder={t("kitchen.enterOwnerName")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Mobile Number
+                        {t("kitchen.mobileNumber")}
                       </label>
                       <input
                         type="tel"
@@ -270,13 +276,13 @@ function Kitchen() {
                         name="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handleChange}
-                        placeholder="Enter mobile number"
+                        placeholder={t("kitchen.enterMobileNumber")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Email Address
+                        {t("kitchen.emailAddress")}
                       </label>
                       <input
                         type="email"
@@ -284,65 +290,65 @@ function Kitchen() {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder="Enter email address"
+                        placeholder={t("kitchen.enterEmailAddress")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        City
+                        {t("kitchen.city")}
                       </label>
                       <input
                         className="form-control"
                         name="locationCityName"
                         value={formData.locationCityName}
                         onChange={handleChange}
-                        placeholder="Enter city"
+                        placeholder={t("kitchen.enterCity")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Area
+                        {t("kitchen.area")}
                       </label>
                       <input
                         className="form-control"
                         name="locationAreaName"
                         value={formData.locationAreaName}
                         onChange={handleChange}
-                        placeholder="Enter area"
+                        placeholder={t("kitchen.enterArea")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        State
+                        {t("kitchen.state")}
                       </label>
                       <input
                         className="form-control"
                         name="locationStateName"
                         value={formData.locationStateName}
                         onChange={handleChange}
-                        placeholder="Enter state"
+                        placeholder={t("kitchen.enterState")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Postal Code
+                        {t("kitchen.postalCode")}
                       </label>
                       <input
                         className="form-control"
                         name="locationPostalCode"
                         value={formData.locationPostalCode}
                         onChange={handleChange}
-                        placeholder="Enter postal code"
+                        placeholder={t("kitchen.enterPostalCode")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Address
+                        {t("kitchen.address")}
                       </label>
                       <textarea
                         className="form-control"
@@ -350,13 +356,13 @@ function Kitchen() {
                         rows={2}
                         value={formData.locationAddressLine}
                         onChange={handleChange}
-                        placeholder="Enter kitchen address"
+                        placeholder={t("kitchen.enterAddress")}
                       />
                     </div>
 
                     <div className="col-md-6">
                       <label className="form-label fw-semibold">
-                        Landmark
+                        {t("kitchen.landmark")}
                       </label>
                       <textarea
                         className="form-control"
@@ -364,13 +370,13 @@ function Kitchen() {
                         rows={2}
                         value={formData.locationLandmark}
                         onChange={handleChange}
-                        placeholder="Enter nearby landmark"
+                        placeholder={t("kitchen.enterLandmark")}
                       />
                     </div>
 
                     <div className="col-12">
                       <label className="form-label fw-semibold">
-                        Description
+                        {t("kitchen.description")}
                       </label>
                       <textarea
                         className="form-control"
@@ -378,7 +384,7 @@ function Kitchen() {
                         rows={2}
                         value={formData.description}
                         onChange={handleChange}
-                        placeholder="Enter kitchen description"
+                        placeholder={t("kitchen.enterDescription")}
                       />
                     </div>
 
@@ -389,7 +395,7 @@ function Kitchen() {
                         onClick={resetForm}
                         disabled={saving}
                       >
-                        Cancel
+                        {t("kitchen.cancel")}
                       </button>
 
                       <button
@@ -397,7 +403,9 @@ function Kitchen() {
                         className="btn btn-success px-4"
                         disabled={saving}
                       >
-                        {saving ? "Updating..." : "Update Kitchen"}
+                        {saving
+                          ? t("kitchen.updating")
+                          : t("kitchen.updateKitchen")}
                       </button>
                     </div>
                   </div>
@@ -411,9 +419,11 @@ function Kitchen() {
       {/* Kitchen list */}
       <div className="card border-0 shadow-sm rounded-4">
         <div className="card-header bg-white border-0 px-4 pt-4">
-          <h5 className="fw-bold mb-1">All Kitchens</h5>
+          <h5 className="fw-bold mb-1">
+            {t("kitchen.allKitchens")}
+          </h5>
           <p className="text-secondary small mb-0">
-            Total kitchens: {kitchens.length}
+            {t("kitchen.totalKitchens", { count: kitchens.length })}
           </p>
         </div>
 
@@ -422,13 +432,15 @@ function Kitchen() {
             <table className="table table-hover align-middle mb-0">
               <thead className="table-light">
                 <tr>
-                  <th className="px-4">Kitchen</th>
-                  <th>Owner</th>
-                  <th>Mobile</th>
-                  <th>City</th>
-                  <th>Address</th>
-                  <th>Status</th>
-                  <th className="text-end px-4">Actions</th>
+                  <th className="px-4">{t("kitchen.kitchen")}</th>
+                  <th>{t("kitchen.owner")}</th>
+                  <th>{t("kitchen.mobile")}</th>
+                  <th>{t("kitchen.city")}</th>
+                  <th>{t("kitchen.address")}</th>
+                  <th>{t("kitchen.status")}</th>
+                  <th className="text-end px-4">
+                    {t("kitchen.actions")}
+                  </th>
                 </tr>
               </thead>
 
@@ -438,7 +450,7 @@ function Kitchen() {
                     <td colSpan={7} className="text-center py-5">
                       <div className="spinner-border text-success mb-2" />
                       <p className="text-secondary mb-0">
-                        Loading kitchen data...
+                        {t("kitchen.loadingData")}
                       </p>
                     </td>
                   </tr>
@@ -446,9 +458,11 @@ function Kitchen() {
                   <tr>
                     <td colSpan={7} className="text-center py-5">
                       <i className="bi bi-shop fs-1 text-secondary d-block mb-2" />
-                      <h6 className="fw-semibold">No kitchens found</h6>
+                      <h6 className="fw-semibold">
+                        {t("kitchen.noKitchensFound")}
+                      </h6>
                       <p className="text-secondary small mb-0">
-                        The API returned no kitchen records.
+                        {t("kitchen.noKitchenRecords")}
                       </p>
                     </td>
                   </tr>
@@ -457,10 +471,10 @@ function Kitchen() {
                     <tr key={kitchen.id}>
                       <td className="px-4">
                         <div className="fw-semibold">
-                          {kitchen.name || "Unnamed Kitchen"}
+                          {kitchen.name || t("kitchen.unnamedKitchen")}
                         </div>
                         <small className="text-secondary">
-                          {kitchen.email || "No email"}
+                          {kitchen.email || t("kitchen.noEmail")}
                         </small>
                       </td>
 
@@ -487,8 +501,8 @@ function Kitchen() {
                           }`}
                         >
                           {kitchen.isActive === false
-                            ? "Inactive"
-                            : "Active"}
+                            ? t("kitchen.inactive")
+                            : t("kitchen.active")}
                         </span>
                       </td>
 
@@ -499,7 +513,7 @@ function Kitchen() {
                           onClick={() => handleEdit(kitchen)}
                         >
                           <i className="bi bi-pencil-square me-1" />
-                          Edit
+                          {t("kitchen.edit")}
                         </button>
                       </td>
                     </tr>

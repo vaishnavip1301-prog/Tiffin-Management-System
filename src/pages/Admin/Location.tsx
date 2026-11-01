@@ -1,19 +1,44 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   getLocations,
   addLocation,
   updateLocation,
   deleteLocation,
 } from "../../api/locationService";
+
 import type {
   Location as LocationData,
   LocationInput,
 } from "../../api/locationService";
+
 import { getAreas } from "../../api/areaService";
 import type { Area as AreaData } from "../../api/areaService";
+
 import "./Location.css";
+
+type LocalizedLocation = LocationData & {
+  addressLineEn?: string;
+  addressLineMr?: string;
+  landmarkEn?: string;
+  landmarkMr?: string;
+  areaNameEn?: string;
+  areaNameMr?: string;
+  cityNameEn?: string;
+  cityNameMr?: string;
+  stateNameEn?: string;
+  stateNameMr?: string;
+};
+
+type LocalizedArea = AreaData & {
+  nameEn?: string;
+  nameMr?: string;
+  cityNameEn?: string;
+  cityNameMr?: string;
+};
 
 const emptyForm: LocationInput = {
   areaId: "",
@@ -26,19 +51,80 @@ const emptyForm: LocationInput = {
 };
 
 function Location() {
+  const { t, i18n } = useTranslation();
+
+  const isMarathi = i18n.language.startsWith("mr");
+
   const [locations, setLocations] = useState<LocationData[]>([]);
   const [areas, setAreas] = useState<AreaData[]>([]);
   const [formData, setFormData] = useState<LocationInput>({
     ...emptyForm,
   });
+
   const [editingLocation, setEditingLocation] =
     useState<LocationData | null>(null);
+
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  // Backend data language helpers
+  const getLocationAddress = (location: LocationData) => {
+    const item = location as LocalizedLocation;
+
+    return isMarathi
+      ? item.addressLineMr || item.addressLine
+      : item.addressLineEn || item.addressLine;
+  };
+
+  const getLocationLandmark = (location: LocationData) => {
+    const item = location as LocalizedLocation;
+
+    return isMarathi
+      ? item.landmarkMr || item.landmark
+      : item.landmarkEn || item.landmark;
+  };
+
+  const getLocationArea = (location: LocationData) => {
+    const item = location as LocalizedLocation;
+
+    return isMarathi
+      ? item.areaNameMr || item.areaName || item.areaId
+      : item.areaNameEn || item.areaName || item.areaId;
+  };
+
+  const getLocationCity = (location: LocationData) => {
+    const item = location as LocalizedLocation;
+
+    return isMarathi
+      ? item.cityNameMr || item.cityName
+      : item.cityNameEn || item.cityName;
+  };
+
+  const getLocationState = (location: LocationData) => {
+    const item = location as LocalizedLocation;
+
+    return isMarathi
+      ? item.stateNameMr || item.stateName
+      : item.stateNameEn || item.stateName;
+  };
+
+  const getAreaName = (area: AreaData) => {
+    const item = area as LocalizedArea;
+
+    const name = isMarathi
+      ? item.nameMr || item.name
+      : item.nameEn || item.name;
+
+    const cityName = isMarathi
+      ? item.cityNameMr || item.cityName
+      : item.cityNameEn || item.cityName;
+
+    return `${name}${cityName ? `, ${cityName}` : ""}`;
+  };
 
   const loadLocations = useCallback(async () => {
     setLoading(true);
@@ -48,11 +134,11 @@ function Location() {
       setLocations(Array.isArray(response) ? response : []);
     } catch (err) {
       console.error("Failed to load locations:", err);
-      setError("Unable to load locations. Please check the API.");
+      setError(t("location.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   const loadAreas = useCallback(async () => {
     try {
@@ -61,9 +147,9 @@ function Location() {
     } catch (err) {
       console.error("Failed to load areas:", err);
       setAreas([]);
-      setError("Unable to load areas for the Area dropdown.");
+      setError(t("location.areasLoadFailed"));
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadLocations();
@@ -135,7 +221,7 @@ function Location() {
       !formData.postalCode.trim() ||
       !formData.addressLine.trim()
     ) {
-      setError("Please fill in all required fields.");
+      setError(t("location.requiredFields"));
       return;
     }
 
@@ -156,10 +242,10 @@ function Location() {
           ...payload,
         });
 
-        setMessage("Location updated successfully.");
+        setMessage(t("location.updateSuccess"));
       } else {
         await addLocation(payload);
-        setMessage("Location created successfully.");
+        setMessage(t("location.createSuccess"));
       }
 
       setShowForm(false);
@@ -169,7 +255,7 @@ function Location() {
       await loadLocations();
     } catch (err) {
       console.error("Failed to save location:", err);
-      setError("Unable to save location. Please check the API details.");
+      setError(t("location.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -177,7 +263,7 @@ function Location() {
 
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this location?"
+      t("location.deleteConfirmation")
     );
 
     if (!confirmed) return;
@@ -188,11 +274,11 @@ function Location() {
 
     try {
       await deleteLocation(id);
-      setMessage("Location deleted successfully.");
+      setMessage(t("location.deleteSuccess"));
       await loadLocations();
     } catch (err) {
       console.error("Failed to delete location:", err);
-      setError("Unable to delete location. Please try again.");
+      setError(t("location.deleteFailed"));
     } finally {
       setDeletingId(null);
     }
@@ -202,8 +288,8 @@ function Location() {
     <div className="location-management">
       <div className="location-header">
         <div>
-          <h2>Location Management</h2>
-          <p>Manage delivery locations for Aapla Dabba.</p>
+          <h2>{t("location.pageTitle")}</h2>
+          <p>{t("location.pageDescription")}</p>
         </div>
 
         <button
@@ -211,7 +297,7 @@ function Location() {
           className="location-add-btn"
           onClick={handleAdd}
         >
-          + Add Location
+          + {t("location.addLocation")}
         </button>
       </div>
 
@@ -230,12 +316,17 @@ function Location() {
       {showForm && (
         <form className="location-form" onSubmit={handleSubmit}>
           <h3>
-            {editingLocation ? "Update Location" : "Create Location"}
+            {editingLocation
+              ? t("location.updateLocation")
+              : t("location.createLocation")}
           </h3>
 
           <div className="location-form-grid">
             <div className="location-field">
-              <label htmlFor="location-areaId">Area *</label>
+              <label htmlFor="location-areaId">
+                {t("location.area")} *
+              </label>
+
               <select
                 id="location-areaId"
                 name="areaId"
@@ -243,12 +334,13 @@ function Location() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Select Area</option>
+                <option value="">
+                  {t("location.selectArea")}
+                </option>
 
                 {areas.map((area) => (
                   <option key={area.id} value={area.id}>
-                    {area.name}
-                    {area.cityName ? `, ${area.cityName}` : ""}
+                    {getAreaName(area)}
                   </option>
                 ))}
               </select>
@@ -256,8 +348,9 @@ function Location() {
 
             <div className="location-field">
               <label htmlFor="location-postalCode">
-                Postal Code *
+                {t("location.postalCode")} *
               </label>
+
               <input
                 id="location-postalCode"
                 name="postalCode"
@@ -269,7 +362,10 @@ function Location() {
             </div>
 
             <div className="location-field location-full-width">
-              <label htmlFor="location-addressLine">Address *</label>
+              <label htmlFor="location-addressLine">
+                {t("location.address")} *
+              </label>
+
               <textarea
                 id="location-addressLine"
                 name="addressLine"
@@ -281,7 +377,10 @@ function Location() {
             </div>
 
             <div className="location-field">
-              <label htmlFor="location-landmark">Landmark</label>
+              <label htmlFor="location-landmark">
+                {t("location.landmark")}
+              </label>
+
               <input
                 id="location-landmark"
                 name="landmark"
@@ -292,7 +391,10 @@ function Location() {
             </div>
 
             <div className="location-field">
-              <label htmlFor="location-latitude">Latitude</label>
+              <label htmlFor="location-latitude">
+                {t("location.latitude")}
+              </label>
+
               <input
                 id="location-latitude"
                 name="latitude"
@@ -304,7 +406,10 @@ function Location() {
             </div>
 
             <div className="location-field">
-              <label htmlFor="location-longitude">Longitude</label>
+              <label htmlFor="location-longitude">
+                {t("location.longitude")}
+              </label>
+
               <input
                 id="location-longitude"
                 name="longitude"
@@ -316,15 +421,23 @@ function Location() {
             </div>
 
             <div className="location-field">
-              <label htmlFor="location-isActive">Status</label>
+              <label htmlFor="location-isActive">
+                {t("location.status")}
+              </label>
+
               <select
                 id="location-isActive"
                 name="isActive"
                 value={String(formData.isActive)}
                 onChange={handleChange}
               >
-                <option value="true">Active</option>
-                <option value="false">Inactive</option>
+                <option value="true">
+                  {t("location.active")}
+                </option>
+
+                <option value="false">
+                  {t("location.inactive")}
+                </option>
               </select>
             </div>
           </div>
@@ -336,10 +449,10 @@ function Location() {
               disabled={saving}
             >
               {saving
-                ? "Saving..."
+                ? t("location.saving")
                 : editingLocation
-                  ? "Update Location"
-                  : "Create Location"}
+                  ? t("location.updateLocation")
+                  : t("location.createLocation")}
             </button>
 
             <button
@@ -352,7 +465,7 @@ function Location() {
                 setError("");
               }}
             >
-              Cancel
+              {t("location.cancel")}
             </button>
           </div>
         </form>
@@ -360,7 +473,7 @@ function Location() {
 
       <div className="location-table-card">
         <div className="location-table-heading">
-          <h3>All Locations</h3>
+          <h3>{t("location.allLocations")}</h3>
 
           <button
             type="button"
@@ -371,26 +484,32 @@ function Location() {
             }}
             disabled={loading}
           >
-            {loading ? "Loading..." : "Refresh"}
+            {loading
+              ? t("location.loading")
+              : t("location.refresh")}
           </button>
         </div>
 
         {loading ? (
-          <p className="location-empty">Loading locations...</p>
+          <p className="location-empty">
+            {t("location.loadingLocations")}
+          </p>
         ) : locations.length === 0 ? (
-          <p className="location-empty">No locations found.</p>
+          <p className="location-empty">
+            {t("location.noLocationsFound")}
+          </p>
         ) : (
           <div className="location-table-wrapper">
             <table className="location-table">
               <thead>
                 <tr>
-                  <th>Address</th>
-                  <th>Area</th>
-                  <th>City</th>
-                  <th>State</th>
-                  <th>Postal Code</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>{t("location.address")}</th>
+                  <th>{t("location.area")}</th>
+                  <th>{t("location.city")}</th>
+                  <th>{t("location.state")}</th>
+                  <th>{t("location.postalCode")}</th>
+                  <th>{t("location.status")}</th>
+                  <th>{t("location.actions")}</th>
                 </tr>
               </thead>
 
@@ -398,26 +517,42 @@ function Location() {
                 {locations.map((location) => (
                   <tr key={location.id}>
                     <td>
-                      <strong>{location.addressLine}</strong>
-                      {location.landmark && (
-                        <small>{location.landmark}</small>
+                      <strong>
+                        {getLocationAddress(location)}
+                      </strong>
+
+                      {getLocationLandmark(location) && (
+                        <small>
+                          {getLocationLandmark(location)}
+                        </small>
                       )}
                     </td>
 
                     <td>
-                      {location.areaName || location.areaId || "-"}
+                      {getLocationArea(location) || "-"}
                     </td>
-                    <td>{location.cityName || "-"}</td>
-                    <td>{location.stateName || "-"}</td>
+
+                    <td>
+                      {getLocationCity(location) || "-"}
+                    </td>
+
+                    <td>
+                      {getLocationState(location) || "-"}
+                    </td>
+
                     <td>{location.postalCode || "-"}</td>
 
                     <td>
                       <span
                         className={`location-status ${
-                          location.isActive ? "active" : "inactive"
+                          location.isActive
+                            ? "active"
+                            : "inactive"
                         }`}
                       >
-                        {location.isActive ? "Active" : "Inactive"}
+                        {location.isActive
+                          ? t("location.active")
+                          : t("location.inactive")}
                       </span>
                     </td>
 
@@ -428,18 +563,20 @@ function Location() {
                           className="location-edit-btn"
                           onClick={() => handleEdit(location)}
                         >
-                          Edit
+                          {t("location.edit")}
                         </button>
 
                         <button
                           type="button"
                           className="location-delete-btn"
                           disabled={deletingId === location.id}
-                          onClick={() => void handleDelete(location.id)}
+                          onClick={() =>
+                            void handleDelete(location.id)
+                          }
                         >
                           {deletingId === location.id
-                            ? "Deleting..."
-                            : "Delete"}
+                            ? t("location.deleting")
+                            : t("location.delete")}
                         </button>
                       </div>
                     </td>

@@ -1,16 +1,28 @@
+
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   getMealTypes,
   createMealType,
   updateMealType,
   deleteMealType,
 } from "../../api/mealTypeService";
+
 import type {
   MealType as MealTypeData,
   MealTypeInput,
 } from "../../api/mealTypeService";
+
 import "./MealType.css";
+
+type LocalizedMealType = MealTypeData & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+};
 
 const emptyForm: MealTypeInput = {
   name: "",
@@ -19,6 +31,10 @@ const emptyForm: MealTypeInput = {
 };
 
 function MealTypePage() {
+  const { t, i18n } = useTranslation();
+
+  const isMarathi = i18n.language.startsWith("mr");
+
   const [mealTypes, setMealTypes] = useState<MealTypeData[]>([]);
   const [formData, setFormData] = useState<MealTypeInput>({
     ...emptyForm,
@@ -33,6 +49,26 @@ function MealTypePage() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
+  const getMealTypeName = (item: MealTypeData) => {
+    const localizedItem = item as LocalizedMealType;
+
+    if (isMarathi) {
+      return localizedItem.nameMr || item.name || "";
+    }
+
+    return localizedItem.nameEn || item.name || "";
+  };
+
+  const getMealTypeDescription = (item: MealTypeData) => {
+    const localizedItem = item as LocalizedMealType;
+
+    if (isMarathi) {
+      return localizedItem.descriptionMr || item.description || "—";
+    }
+
+    return localizedItem.descriptionEn || item.description || "—";
+  };
+
   const loadMealTypes = useCallback(async () => {
     try {
       setLoading(true);
@@ -43,11 +79,11 @@ function MealTypePage() {
       setMealTypes(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Get Meal Types error:", err);
-      setError("Failed to load meal types. Please check the API.");
+      setError(t("mealType.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadMealTypes();
@@ -82,6 +118,7 @@ function MealTypePage() {
   const handleEdit = (item: MealTypeData) => {
     setEditingMealType(item);
 
+    // Keep original API values in the edit form.
     setFormData({
       name: item.name ?? "",
       description: item.description ?? "",
@@ -104,12 +141,12 @@ function MealTypePage() {
     const displayOrder = Number(formData.displayOrder);
 
     if (!name) {
-      setError("Please enter a Meal Type name.");
+      setError(t("mealType.requiredName"));
       return;
     }
 
     if (!Number.isInteger(displayOrder) || displayOrder < 1) {
-      setError("Display Order must be a positive whole number.");
+      setError(t("mealType.invalidDisplayOrder"));
       return;
     }
 
@@ -127,17 +164,17 @@ function MealTypePage() {
       if (editingMealType) {
         await updateMealType(editingMealType.id, payload);
         resetForm(false);
-        setMessage("Meal Type updated successfully.");
+        setMessage(t("mealType.updateSuccess"));
       } else {
         await createMealType(payload);
         resetForm(false);
-        setMessage("Meal Type created successfully.");
+        setMessage(t("mealType.createSuccess"));
       }
 
       await loadMealTypes();
     } catch (err) {
       console.error("Save Meal Type error:", err);
-      setError("Failed to save Meal Type. Please check the API response.");
+      setError(t("mealType.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -145,7 +182,9 @@ function MealTypePage() {
 
   const handleDelete = async (item: MealTypeData) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete "${item.name}"?`
+      t("mealType.deleteConfirmation", {
+        name: getMealTypeName(item),
+      })
     );
 
     if (!confirmed) return;
@@ -165,12 +204,10 @@ function MealTypePage() {
         resetForm();
       }
 
-      setMessage("Meal Type deleted successfully.");
+      setMessage(t("mealType.deleteSuccess"));
     } catch (err) {
       console.error("Delete Meal Type error:", err);
-      setError(
-        "Failed to delete Meal Type. It may be in use by a menu item."
-      );
+      setError(t("mealType.deleteFailed"));
     } finally {
       setDeletingId(null);
     }
@@ -178,7 +215,7 @@ function MealTypePage() {
 
   const filteredMealTypes = mealTypes
     .filter((item) =>
-      `${item.name} ${item.description ?? ""}`
+      `${getMealTypeName(item)} ${getMealTypeDescription(item)}`
         .toLowerCase()
         .includes(searchTerm.trim().toLowerCase())
     )
@@ -186,17 +223,15 @@ function MealTypePage() {
 
   return (
     <div className="container-fluid py-4 meal-type-page">
-      {/* Page heading and compact count */}
+      {/* Page heading and count */}
       <div className="meal-type-header d-flex justify-content-between align-items-center gap-3 mb-4">
         <div className="meal-type-heading">
-          
-
           <h2 className="meal-type-page-title">
-            Meal Types
+            {t("mealType.pageTitle")}
           </h2>
 
           <p className="text-muted mb-0">
-            Create and manage breakfast, lunch, dinner and other meal types.
+            {t("mealType.pageDescription")}
           </p>
         </div>
 
@@ -206,7 +241,7 @@ function MealTypePage() {
           </div>
 
           <div className="meal-type-count-info">
-            <span>Total Meal Types</span>
+            <span>{t("mealType.totalMealTypes")}</span>
             <strong>{mealTypes.length}</strong>
           </div>
         </div>
@@ -228,13 +263,15 @@ function MealTypePage() {
       <div className="card meal-type-card mb-4">
         <div className="card-body p-4">
           <h5 className="meal-type-section-title">
-            {editingMealType ? "Update Meal Type" : "Create Meal Type"}
+            {editingMealType
+              ? t("mealType.updateTitle")
+              : t("mealType.createTitle")}
           </h5>
 
           <p className="text-muted mb-4">
             {editingMealType
-              ? "Update the meal type information below."
-              : "Fill in the details below to create a meal type."}
+              ? t("mealType.updateDescription")
+              : t("mealType.createDescription")}
           </p>
 
           <form onSubmit={handleSubmit}>
@@ -242,7 +279,7 @@ function MealTypePage() {
               {editingMealType && (
                 <div className="col-12">
                   <label className="form-label" htmlFor="mealTypeId">
-                    Meal Type ID
+                    {t("mealType.mealTypeId")}
                   </label>
 
                   <input
@@ -257,7 +294,7 @@ function MealTypePage() {
 
               <div className="col-md-6">
                 <label className="form-label" htmlFor="mealTypeName">
-                  Meal Type Name{" "}
+                  {t("mealType.name")}{" "}
                   <span className="meal-type-required">*</span>
                 </label>
 
@@ -268,7 +305,7 @@ function MealTypePage() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="e.g. Breakfast"
+                  placeholder={t("mealType.namePlaceholder")}
                   maxLength={100}
                   required
                 />
@@ -276,7 +313,7 @@ function MealTypePage() {
 
               <div className="col-md-6">
                 <label className="form-label" htmlFor="displayOrder">
-                  Display Order{" "}
+                  {t("mealType.displayOrder")}{" "}
                   <span className="meal-type-required">*</span>
                 </label>
 
@@ -293,7 +330,7 @@ function MealTypePage() {
                 />
 
                 <small className="text-muted">
-                  Smaller numbers appear first.
+                  {t("mealType.orderHint")}
                 </small>
               </div>
 
@@ -302,7 +339,7 @@ function MealTypePage() {
                   className="form-label"
                   htmlFor="mealTypeDescription"
                 >
-                  Description
+                  {t("mealType.description")}
                 </label>
 
                 <textarea
@@ -311,7 +348,7 @@ function MealTypePage() {
                   name="description"
                   value={formData.description ?? ""}
                   onChange={handleChange}
-                  placeholder="Enter meal type description"
+                  placeholder={t("mealType.descriptionPlaceholder")}
                   rows={3}
                   maxLength={500}
                 />
@@ -324,10 +361,10 @@ function MealTypePage() {
                   disabled={saving}
                 >
                   {saving
-                    ? "Saving..."
+                    ? t("mealType.saving")
                     : editingMealType
-                      ? "Update Meal Type"
-                      : "Create Meal Type"}
+                      ? t("mealType.updateButton")
+                      : t("mealType.createButton")}
                 </button>
 
                 {editingMealType && (
@@ -337,7 +374,7 @@ function MealTypePage() {
                     onClick={() => resetForm()}
                     disabled={saving}
                   >
-                    Cancel
+                    {t("mealType.cancel")}
                   </button>
                 )}
               </div>
@@ -350,11 +387,11 @@ function MealTypePage() {
       <div className="meal-type-list-heading d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
         <div>
           <h5 className="meal-type-section-title mb-1">
-            All Meal Types
+            {t("mealType.allMealTypes")}
           </h5>
 
           <p className="text-muted mb-0">
-            View, search and manage your meal type records.
+            {t("mealType.listDescription")}
           </p>
         </div>
 
@@ -362,10 +399,10 @@ function MealTypePage() {
           <input
             type="search"
             className="form-control"
-            placeholder="Search meal types..."
+            placeholder={t("mealType.searchPlaceholder")}
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
-            aria-label="Search meal types"
+            aria-label={t("mealType.searchPlaceholder")}
           />
 
           <button
@@ -375,7 +412,7 @@ function MealTypePage() {
             disabled={loading}
           >
             <i className="bi bi-arrow-clockwise me-1" />
-            {loading ? "Loading..." : "Refresh"}
+            {loading ? t("mealType.loading") : t("mealType.refresh")}
           </button>
         </div>
       </div>
@@ -387,11 +424,13 @@ function MealTypePage() {
               className="spinner-border meal-type-spinner"
               role="status"
             >
-              <span className="visually-hidden">Loading...</span>
+              <span className="visually-hidden">
+                {t("mealType.loading")}
+              </span>
             </div>
 
             <p className="text-muted mt-3 mb-0">
-              Loading meal types...
+              {t("mealType.loading")}
             </p>
           </div>
         ) : (
@@ -399,10 +438,10 @@ function MealTypePage() {
             <table className="table table-hover align-middle mb-0 meal-type-table">
               <thead>
                 <tr>
-                  <th>Meal Type</th>
-                  <th>Description</th>
-                  <th>Display Order</th>
-                  <th>Actions</th>
+                  <th>{t("mealType.name")}</th>
+                  <th>{t("mealType.description")}</th>
+                  <th>{t("mealType.displayOrder")}</th>
+                  <th>{t("mealType.actions")}</th>
                 </tr>
               </thead>
 
@@ -413,17 +452,19 @@ function MealTypePage() {
                       <td>
                         <div className="meal-type-name-cell">
                           <span className="meal-type-avatar">
-                            {item.name?.charAt(0)?.toUpperCase() || "M"}
+                            {getMealTypeName(item)
+                              .charAt(0)
+                              .toUpperCase() || "M"}
                           </span>
 
                           <span className="fw-semibold">
-                            {item.name}
+                            {getMealTypeName(item)}
                           </span>
                         </div>
                       </td>
 
                       <td className="meal-type-description">
-                        {item.description || "-"}
+                        {getMealTypeDescription(item)}
                       </td>
 
                       <td>
@@ -439,7 +480,7 @@ function MealTypePage() {
                           onClick={() => handleEdit(item)}
                           disabled={saving || deletingId !== null}
                         >
-                          Edit
+                          {t("mealType.edit")}
                         </button>
 
                         <button
@@ -448,7 +489,9 @@ function MealTypePage() {
                           onClick={() => void handleDelete(item)}
                           disabled={deletingId !== null || saving}
                         >
-                          {deletingId === item.id ? "Deleting..." : "Delete"}
+                          {deletingId === item.id
+                            ? t("mealType.deleting")
+                            : t("mealType.delete")}
                         </button>
                       </td>
                     </tr>
@@ -460,8 +503,8 @@ function MealTypePage() {
                       className="text-center py-5 text-muted"
                     >
                       {searchTerm
-                        ? "No matching meal types found."
-                        : "No meal types found. Add your first meal type above."}
+                        ? t("mealType.noMatchingRecords")
+                        : t("mealType.noRecords")}
                     </td>
                   </tr>
                 )}
@@ -472,8 +515,10 @@ function MealTypePage() {
       </div>
 
       <div className="meal-type-table-footer mt-3">
-        Showing <strong>{filteredMealTypes.length}</strong> of{" "}
-        <strong>{mealTypes.length}</strong> meal types
+        {t("mealType.showingRecords", {
+          filtered: filteredMealTypes.length,
+          total: mealTypes.length,
+        })}
       </div>
     </div>
   );

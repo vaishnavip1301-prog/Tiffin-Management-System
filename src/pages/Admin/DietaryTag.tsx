@@ -1,6 +1,8 @@
 
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   getDietaryTags,
   getDietaryTagById,
@@ -10,7 +12,15 @@ import {
   type DietaryTag as DietaryTagData,
   type DietaryTagInput,
 } from "../../api/dietaryTagService";
+
 import "./DietaryTag.css";
+
+type LocalizedDietaryTag = DietaryTagData & {
+  nameEn?: string;
+  nameMr?: string;
+  descriptionEn?: string | null;
+  descriptionMr?: string | null;
+};
 
 const emptyForm: DietaryTagInput = {
   name: "",
@@ -19,6 +29,8 @@ const emptyForm: DietaryTagInput = {
 };
 
 function DietaryTag() {
+  const { t, i18n } = useTranslation();
+
   const [tags, setTags] = useState<DietaryTagData[]>([]);
   const [formData, setFormData] =
     useState<DietaryTagInput>(emptyForm);
@@ -29,6 +41,30 @@ function DietaryTag() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const isMarathi = i18n.language.startsWith("mr");
+
+  // Get language-wise dietary tag name
+  const getTagName = (tag: DietaryTagData) => {
+    const localizedTag = tag as LocalizedDietaryTag;
+
+    if (isMarathi) {
+      return localizedTag.nameMr || tag.name || "";
+    }
+
+    return localizedTag.nameEn || tag.name || "";
+  };
+
+  // Get language-wise dietary tag description
+  const getTagDescription = (tag: DietaryTagData) => {
+    const localizedTag = tag as LocalizedDietaryTag;
+
+    if (isMarathi) {
+      return localizedTag.descriptionMr || tag.description || "—";
+    }
+
+    return localizedTag.descriptionEn || tag.description || "—";
+  };
+
   const loadTags = async () => {
     try {
       setLoading(true);
@@ -38,7 +74,7 @@ function DietaryTag() {
       setTags(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error loading dietary tags:", err);
-      setError("Failed to load dietary tags. Please check the API.");
+      setError(t("dietaryTag.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -49,9 +85,7 @@ function DietaryTag() {
   }, []);
 
   const handleChange = (
-    event: ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
 
@@ -76,9 +110,7 @@ function DietaryTag() {
     setShowForm(true);
   };
 
-  const handleSubmit = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const payload: DietaryTagInput = {
@@ -88,7 +120,7 @@ function DietaryTag() {
     };
 
     if (!payload.name) {
-      setError("Please enter the dietary tag name.");
+      setError(t("dietaryTag.requiredName"));
       return;
     }
 
@@ -96,7 +128,7 @@ function DietaryTag() {
       !Number.isInteger(payload.displayOrder) ||
       payload.displayOrder < 0
     ) {
-      setError("Display Order must be a whole number, 0 or greater.");
+      setError(t("dietaryTag.invalidDisplayOrder"));
       return;
     }
 
@@ -107,19 +139,17 @@ function DietaryTag() {
 
       if (editingId) {
         await updateDietaryTag(editingId, payload);
-        setMessage("Dietary tag updated successfully.");
+        setMessage(t("dietaryTag.updateSuccess"));
       } else {
         await createDietaryTag(payload);
-        setMessage("Dietary tag created successfully.");
+        setMessage(t("dietaryTag.createSuccess"));
       }
 
       resetForm();
       await loadTags();
     } catch (err) {
       console.error("Error saving dietary tag:", err);
-      setError(
-        "Failed to save dietary tag. Please check the API response."
-      );
+      setError(t("dietaryTag.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -132,6 +162,8 @@ function DietaryTag() {
 
       const tag = await getDietaryTagById(id);
 
+      // Keep original API values in the form.
+      // Do not submit translated display values to the original fields.
       setFormData({
         name: tag.name ?? "",
         description: tag.description ?? "",
@@ -142,13 +174,13 @@ function DietaryTag() {
       setShowForm(true);
     } catch (err) {
       console.error("Error loading dietary tag:", err);
-      setError("Failed to load dietary tag details.");
+      setError(t("dietaryTag.detailsLoadFailed"));
     }
   };
 
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this dietary tag?"
+      t("dietaryTag.deleteConfirmation")
     );
 
     if (!confirmed) return;
@@ -163,13 +195,11 @@ function DietaryTag() {
         resetForm();
       }
 
-      setMessage("Dietary tag deleted successfully.");
+      setMessage(t("dietaryTag.deleteSuccess"));
       await loadTags();
     } catch (err) {
       console.error("Error deleting dietary tag:", err);
-      setError(
-        "Failed to delete dietary tag. It may be in use by a menu item."
-      );
+      setError(t("dietaryTag.deleteFailed"));
     }
   };
 
@@ -177,8 +207,8 @@ function DietaryTag() {
     <div className="dietary-management">
       <div className="dietary-header">
         <div>
-          <h2>Dietary Tags</h2>
-          <p>Manage dietary preferences for your menu items.</p>
+          <h2>{t("dietaryTag.pageTitle")}</h2>
+          <p>{t("dietaryTag.pageDescription")}</p>
         </div>
 
         <button
@@ -186,7 +216,7 @@ function DietaryTag() {
           className="dietary-primary-btn"
           onClick={handleAdd}
         >
-          + Add Dietary Tag
+          + {t("dietaryTag.addTag")}
         </button>
       </div>
 
@@ -201,17 +231,22 @@ function DietaryTag() {
       {showForm && (
         <form className="dietary-form" onSubmit={handleSubmit}>
           <h3>
-            {editingId ? "Update Dietary Tag" : "Create Dietary Tag"}
+            {editingId
+              ? t("dietaryTag.updateTag")
+              : t("dietaryTag.createTag")}
           </h3>
 
           <div className="dietary-form-grid">
             <div className="dietary-field">
-              <label htmlFor="dietary-name">Tag Name *</label>
+              <label htmlFor="dietary-name">
+                {t("dietaryTag.tagName")} *
+              </label>
+
               <input
                 id="dietary-name"
                 name="name"
                 type="text"
-                placeholder="e.g. Gluten Free"
+                placeholder={t("dietaryTag.namePlaceholder")}
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -219,7 +254,10 @@ function DietaryTag() {
             </div>
 
             <div className="dietary-field">
-              <label htmlFor="dietary-order">Display Order *</label>
+              <label htmlFor="dietary-order">
+                {t("dietaryTag.displayOrder")} *
+              </label>
+
               <input
                 id="dietary-order"
                 name="displayOrder"
@@ -234,12 +272,13 @@ function DietaryTag() {
 
             <div className="dietary-field dietary-description-field">
               <label htmlFor="dietary-description">
-                Description
+                {t("dietaryTag.description")}
               </label>
+
               <textarea
                 id="dietary-description"
                 name="description"
-                placeholder="Enter dietary tag description"
+                placeholder={t("dietaryTag.descriptionPlaceholder")}
                 value={formData.description ?? ""}
                 onChange={handleChange}
                 rows={3}
@@ -254,10 +293,10 @@ function DietaryTag() {
               disabled={saving}
             >
               {saving
-                ? "Saving..."
+                ? t("dietaryTag.saving")
                 : editingId
-                  ? "Update Tag"
-                  : "Add Tag"}
+                  ? t("dietaryTag.updateTag")
+                  : t("dietaryTag.createTag")}
             </button>
 
             <button
@@ -266,7 +305,7 @@ function DietaryTag() {
               onClick={resetForm}
               disabled={saving}
             >
-              Cancel
+              {t("dietaryTag.cancel")}
             </button>
           </div>
         </form>
@@ -274,25 +313,31 @@ function DietaryTag() {
 
       <div className="dietary-table-card">
         <div className="dietary-table-heading">
-          <h3>Dietary Tag List</h3>
-          <span>{tags.length} tags</span>
+          <h3>{t("dietaryTag.tagList")}</h3>
+          <span>
+            {t("dietaryTag.totalTags", { count: tags.length })}
+          </span>
         </div>
 
         {loading ? (
-          <p className="dietary-state">Loading dietary tags...</p>
+          <p className="dietary-state">
+            {t("dietaryTag.loading")}
+          </p>
         ) : tags.length === 0 ? (
-          <p className="dietary-state">No dietary tags found.</p>
+          <p className="dietary-state">
+            {t("dietaryTag.noTagsFound")}
+          </p>
         ) : (
           <div className="dietary-table-wrapper">
             <table className="dietary-table">
               <thead>
                 <tr>
-                  <th>Sr. No.</th>
-                  <th>Tag Name</th>
-                  <th>Description</th>
-                  <th>Display Order</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>{t("dietaryTag.serialNumber")}</th>
+                  <th>{t("dietaryTag.tagName")}</th>
+                  <th>{t("dietaryTag.description")}</th>
+                  <th>{t("dietaryTag.displayOrder")}</th>
+                  <th>{t("dietaryTag.status")}</th>
+                  <th>{t("dietaryTag.actions")}</th>
                 </tr>
               </thead>
 
@@ -300,13 +345,17 @@ function DietaryTag() {
                 {tags.map((tag, index) => (
                   <tr key={tag.id}>
                     <td>{index + 1}</td>
+
                     <td>
                       <span className="dietary-tag-name">
-                        {tag.name}
+                        {getTagName(tag)}
                       </span>
                     </td>
-                    <td>{tag.description || "—"}</td>
+
+                    <td>{getTagDescription(tag)}</td>
+
                     <td>{tag.displayOrder}</td>
+
                     <td>
                       <span
                         className={
@@ -315,9 +364,12 @@ function DietaryTag() {
                             : "dietary-status inactive"
                         }
                       >
-                        {tag.isActive ? "Active" : "Inactive"}
+                        {tag.isActive
+                          ? t("dietaryTag.active")
+                          : t("dietaryTag.inactive")}
                       </span>
                     </td>
+
                     <td>
                       <div className="dietary-row-actions">
                         <button
@@ -325,7 +377,7 @@ function DietaryTag() {
                           className="dietary-edit-btn"
                           onClick={() => void handleEdit(tag.id)}
                         >
-                          Edit
+                          {t("dietaryTag.edit")}
                         </button>
 
                         <button
@@ -333,7 +385,7 @@ function DietaryTag() {
                           className="dietary-delete-btn"
                           onClick={() => void handleDelete(tag.id)}
                         >
-                          Delete
+                          {t("dietaryTag.delete")}
                         </button>
                       </div>
                     </td>

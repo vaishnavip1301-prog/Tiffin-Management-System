@@ -1,9 +1,13 @@
+
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import "./AdminLayout.css";
 
 function AdminLayout() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const closeMobileMenu = () => {
@@ -25,81 +29,78 @@ function AdminLayout() {
     {
       to: "/admin/dashboard",
       icon: "bi-grid-1x2-fill",
-      label: "Dashboard",
+      label: t("adminLayout.dashboard"),
     },
     {
       to: "/admin/kitchen",
       icon: "bi-shop",
-      label: "Kitchens",
+      label: t("adminLayout.kitchens"),
     },
     {
       to: "/admin/states",
       icon: "bi-geo-alt",
-      label: "States",
+      label: t("adminLayout.states"),
     },
     {
       to: "/admin/cities",
       icon: "bi-buildings",
-      label: "Cities",
+      label: t("adminLayout.cities"),
     },
     {
       to: "/admin/areas",
       icon: "bi-map",
-      label: "Areas",
+      label: t("adminLayout.areas"),
     },
     {
       to: "/admin/locations",
       icon: "bi-pin-map",
-      label: "Locations",
+      label: t("adminLayout.locations"),
     },
     {
       to: "/admin/dietary-tags",
       icon: "bi-heart-pulse",
-      label: "Dietary Tags",
+      label: t("adminLayout.dietaryTags"),
     },
-    
     {
       to: "/admin/food-types",
       icon: "bi-tags",
-      label: "Food Type",
+      label: t("adminLayout.foodType"),
     },
-
     {
-      to:"/admin/meal-types",
-      icon:"bi-clock-history",
-      label:"Meal Type"
+      to: "/admin/meal-types",
+      icon: "bi-clock-history",
+      label: t("adminLayout.mealType"),
     },
-     {
+    {
       to: "/admin/menu-categories",
       icon: "bi-tags",
-      label: "Menu Categories",
+      label: t("adminLayout.menuCategories"),
     },
-      {
+    {
       to: "/admin/menu-subcategories",
       icon: "bi-diagram-3",
-      label: "Menu Sub Categories",
+      label: t("adminLayout.menuSubCategories"),
     },
     {
       to: "/admin/menu-items",
       icon: "bi-egg-fried",
-      label: "Menu Items",
+      label: t("adminLayout.menuItems"),
     },
     {
       to: "/admin/cart",
       icon: "bi-cart3",
-      label: "Cart",
+      label: t("adminLayout.cart"),
     },
     {
       to: "/admin/orders",
       icon: "bi-receipt",
-      label: "Orders",
+      label: t("adminLayout.orders"),
     },
     {
       to: "/admin/customers",
       icon: "bi-people",
-      label: "Customers",
+      label: t("adminLayout.customers"),
     },
-    
   ];
 
   return (
@@ -109,7 +110,7 @@ function AdminLayout() {
         <button
           type="button"
           className="admin-mobile-overlay"
-          aria-label="Close navigation menu"
+          aria-label={t("adminLayout.closeNavigation")}
           onClick={closeMobileMenu}
         />
       )}
@@ -128,20 +129,22 @@ function AdminLayout() {
 
           <div className="admin-brand-text">
             <h2>Aapla Dabba</h2>
-            <p>ADMIN WORKSPACE</p>
+            <p>{t("adminLayout.adminWorkspace")}</p>
           </div>
 
           <button
             type="button"
             className="admin-sidebar-close"
-            aria-label="Close menu"
+            aria-label={t("adminLayout.closeMenu")}
             onClick={closeMobileMenu}
           >
             <i className="bi bi-x-lg" />
           </button>
         </div>
 
-        <div className="admin-sidebar-label">MAIN MENU</div>
+        <div className="admin-sidebar-label">
+          {t("adminLayout.mainMenu")}
+        </div>
 
         <nav className="admin-sidebar-nav">
           {navLinks.map((link) => (
@@ -168,8 +171,8 @@ function AdminLayout() {
               <i className="bi bi-headset" />
             </div>
 
-            <h6>Admin Workspace</h6>
-            <p>Manage your food business in one place.</p>
+            <h6>{t("adminLayout.workspaceTitle")}</h6>
+            <p>{t("adminLayout.workspaceDescription")}</p>
           </div>
 
           <button
@@ -178,12 +181,12 @@ function AdminLayout() {
             onClick={handleLogout}
           >
             <i className="bi bi-box-arrow-left" />
-            <span>Logout</span>
+            <span>{t("adminLayout.logout")}</span>
           </button>
 
           <div className="admin-sidebar-footer">
             <span className="admin-status-dot" />
-            Workspace Active
+            {t("adminLayout.workspaceActive")}
           </div>
         </div>
       </aside>
@@ -196,8 +199,8 @@ function AdminLayout() {
             type="button"
             className="admin-mobile-back"
             onClick={handleBack}
-            aria-label="Back"
-            title="Back"
+            aria-label={t("adminLayout.back")}
+            title={t("adminLayout.back")}
           >
             <i className="bi bi-arrow-left" />
           </button>
@@ -209,7 +212,7 @@ function AdminLayout() {
 
             <div>
               <strong>Aapla Dabba</strong>
-              <span>Admin Panel</span>
+              <span>{t("adminLayout.adminPanel")}</span>
             </div>
           </div>
 
@@ -219,7 +222,11 @@ function AdminLayout() {
               mobileMenuOpen ? "is-open" : ""
             }`}
             onClick={() => setMobileMenuOpen((open) => !open)}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={
+              mobileMenuOpen
+                ? t("adminLayout.closeMenu")
+                : t("adminLayout.openMenu")
+            }
             aria-expanded={mobileMenuOpen}
             aria-controls="admin-sidebar"
           >
@@ -235,14 +242,12 @@ function AdminLayout() {
         <header className="admin-topbar">
           <div className="admin-topbar-heading">
             <span className="admin-topbar-eyebrow">
-              AAPLA DABBA / MANAGEMENT
+              {t("adminLayout.topbarEyebrow")}
             </span>
 
-            <h1>Admin Workspace</h1>
+            <h1>{t("adminLayout.adminWorkspace")}</h1>
 
-            <p>
-              Manage your kitchens, meals and business operations.
-            </p>
+            <p>{t("adminLayout.headerDescription")}</p>
           </div>
 
           <div className="admin-topbar-right">
@@ -251,15 +256,15 @@ function AdminLayout() {
               type="button"
               className="admin-desktop-home"
               onClick={handleBack}
-              title="Go to Home Page"
+              title={t("adminLayout.goToHome")}
             >
               <i className="bi bi-arrow-left" />
-              <span>Back</span>
+              <span>{t("adminLayout.back")}</span>
             </button>
 
             <div className="admin-live-status">
               <span className="admin-status-dot" />
-              <span>System Online</span>
+              <span>{t("adminLayout.systemOnline")}</span>
             </div>
 
             <div className="admin-user">
@@ -268,8 +273,8 @@ function AdminLayout() {
               </div>
 
               <div className="admin-user-info">
-                <strong>Administrator</strong>
-                <span>Admin Account</span>
+                <strong>{t("adminLayout.administrator")}</strong>
+                <span>{t("adminLayout.adminAccount")}</span>
               </div>
             </div>
           </div>
@@ -282,8 +287,11 @@ function AdminLayout() {
 
         {/* Footer */}
         <footer className="admin-content-footer">
-          <span>© {new Date().getFullYear()} Aapla Dabba</span>
-          <span>Made with care for your food business</span>
+          <span>
+            © {new Date().getFullYear()} Aapla Dabba
+          </span>
+
+          <span>{t("adminLayout.footerText")}</span>
         </footer>
       </main>
     </div>

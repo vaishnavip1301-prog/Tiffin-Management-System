@@ -1,6 +1,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   getStates,
   getStateById,
@@ -10,6 +12,7 @@ import {
   type State as StateData,
   type StateInput,
 } from "../../api/stateService";
+
 import "./State.css";
 
 const emptyForm: StateInput = {
@@ -19,6 +22,8 @@ const emptyForm: StateInput = {
 };
 
 function State() {
+  const { t } = useTranslation();
+
   const [states, setStates] = useState<StateData[]>([]);
   const [formData, setFormData] = useState<StateInput>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -39,11 +44,11 @@ function State() {
       setStates(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Error loading states:", err);
-      setError("Unable to load states. Please check the API.");
+      setError(t("stateManagement.loadFailed"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void loadStates();
@@ -88,7 +93,7 @@ function State() {
       setShowForm(true);
     } catch (err) {
       console.error("Error fetching state:", err);
-      setError("Unable to load state details.");
+      setError(t("stateManagement.detailsLoadFailed"));
     }
   };
 
@@ -110,7 +115,7 @@ function State() {
       setShowForm(true);
     } catch (err) {
       console.error("Error fetching state:", err);
-      setError("Unable to load state details.");
+      setError(t("stateManagement.detailsLoadFailed"));
     }
   };
 
@@ -129,13 +134,13 @@ function State() {
       };
 
       if (!payload.name || !payload.code) {
-        setError("Please enter both State Name and State Code.");
+        setError(t("stateManagement.requiredFields"));
         return;
       }
 
       if (editingId) {
         await updateState(editingId, payload);
-        setMessage("State updated successfully.");
+        setMessage(t("stateManagement.updateSuccess"));
       } else {
         const stateId = addId.trim();
 
@@ -143,14 +148,12 @@ function State() {
           /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
         if (!stateId) {
-          setError("Please enter the required State ID.");
+          setError(t("stateManagement.requiredStateId"));
           return;
         }
 
         if (!uuidRegex.test(stateId)) {
-          setError(
-            "Please enter a valid UUID. Example: 550e8400-e29b-41d4-a716-446655440000"
-          );
+          setError(t("stateManagement.invalidUuid"));
           return;
         }
 
@@ -159,7 +162,7 @@ function State() {
           code: payload.code,
         } as StateInput);
 
-        setMessage("State added successfully.");
+        setMessage(t("stateManagement.addSuccess"));
       }
 
       setShowForm(false);
@@ -170,7 +173,7 @@ function State() {
       await loadStates();
     } catch (err) {
       console.error("Error saving state:", err);
-      setError("Unable to save state. Please verify the API request.");
+      setError(t("stateManagement.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -178,7 +181,7 @@ function State() {
 
   const handleDelete = async (id: string) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this state?"
+      t("stateManagement.deleteConfirmation")
     );
 
     if (!confirmed) return;
@@ -188,11 +191,11 @@ function State() {
 
     try {
       await deleteState(id);
-      setMessage("State deleted successfully.");
+      setMessage(t("stateManagement.deleteSuccess"));
       await loadStates();
     } catch (err) {
       console.error("Error deleting state:", err);
-      setError("Unable to delete state.");
+      setError(t("stateManagement.deleteFailed"));
     }
   };
 
@@ -207,8 +210,8 @@ function State() {
     <div className="state-management">
       <div className="state-header">
         <div>
-          <h2>State Management</h2>
-          <p>Manage states and their details</p>
+          <h2>{t("stateManagement.pageTitle")}</h2>
+          <p>{t("stateManagement.pageDescription")}</p>
         </div>
 
         <div className="state-header-actions">
@@ -218,7 +221,9 @@ function State() {
             onClick={() => void loadStates()}
             disabled={loading}
           >
-            {loading ? "Loading..." : "Refresh"}
+            {loading
+              ? t("stateManagement.loading")
+              : t("stateManagement.refresh")}
           </button>
 
           <button
@@ -226,7 +231,7 @@ function State() {
             className="state-add-btn"
             onClick={openAddForm}
           >
-            + Add State
+            + {t("stateManagement.addState")}
           </button>
         </div>
       </div>
@@ -249,15 +254,16 @@ function State() {
             <div>
               <h3>
                 {viewingId
-                  ? "State Details"
+                  ? t("stateManagement.stateDetails")
                   : editingId
-                    ? "Update State"
-                    : "Add State"}
+                    ? t("stateManagement.updateState")
+                    : t("stateManagement.addState")}
               </h3>
+
               <p>
                 {viewingId
-                  ? "View state information"
-                  : "Enter the state information below"}
+                  ? t("stateManagement.viewDescription")
+                  : t("stateManagement.formDescription")}
               </p>
             </div>
           </div>
@@ -265,7 +271,10 @@ function State() {
           <form className="state-form" onSubmit={handleSubmit}>
             {!editingId && !viewingId && (
               <div className="state-form-group">
-                <label htmlFor="addId">Required API ID (UUID)</label>
+                <label htmlFor="addId">
+                  {t("stateManagement.requiredApiId")}
+                </label>
+
                 <input
                   id="addId"
                   name="addId"
@@ -280,14 +289,17 @@ function State() {
 
             <div className="state-form-grid">
               <div className="state-form-group">
-                <label htmlFor="stateName">State Name</label>
+                <label htmlFor="stateName">
+                  {t("stateManagement.stateName")}
+                </label>
+
                 <input
                   id="stateName"
                   name="name"
                   type="text"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Enter state name"
+                  placeholder={t("stateManagement.enterStateName")}
                   maxLength={100}
                   required
                   disabled={Boolean(viewingId)}
@@ -295,14 +307,17 @@ function State() {
               </div>
 
               <div className="state-form-group">
-                <label htmlFor="stateCode">State Code</label>
+                <label htmlFor="stateCode">
+                  {t("stateManagement.stateCode")}
+                </label>
+
                 <input
                   id="stateCode"
                   name="code"
                   type="text"
                   value={formData.code}
                   onChange={handleChange}
-                  placeholder="e.g. MH"
+                  placeholder={t("stateManagement.stateCodePlaceholder")}
                   maxLength={10}
                   required
                   disabled={Boolean(viewingId)}
@@ -310,7 +325,10 @@ function State() {
               </div>
 
               <div className="state-form-group">
-                <label htmlFor="stateActive">Status</label>
+                <label htmlFor="stateActive">
+                  {t("stateManagement.status")}
+                </label>
+
                 <select
                   id="stateActive"
                   name="isActive"
@@ -318,8 +336,12 @@ function State() {
                   onChange={handleChange}
                   disabled={Boolean(viewingId)}
                 >
-                  <option value="true">Active</option>
-                  <option value="false">Inactive</option>
+                  <option value="true">
+                    {t("stateManagement.active")}
+                  </option>
+                  <option value="false">
+                    {t("stateManagement.inactive")}
+                  </option>
                 </select>
               </div>
             </div>
@@ -330,7 +352,9 @@ function State() {
                 className="state-cancel-btn"
                 onClick={closeForm}
               >
-                {viewingId ? "Close" : "Cancel"}
+                {viewingId
+                  ? t("stateManagement.close")
+                  : t("stateManagement.cancel")}
               </button>
 
               {!viewingId && (
@@ -340,10 +364,10 @@ function State() {
                   disabled={saving}
                 >
                   {saving
-                    ? "Saving..."
+                    ? t("stateManagement.saving")
                     : editingId
-                      ? "Update State"
-                      : "Save State"}
+                      ? t("stateManagement.updateState")
+                      : t("stateManagement.saveState")}
                 </button>
               )}
             </div>
@@ -354,28 +378,34 @@ function State() {
       <div className="state-card">
         <div className="state-card-header">
           <div>
-            <h3>States List</h3>
-            <p>Total states: {states.length}</p>
+            <h3>{t("stateManagement.statesList")}</h3>
+            <p>
+              {t("stateManagement.totalStates", {
+                count: states.length,
+              })}
+            </p>
           </div>
         </div>
 
         {loading ? (
-          <div className="state-loading">Loading states...</div>
+          <div className="state-loading">
+            {t("stateManagement.loadingStates")}
+          </div>
         ) : states.length === 0 ? (
           <div className="state-empty">
-            <strong>No states found</strong>
-            <p>States will appear here when available from the API.</p>
+            <strong>{t("stateManagement.noStatesFound")}</strong>
+            <p>{t("stateManagement.noStatesDescription")}</p>
           </div>
         ) : (
           <div className="state-table-wrapper">
             <table className="state-table">
               <thead>
                 <tr>
-                  <th>State Name</th>
-                  <th>State Code</th>
-                  <th>Status</th>
-                  <th>Created At</th>
-                  <th>Actions</th>
+                  <th>{t("stateManagement.stateName")}</th>
+                  <th>{t("stateManagement.stateCode")}</th>
+                  <th>{t("stateManagement.status")}</th>
+                  <th>{t("stateManagement.createdAt")}</th>
+                  <th>{t("stateManagement.actions")}</th>
                 </tr>
               </thead>
 
@@ -384,36 +414,45 @@ function State() {
                   <tr key={state.id}>
                     <td className="state-name">{state.name}</td>
                     <td>{state.code}</td>
+
                     <td>
                       <span
                         className={`state-status ${
                           state.isActive ? "active" : "inactive"
                         }`}
                       >
-                        {state.isActive ? "Active" : "Inactive"}
+                        {state.isActive
+                          ? t("stateManagement.active")
+                          : t("stateManagement.inactive")}
                       </span>
                     </td>
+
                     <td>
                       {state.createdAtUtc
-                        ? new Date(state.createdAtUtc).toLocaleDateString()
+                        ? new Date(
+                            state.createdAtUtc
+                          ).toLocaleDateString()
                         : "—"}
                     </td>
+
                     <td>
                       <div className="state-action-buttons">
-                        {/* <button
+                        {/* View button can be enabled when required.
+                        <button
                           type="button"
                           className="state-view-btn"
                           onClick={() => void handleView(state.id)}
                         >
-                          View
-                        </button> */}
+                          {t("stateManagement.view")}
+                        </button>
+                        */}
 
                         <button
                           type="button"
                           className="state-edit-btn"
                           onClick={() => void handleEdit(state.id)}
                         >
-                          Edit
+                          {t("stateManagement.edit")}
                         </button>
 
                         <button
@@ -421,7 +460,7 @@ function State() {
                           className="state-delete-btn"
                           onClick={() => void handleDelete(state.id)}
                         >
-                          Delete
+                          {t("stateManagement.delete")}
                         </button>
                       </div>
                     </td>
