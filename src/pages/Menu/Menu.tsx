@@ -424,6 +424,7 @@ export default function Menu() {
   // ADD ITEM TO BACKEND CART
   const addToCart = async (meal: MenuItem) => {
     if (meal.isAvailable === false || cartBusyId !== null) return;
+     console.log("123-----------")
 
     const mealId = String(meal.id);
 
@@ -452,7 +453,7 @@ export default function Menu() {
             `Cart item ID not found for menu item: ${mealId}`
           );
         }
-
+        console.log("12345-----------")
         await updateCartItemQty(
           cartItemId,
           existing.quantity + 1

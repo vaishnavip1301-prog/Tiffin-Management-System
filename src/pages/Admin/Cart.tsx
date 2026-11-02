@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,41 +20,90 @@ const PAGE_SIZE = 10;
 
 type MenuNameMap = Record<string, string>;
 
-type LocalizedMenuItem = {
+type AdminCartItem = CartItem & {
   id?: string;
   name?: string;
-  nameEn?: string;
-  nameMr?: string;
+  menuItemName?: string;
+  unitPrice?: number;
+  price?: number;
+  lineTotal?: number;
 };
 
-type LocalizedCartItem = CartItem & {
-  nameEn?: string;
-  nameMr?: string;
-  descriptionEn?: string;
-  descriptionMr?: string;
-  categoryNameEn?: string;
-  categoryNameMr?: string;
-};
-
-const getLocalizedValue = (
-  language: string,
-  english?: string | null,
-  marathi?: string | null,
-  fallback?: string | null
-) => {
-  if (language.startsWith("mr")) {
-    return marathi || fallback || english || "";
+function readValue(
+  item: Record<string, unknown>,
+  keys: string[]
+): unknown {
+  for (const key of keys) {
+    if (item[key] !== undefined && item[key] !== null) {
+      return item[key];
+    }
   }
 
-  return english || fallback || marathi || "";
-};
+  return undefined;
+}
+
+function normalizeCartResponse(value: unknown): CartResponse {
+  let data = value;
+
+  if (
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    "data" in data
+  ) {
+    data = (data as Record<string, unknown>).data;
+  }
+
+  const object =
+    data && typeof data === "object" && !Array.isArray(data)
+      ? (data as Record<string, unknown>)
+      : {};
+
+  const rawItems = readValue(object, [
+    "items",
+    "Items",
+    "cartItems",
+    "CartItems",
+  ]);
+
+  const items = Array.isArray(rawItems)
+    ? rawItems.filter(
+        (item): item is CartItem =>
+          Boolean(item) && typeof item === "object"
+      )
+    : [];
+
+  return {
+    ...object,
+    cartId: String(
+      readValue(object, ["cartId", "CartId"]) ?? ""
+    ),
+    guestCartToken: String(
+      readValue(object, ["guestCartToken", "GuestCartToken"]) ?? ""
+    ),
+    currencyCode: String(
+      readValue(object, ["currencyCode", "CurrencyCode"]) ?? "INR"
+    ),
+    items,
+    subtotal: Number(
+      readValue(object, ["subtotal", "Subtotal"]) ?? 0
+    ),
+    totalQuantity: Number(
+      readValue(object, ["totalQuantity", "TotalQuantity"]) ??
+        items.reduce(
+          (sum, item) => sum + Number(item.quantity || 0),
+          0
+        )
+    ),
+  } as CartResponse;
+}
 
 function CartPage() {
   const { t, i18n } = useTranslation();
 
   const [cart, setCart] = useState<CartResponse | null>(null);
   const [menuNames, setMenuNames] = useState<MenuNameMap>({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [actionId, setActionId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CartItem | null>(null);
   const [quantity, setQuantity] = useState("1");
@@ -64,24 +114,39 @@ function CartPage() {
 
   const language = i18n.language;
 
+  const text = useCallback(
+    (
+      english: string,
+      marathi: string
+    ) => (language.startsWith("mr") ? marathi : english),
+    [language]
+  );
+
   // LOAD CART
   const loadCart = useCallback(async () => {
     setLoading(true);
     setError("");
-    setMessage("");
 
     try {
-      const data = await getCart();
-      setCart(data);
+      const response = await getCart();
+      const normalized = normalizeCartResponse(response);
+
+      console.log("Admin Cart API Response:", response);
+      console.log("Normalized Admin Cart:", normalized);
+
+      setCart(normalized);
       setCurrentPage(1);
     } catch (err) {
-      console.error("Error loading cart:", err);
+      console.error("Admin cart loading failed:", err);
       setCart(null);
-      setError(t("cart.messages.loadFailed"));
+      setError(text(
+        "Unable to load cart. Please check the Cart API.",
+        "कार्ट लोड करता आला नाही. कृपया Cart API तपासा."
+      ));
     } finally {
       setLoading(false);
     }
-  }, [t]);
+  }, [text]);
 
   useEffect(() => {
     void loadCart();
@@ -89,71 +154,42 @@ function CartPage() {
 
   // LOAD MENU NAMES
   useEffect(() => {
+    let active = true;
+
     const loadMenuNames = async () => {
       try {
         const response = await getMenuItems(1, 100);
         const names: MenuNameMap = {};
 
         (response.items ?? []).forEach((menuItem) => {
-          const localizedItem = menuItem as LocalizedMenuItem;
+          const item = menuItem as {
+            id?: string;
+            name?: string;
+            nameEn?: string;
+            nameMr?: string;
+          };
 
-          if (localizedItem.id) {
-            names[localizedItem.id] = getLocalizedValue(
-              language,
-              localizedItem.nameEn,
-              localizedItem.nameMr,
-              localizedItem.name
-            );
+          if (item.id) {
+            names[item.id] = language.startsWith("mr")
+              ? item.nameMr || item.name || item.nameEn || "Menu Item"
+              : item.nameEn || item.name || item.nameMr || "Menu Item";
           }
         });
 
-        setMenuNames(names);
+        if (active) {
+          setMenuNames(names);
+        }
       } catch (err) {
-        console.error("Error loading menu names:", err);
+        console.error("Unable to load menu names:", err);
       }
     };
 
     void loadMenuNames();
+
+    return () => {
+      active = false;
+    };
   }, [language]);
-
-  const getMenuName = (item: CartItem) => {
-    const localizedItem = item as LocalizedCartItem;
-
-    return (
-      getLocalizedValue(
-        language,
-        localizedItem.nameEn,
-        localizedItem.nameMr,
-        localizedItem.name
-      ) ||
-      menuNames[item.menuItemId] ||
-      t("cart.messages.menuNameUnavailable")
-    );
-  };
-
-  const getItemDescription = (item: CartItem) => {
-    const localizedItem = item as LocalizedCartItem;
-
-    return getLocalizedValue(
-      language,
-      localizedItem.descriptionEn,
-      localizedItem.descriptionMr,
-      localizedItem.description
-    ) || "—";
-  };
-
-  const getCategoryName = (item: CartItem) => {
-    const localizedItem = item as LocalizedCartItem;
-
-    return (
-      getLocalizedValue(
-        language,
-        localizedItem.categoryNameEn,
-        localizedItem.categoryNameMr,
-        localizedItem.categoryName
-      ) || "—"
-    );
-  };
 
   const allItems = cart?.items ?? [];
 
@@ -162,13 +198,48 @@ function CartPage() {
     Math.ceil(allItems.length / PAGE_SIZE)
   );
 
-  // PAGINATION
   const paginatedItems = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    return allItems.slice(startIndex, startIndex + PAGE_SIZE);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return allItems.slice(start, start + PAGE_SIZE);
   }, [allItems, currentPage]);
 
-  // EDIT ITEM
+  const getMenuName = (item: CartItem) => {
+    const localized = item as AdminCartItem;
+
+    return (
+      localized.menuItemName ||
+      localized.name ||
+      menuNames[item.menuItemId] ||
+      "Menu Item"
+    );
+  };
+
+  const getPrice = (item: CartItem) => {
+    const localized = item as AdminCartItem;
+
+    return Number(
+      localized.unitPrice ?? localized.price ?? 0
+    );
+  };
+
+  const getLineTotal = (item: CartItem) => {
+    const localized = item as AdminCartItem;
+
+    return Number(
+      localized.lineTotal ??
+        getPrice(item) * Number(item.quantity || 0)
+    );
+  };
+
+  const getCartItemId = (item: CartItem) => {
+    const localized = item as AdminCartItem;
+
+    return String(
+      localized.cartItemId || localized.id || ""
+    );
+  };
+
+  // EDIT
   const handleEditItem = (item: CartItem) => {
     setSelectedItem(item);
     setQuantity(String(item.quantity));
@@ -177,40 +248,69 @@ function CartPage() {
   };
 
   // UPDATE QUANTITY
-  const handleUpdateQuantity = async (item: CartItem) => {
+  const handleUpdateQuantity = async () => {
+    if (!selectedItem) return;
+
     const newQuantity = Number(quantity);
+    const cartItemId = getCartItemId(selectedItem);
 
     if (!Number.isInteger(newQuantity) || newQuantity < 1) {
-      setError(t("cart.messages.invalidQuantity"));
+      setError(text(
+        "Enter a valid quantity.",
+        "कृपया योग्य संख्या टाका."
+      ));
       return;
     }
 
-    setActionId(item.cartItemId);
+    if (!cartItemId) {
+      setError(text(
+        "Cart item ID is missing.",
+        "Cart Item ID उपलब्ध नाही."
+      ));
+      return;
+    }
+
+    setActionId(cartItemId);
     setError("");
     setMessage("");
 
     try {
-      const updatedCart = await updateCartItemQty(
-        item.cartItemId,
-        newQuantity
-      );
-
-      setCart(updatedCart);
+      await updateCartItemQty(cartItemId, newQuantity);
       setSelectedItem(null);
-      setCurrentPage(1);
-      setMessage(t("cart.messages.quantityUpdated"));
+      await loadCart();
+
+      setMessage(text(
+        "Quantity updated successfully.",
+        "Quantity यशस्वीरीत्या अपडेट झाली."
+      ));
     } catch (err) {
-      console.error("Error updating cart quantity:", err);
-      setError(t("cart.messages.quantityUpdateFailed"));
+      console.error("Admin quantity update failed:", err);
+      setError(text(
+        "Unable to update quantity.",
+        "Quantity अपडेट करता आली नाही."
+      ));
     } finally {
       setActionId(null);
     }
   };
 
-  // DELETE CART ITEM
-  const handleDeleteItem = async (cartItemId: string) => {
+  // DELETE ITEM
+  const handleDeleteItem = async (item: CartItem) => {
+    const cartItemId = getCartItemId(item);
+
+    if (!cartItemId) {
+      setError(text(
+        "Cart item ID is missing.",
+        "Cart Item ID उपलब्ध नाही."
+      ));
+      return;
+    }
+
     const confirmed = window.confirm(
-      t("cart.confirmations.deleteItem")
+      text(
+        "Are you sure you want to delete this item?",
+        "तुम्हाला हा item delete करायचा आहे का?"
+      )
     );
 
     if (!confirmed) return;
@@ -220,27 +320,27 @@ function CartPage() {
     setMessage("");
 
     try {
-      const updatedCart = await removeCartItem(cartItemId);
+      await removeCartItem(cartItemId);
 
-      setCart(updatedCart);
-
-      if (selectedItem?.cartItemId === cartItemId) {
+      if (
+        selectedItem &&
+        getCartItemId(selectedItem) === cartItemId
+      ) {
         setSelectedItem(null);
       }
 
-      const updatedTotalPages = Math.max(
-        1,
-        Math.ceil((updatedCart.items?.length ?? 0) / PAGE_SIZE)
-      );
+      await loadCart();
 
-      setCurrentPage((page) =>
-        Math.min(page, updatedTotalPages)
-      );
-
-      setMessage(t("cart.messages.itemDeleted"));
+      setMessage(text(
+        "Cart item deleted successfully.",
+        "Cart item यशस्वीरीत्या delete झाला."
+      ));
     } catch (err) {
-      console.error("Error deleting cart item:", err);
-      setError(t("cart.messages.itemDeleteFailed"));
+      console.error("Admin item deletion failed:", err);
+      setError(text(
+        "Unable to delete cart item.",
+        "Cart item delete करता आला नाही."
+      ));
     } finally {
       setActionId(null);
     }
@@ -256,10 +356,17 @@ function CartPage() {
     try {
       const result = await validateCart();
       setValidationResult(result);
-      setMessage(t("cart.messages.validationCompleted"));
+
+      setMessage(text(
+        "Cart validation completed.",
+        "Cart validation पूर्ण झाले."
+      ));
     } catch (err) {
-      console.error("Error validating cart:", err);
-      setError(t("cart.messages.validationFailed"));
+      console.error("Cart validation failed:", err);
+      setError(text(
+        "Cart validation failed.",
+        "Cart validation अयशस्वी झाले."
+      ));
     } finally {
       setActionId(null);
     }
@@ -268,7 +375,10 @@ function CartPage() {
   // DELETE ENTIRE CART
   const handleDeleteCart = async () => {
     const confirmed = window.confirm(
-      t("cart.confirmations.deleteCart")
+      text(
+        "Are you sure you want to delete the entire cart?",
+        "तुम्हाला संपूर्ण Cart delete करायचा आहे का?"
+      )
     );
 
     if (!confirmed) return;
@@ -285,10 +395,16 @@ function CartPage() {
       setValidationResult(null);
       setCurrentPage(1);
 
-      setMessage(t("cart.messages.cartDeleted"));
+      setMessage(text(
+        "Cart deleted successfully.",
+        "Cart यशस्वीरीत्या delete झाला."
+      ));
     } catch (err) {
-      console.error("Error deleting cart:", err);
-      setError(t("cart.messages.cartDeleteFailed"));
+      console.error("Cart deletion failed:", err);
+      setError(text(
+        "Unable to delete cart.",
+        "Cart delete करता आला नाही."
+      ));
     } finally {
       setActionId(null);
     }
@@ -298,11 +414,15 @@ function CartPage() {
 
   return (
     <div className="cart-management">
-      {/* HEADER */}
       <div className="cart-header">
         <div>
-          <h2>{t("cart.pageTitle")}</h2>
-          <p>{t("cart.pageDescription")}</p>
+          <h2>{text("Cart Management", "कार्ट व्यवस्थापन")}</h2>
+          <p>
+            {text(
+              "View and manage guest cart items.",
+              "Guest Cart मधील items पाहा आणि व्यवस्थापित करा."
+            )}
+          </p>
         </div>
 
         <div className="cart-header-actions">
@@ -312,9 +432,7 @@ function CartPage() {
             onClick={() => void loadCart()}
             disabled={loading || actionId !== null}
           >
-            {loading
-              ? t("cart.buttons.loading")
-              : `↻ ${t("cart.buttons.refresh")}`}
+            ↻ {text("Refresh", "रिफ्रेश")}
           </button>
 
           <button
@@ -324,8 +442,8 @@ function CartPage() {
             disabled={loading || actionId !== null || !guestToken}
           >
             {actionId === "validate"
-              ? t("cart.buttons.validating")
-              : t("cart.buttons.validateCart")}
+              ? text("Validating...", "तपासत आहे...")
+              : text("Validate Cart", "कार्ट तपासा")}
           </button>
 
           <button
@@ -334,44 +452,41 @@ function CartPage() {
             onClick={() => void handleDeleteCart()}
             disabled={loading || actionId !== null || !guestToken}
           >
-            {t("cart.buttons.deleteCart")}
+            {text("Delete Cart", "कार्ट डिलीट करा")}
           </button>
         </div>
       </div>
 
-      {/* SUCCESS MESSAGE */}
       {message && (
         <div className="cart-alert cart-success" role="status">
           {message}
         </div>
       )}
 
-      {/* ERROR MESSAGE */}
       {error && (
         <div className="cart-alert cart-error" role="alert">
           {error}
         </div>
       )}
 
-      {/* SUMMARY */}
       <div className="cart-summary-grid">
         <div className="cart-summary-card">
-          <span>{t("cart.summary.cartId")}</span>
+          <span>{text("Cart ID", "कार्ट आयडी")}</span>
           <strong>{cart?.cartId || "—"}</strong>
         </div>
 
         <div className="cart-summary-card">
-          <span>{t("cart.summary.totalItems")}</span>
+          <span>{text("Total Items", "एकूण Items")}</span>
           <strong>{allItems.length}</strong>
         </div>
 
         <div className="cart-summary-card">
-          <span>{t("cart.summary.totalQuantity")}</span>
+          <span>{text("Total Quantity", "एकूण संख्या")}</span>
           <strong>{cart?.totalQuantity ?? 0}</strong>
         </div>
 
         <div className="cart-summary-card">
-          <span>{t("cart.summary.subtotal")}</span>
+          <span>{text("Subtotal", "एकूण रक्कम")}</span>
           <strong>
             {cart?.currencyCode || "INR"}{" "}
             {Number(cart?.subtotal ?? 0).toFixed(2)}
@@ -379,26 +494,22 @@ function CartPage() {
         </div>
       </div>
 
-      {/* GUEST CART TOKEN */}
       <div className="cart-token-card">
-        <h3>{t("cart.token.title")}</h3>
-
+        <h3>{text("Guest Cart Token", "Guest Cart Token")}</h3>
         <p>
           {guestToken
-            ? t("cart.token.saved")
-            : t("cart.token.notSaved")}
+            ? text("Token saved in browser.", "Token browser मध्ये save आहे.")
+            : text("No guest token found.", "Guest Token उपलब्ध नाही.")}
         </p>
-
         <div className="cart-token-value">
-          {guestToken || t("cart.token.unavailable")}
+          {guestToken || "—"}
         </div>
       </div>
 
-      {/* EDIT QUANTITY FORM */}
       {selectedItem && (
         <div className="cart-item-details">
           <div className="cart-details-heading">
-            <h3>{t("cart.edit.title")}</h3>
+            <h3>{text("Edit Cart Item", "Cart Item बदला")}</h3>
 
             <button
               type="button"
@@ -410,31 +521,29 @@ function CartPage() {
           </div>
 
           <p>
-            <strong>{t("cart.edit.name")}:</strong>{" "}
+            <strong>{text("Item Name", "Item नाव")}:</strong>{" "}
             {getMenuName(selectedItem)}
           </p>
 
           <p>
-            <strong>{t("cart.edit.itemId")}:</strong>{" "}
-            {selectedItem.cartItemId}
+            <strong>Cart Item ID:</strong>{" "}
+            {getCartItemId(selectedItem)}
           </p>
 
           <p>
-            <strong>{t("cart.edit.menuItemId")}:</strong>{" "}
+            <strong>Menu Item ID:</strong>{" "}
             {selectedItem.menuItemId}
           </p>
 
           <p>
-            <strong>{t("cart.edit.price")}:</strong>{" "}
-            {selectedItem.currencyCode || cart?.currencyCode || "INR"}{" "}
-            {Number(
-              selectedItem.unitPrice ?? selectedItem.price ?? 0
-            ).toFixed(2)}
+            <strong>{text("Unit Price", "प्रति Item किंमत")}:</strong>{" "}
+            {cart?.currencyCode || "INR"}{" "}
+            {getPrice(selectedItem).toFixed(2)}
           </p>
 
           <div className="cart-quantity-control">
             <label htmlFor="cartQuantity">
-              {t("cart.edit.quantity")}
+              {text("Quantity", "संख्या")}
             </label>
 
             <input
@@ -443,61 +552,51 @@ function CartPage() {
               min="1"
               step="1"
               value={quantity}
-              onChange={(event) =>
-                setQuantity(event.target.value)
-              }
+              onChange={(event) => setQuantity(event.target.value)}
             />
 
             <button
               type="button"
               className="cart-btn cart-btn-save"
-              onClick={() =>
-                void handleUpdateQuantity(selectedItem)
-              }
+              onClick={() => void handleUpdateQuantity()}
               disabled={actionId !== null}
             >
-              {actionId === selectedItem.cartItemId
-                ? t("cart.buttons.updating")
-                : t("cart.buttons.updateQuantity")}
+              {actionId === getCartItemId(selectedItem)
+                ? text("Updating...", "अपडेट करत आहे...")
+                : text("Update Quantity", "संख्या अपडेट करा")}
             </button>
           </div>
         </div>
       )}
 
-      {/* VALIDATION RESPONSE */}
       {validationResult !== null && (
         <div className="cart-validation-card">
-          <h3>{t("cart.validation.title")}</h3>
-          <pre>
-            {JSON.stringify(validationResult, null, 2)}
-          </pre>
+          <h3>{text("Validation Response", "Validation Response")}</h3>
+          <pre>{JSON.stringify(validationResult, null, 2)}</pre>
         </div>
       )}
 
-      {/* CART TABLE */}
       <div className="cart-table-card">
         <div className="cart-table-toolbar">
           <div>
-            <h3>{t("cart.table.title")}</h3>
+            <h3>{text("Cart Items", "कार्ट Items")}</h3>
             <span>
-              {allItems.length} {t("cart.table.itemsFound")}
+              {allItems.length} {text("items found", "Items मिळाले")}
             </span>
           </div>
         </div>
 
         {loading ? (
           <div className="cart-loading">
-            {t("cart.table.loading")}
+            {text("Loading cart...", "कार्ट लोड होत आहे...")}
           </div>
         ) : !cart ? (
           <div className="cart-empty">
-            <strong>{t("cart.table.noCartData")}</strong>
-            <p>{t("cart.table.checkCartApi")}</p>
+            <strong>{text("No cart data", "कार्ट डेटा उपलब्ध नाही")}</strong>
           </div>
         ) : allItems.length === 0 ? (
           <div className="cart-empty">
-            <strong>{t("cart.table.emptyCart")}</strong>
-            <p>{t("cart.table.emptyCartDescription")}</p>
+            <strong>{text("Cart is empty", "कार्ट रिकामा आहे")}</strong>
           </div>
         ) : (
           <>
@@ -505,102 +604,73 @@ function CartPage() {
               <table className="cart-table">
                 <thead>
                   <tr>
-                    <th>{t("cart.table.serialNumber")}</th>
-                    <th>{t("cart.table.menuName")}</th>
-                    <th>{t("cart.table.category")}</th>
-                    <th>{t("cart.table.quantity")}</th>
-                    <th>{t("cart.table.unitPrice")}</th>
-                    <th>{t("cart.table.lineTotal")}</th>
-                    <th>{t("cart.table.actions")}</th>
+                    <th>#</th>
+                    <th>{text("Menu Item", "Menu Item")}</th>
+                    <th>{text("Quantity", "संख्या")}</th>
+                    <th>{text("Unit Price", "प्रति Item किंमत")}</th>
+                    <th>{text("Line Total", "एकूण किंमत")}</th>
+                    <th>{text("Actions", "Actions")}</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {paginatedItems.map((item, index) => (
-                    <tr key={item.cartItemId}>
-                      <td>
-                        {(currentPage - 1) * PAGE_SIZE +
-                          index +
-                          1}
-                      </td>
+                  {paginatedItems.map((item, index) => {
+                    const itemId = getCartItemId(item);
 
-                      <td className="cart-item-name">
-                        <div className="cart-product">
-                          <div>
-                            <strong>{getMenuName(item)}</strong>
-                            <small>
-                              {getItemDescription(item)}
-                            </small>
+                    return (
+                      <tr key={itemId || `${item.menuItemId}-${index}`}>
+                        <td>
+                          {(currentPage - 1) * PAGE_SIZE + index + 1}
+                        </td>
+
+                        <td className="cart-item-name">
+                          <strong>{getMenuName(item)}</strong>
+                        </td>
+
+                        <td>{item.quantity}</td>
+
+                        <td>
+                          {cart.currencyCode || "INR"}{" "}
+                          {getPrice(item).toFixed(2)}
+                        </td>
+
+                        <td>
+                          {cart.currencyCode || "INR"}{" "}
+                          {getLineTotal(item).toFixed(2)}
+                        </td>
+
+                        <td>
+                          <div className="cart-action-buttons">
+                            <button
+                              type="button"
+                              className="cart-action-btn cart-edit-btn"
+                              onClick={() => handleEditItem(item)}
+                              disabled={!itemId || actionId !== null}
+                            >
+                              {text("Edit", "बदला")}
+                            </button>
+
+                            <button
+                              type="button"
+                              className="cart-action-btn cart-delete-btn"
+                              onClick={() => void handleDeleteItem(item)}
+                              disabled={!itemId || actionId !== null}
+                            >
+                              {text("Delete", "डिलीट")}
+                            </button>
                           </div>
-                        </div>
-                      </td>
-
-                      <td>{getCategoryName(item)}</td>
-
-                      <td>{item.quantity}</td>
-
-                      <td>
-                        {item.currencyCode ||
-                          cart.currencyCode ||
-                          "INR"}{" "}
-                        {Number(
-                          item.unitPrice ?? item.price ?? 0
-                        ).toFixed(2)}
-                      </td>
-
-                      <td>
-                        {item.currencyCode ||
-                          cart.currencyCode ||
-                          "INR"}{" "}
-                        {Number(
-                          item.lineTotal ??
-                            (item.unitPrice ?? item.price ?? 0) *
-                              item.quantity
-                        ).toFixed(2)}
-                      </td>
-
-                      <td>
-                        <div className="cart-action-buttons">
-                          <button
-                            type="button"
-                            className="cart-action-btn cart-edit-btn"
-                            onClick={() => handleEditItem(item)}
-                            disabled={actionId !== null}
-                          >
-                            {t("cart.buttons.edit")}
-                          </button>
-
-                          <button
-                            type="button"
-                            className="cart-action-btn cart-delete-btn"
-                            onClick={() =>
-                              void handleDeleteItem(item.cartItemId)
-                            }
-                            disabled={actionId !== null}
-                          >
-                            {actionId === item.cartItemId
-                              ? t("cart.buttons.deleting")
-                              : t("cart.buttons.delete")}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
 
-            {/* PAGINATION */}
             <div className="cart-pagination">
               <span>
-                {t("cart.pagination.showing")}{" "}
-                {(currentPage - 1) * PAGE_SIZE + 1}–
-                {Math.min(
-                  currentPage * PAGE_SIZE,
-                  allItems.length
-                )}{" "}
-                {t("cart.pagination.of")} {allItems.length}{" "}
-                {t("cart.pagination.items")}
+                {text("Page", "पान")} {currentPage}{" "}
+                {text("of", "पैकी")} {totalPages}
               </span>
 
               <div className="cart-pagination-actions">
@@ -608,19 +678,12 @@ function CartPage() {
                   type="button"
                   className="cart-page-btn"
                   onClick={() =>
-                    setCurrentPage((page) =>
-                      Math.max(1, page - 1)
-                    )
+                    setCurrentPage((page) => Math.max(1, page - 1))
                   }
                   disabled={currentPage === 1}
                 >
-                  {t("cart.pagination.previous")}
+                  {text("Previous", "मागील")}
                 </button>
-
-                <span className="cart-page-number">
-                  {t("cart.pagination.page")} {currentPage}{" "}
-                  {t("cart.pagination.of")} {totalPages}
-                </span>
 
                 <button
                   type="button"
@@ -632,7 +695,7 @@ function CartPage() {
                   }
                   disabled={currentPage === totalPages}
                 >
-                  {t("cart.pagination.next")}
+                  {text("Next", "पुढील")}
                 </button>
               </div>
             </div>

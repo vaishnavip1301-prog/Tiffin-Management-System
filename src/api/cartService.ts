@@ -13,9 +13,11 @@ export interface UpdateCartQuantityRequest {
 }
 
 export interface CartItem {
-  cartItemId: string;
+  id?: string;
+  cartItemId?: string;
   menuItemId: string;
   name?: string;
+  menuItemName?: string;
   description?: string;
   categoryName?: string;
   quantity: number;
@@ -34,8 +36,8 @@ export interface CartResponse {
   currencyCode?: string;
   items: CartItem[];
   status?: string;
-  subtotal: number;
-  totalQuantity: number;
+  subtotal?: number;
+  totalQuantity?: number;
   updatedAtUtc?: string | null;
   [key: string]: unknown;
 }
@@ -48,12 +50,14 @@ export interface AddCartResponse {
   [key: string]: unknown;
 }
 
+// Handle API response.
 function getResponseData<T>(responseData: unknown): T {
   let result = responseData;
 
   if (
     result &&
     typeof result === "object" &&
+    !Array.isArray(result) &&
     "data" in result &&
     Object.keys(result).length === 1
   ) {
@@ -63,7 +67,7 @@ function getResponseData<T>(responseData: unknown): T {
   return result as T;
 }
 
-// Guest cart token management
+// Guest cart token management.
 export function getGuestCartToken(): string | null {
   return localStorage.getItem(GUEST_CART_TOKEN_KEY);
 }
@@ -82,38 +86,39 @@ function getCartHeaders(token: string) {
   };
 }
 
-// Prevent duplicate cart reset requests during React StrictMode.
-let resetCartPromise: Promise<void> | null = null;
+// Prevent multiple cart creation requests.
+let createCartPromise: Promise<AddCartResponse> | null = null;
 
-// Delete previous cart and start with a fresh guest cart.
-export async function resetGuestCart(): Promise<void> {
-  if (resetCartPromise) {
-    return resetCartPromise;
+// Create a new guest cart.
+export async function createCart(): Promise<AddCartResponse> {
+  if (createCartPromise) {
+    return createCartPromise;
   }
 
-  const token = getGuestCartToken();
+  createCartPromise = (async () => {
+    const response = await cartAxiosInstance.post("/AddCart");
 
-  if (!token) {
-    return;
-  }
+    const data = getResponseData<AddCartResponse>(response.data);
 
-  // Clear old token immediately so it cannot be reused.
-  clearGuestCartToken();
+    if (!data.guestCartToken) {
+      throw new Error(
+        "Guest cart token was not returned by the AddCart API."
+      );
+    }
 
-  resetCartPromise = (async () => {
-    await cartAxiosInstance.delete("/DeleteCart", {
-      headers: getCartHeaders(token),
-    });
+    saveGuestCartToken(data.guestCartToken);
+
+    return data;
   })();
 
   try {
-    await resetCartPromise;
+    return await createCartPromise;
   } finally {
-    resetCartPromise = null;
+    createCartPromise = null;
   }
 }
 
-// Get existing token or create a new cart.
+// Get existing token or create a new guest cart.
 export async function ensureGuestCartToken(): Promise<string> {
   const existingToken = getGuestCartToken();
 
@@ -124,25 +129,10 @@ export async function ensureGuestCartToken(): Promise<string> {
   const cart = await createCart();
 
   if (!cart.guestCartToken) {
-    throw new Error(
-      "Cart API did not return guestCartToken. Check the AddCart response."
-    );
+    throw new Error("Unable to create guest cart.");
   }
 
   return cart.guestCartToken;
-}
-
-// Create a new guest cart.
-export async function createCart(): Promise<AddCartResponse> {
-  const response = await cartAxiosInstance.post("/AddCart");
-
-  const data = getResponseData<AddCartResponse>(response.data);
-
-  if (data.guestCartToken) {
-    saveGuestCartToken(data.guestCartToken);
-  }
-
-  return data;
 }
 
 // Get cart with all items.
@@ -175,11 +165,12 @@ export async function getCartItemById(
 
   return getResponseData<CartItem>(response.data);
 }
-
 // Add menu item to cart.
 export async function addCartItem(
   input: CartItemRequest
 ): Promise<CartResponse> {
+ 
+
   if (!input.menuItemId) {
     throw new Error("Menu item ID is required.");
   }
@@ -189,19 +180,36 @@ export async function addCartItem(
   }
 
   const token = await ensureGuestCartToken();
+ console.log("========== ADD TO CART ==========");
+  console.log("Guest Cart Token:", token);
+  console.log("Menu Item ID:", input.menuItemId);
+  console.log("Quantity:", input.quantity);
 
-  await cartAxiosInstance.post(
-    "/AddCartItem",
-    {
-      menuItemId: input.menuItemId,
-      quantity: input.quantity,
-    },
-    {
-      headers: getCartHeaders(token),
-    }
-  );
+ console.log("========== ADD TO CART CALL==========");
+  const requestBody = {
+    menuItemId: input.menuItemId,
+    quantity: input.quantity,
+  };
 
-  return getCart();
+  console.log("Add Cart Request Body:", requestBody);
+
+  try {
+    const response = await cartAxiosInstance.post(
+      "/AddCartItem",
+      requestBody,
+      {
+        headers: getCartHeaders(token),
+      }
+    );
+
+    console.log("Add Cart API Success:", response.data);
+
+    return await getCart();
+
+  } catch (error) {
+    console.error("Add Cart API Failed:", error);
+    throw error;
+  }
 }
 
 // Update cart item quantity.
@@ -221,7 +229,9 @@ export async function updateCartItemQty(
 
   await cartAxiosInstance.put(
     `/UpdateCartItemQty/${encodeURIComponent(cartItemId)}`,
-    { quantity },
+    {
+      quantity,
+    },
     {
       headers: getCartHeaders(token),
     }
@@ -281,16 +291,32 @@ export async function validateCart(): Promise<unknown> {
   return getResponseData<unknown>(response.data);
 }
 
-// Delete entire cart and clear its token.
+// Delete entire cart.
 export async function deleteCart(): Promise<void> {
-  await resetGuestCart();
+  const token = getGuestCartToken();
+
+  if (!token) {
+    return;
+  }
+
+  await cartAxiosInstance.delete("/DeleteCart", {
+    headers: getCartHeaders(token),
+  });
+
+  // Clear token only after successful API response.
+  clearGuestCartToken();
 }
 
-// Delete cart item using API endpoint.
+// Delete cart item using DeleteCartItem endpoint.
 export async function deleteCartItem(): Promise<void> {
   const token = await ensureGuestCartToken();
 
   await cartAxiosInstance.delete("/DeleteCartItem", {
     headers: getCartHeaders(token),
   });
+}
+
+// Reset guest cart.
+export async function resetGuestCart(): Promise<void> {
+  await deleteCart();
 }

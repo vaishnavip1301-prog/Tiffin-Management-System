@@ -28,11 +28,14 @@ function readValue(
       return item[key];
     }
   }
+
   return undefined;
 }
 
 function findCartRows(value: unknown): Record<string, unknown>[] {
-  if (!value || typeof value !== "object") return [];
+  if (!value || typeof value !== "object") {
+    return [];
+  }
 
   if (Array.isArray(value)) {
     return value.filter(
@@ -43,7 +46,7 @@ function findCartRows(value: unknown): Record<string, unknown>[] {
 
   const object = value as Record<string, unknown>;
 
-  for (const key of [
+  const keys = [
     "items",
     "Items",
     "cartItems",
@@ -52,7 +55,9 @@ function findCartRows(value: unknown): Record<string, unknown>[] {
     "Data",
     "result",
     "Result",
-  ]) {
+  ];
+
+  for (const key of keys) {
     const nested = object[key];
 
     if (Array.isArray(nested)) {
@@ -61,7 +66,10 @@ function findCartRows(value: unknown): Record<string, unknown>[] {
 
     if (nested && typeof nested === "object") {
       const rows = findCartRows(nested);
-      if (rows.length) return rows;
+
+      if (rows.length > 0) {
+        return rows;
+      }
     }
   }
 
@@ -70,7 +78,7 @@ function findCartRows(value: unknown): Record<string, unknown>[] {
 
 function mapCartRows(response: unknown): CartRow[] {
   return findCartRows(response)
-    .map((item) => {
+    .map((item): CartRow | null => {
       const id = readValue(item, [
         "cartItemId",
         "CartItemId",
@@ -90,32 +98,48 @@ function mapCartRows(response: unknown): CartRow[] {
         "Name",
       ]);
 
-      const price = Number(
-        readValue(item, ["price", "Price", "unitPrice", "UnitPrice"]) ?? 0
-      );
+      const rawPrice = readValue(item, [
+        "unitPrice",
+        "UnitPrice",
+        "price",
+        "Price",
+      ]);
 
-      const quantity = Number(
-        readValue(item, ["quantity", "Quantity"]) ?? 1
-      );
+      const rawQuantity = readValue(item, [
+        "quantity",
+        "Quantity",
+      ]);
 
-      const image = readValue(item, [
+      const rawImage = readValue(item, [
         "imageUrl",
         "ImageUrl",
+        "menuItemImageUrl",
+        "MenuItemImageUrl",
         "image",
         "Image",
       ]);
 
-      if (!id || !menuId) return null;
+      if (!id || !menuId) {
+        console.warn("Cart item is missing its IDs:", item);
+        return null;
+      }
+
+      const price = Number(rawPrice ?? 0);
+      const quantity = Number(rawQuantity ?? 1);
 
       return {
         cartItemId: String(id),
         menuItemId: String(menuId),
         name: String(name ?? "Menu Item"),
-        price: Number.isFinite(price) ? price : 0,
-        quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
-        imageUrl: typeof image === "string" && image
-          ? image
-          : FALLBACK_IMAGE,
+        price: Number.isFinite(price) && price >= 0 ? price : 0,
+        quantity:
+          Number.isInteger(quantity) && quantity > 0
+            ? quantity
+            : 1,
+        imageUrl:
+          typeof rawImage === "string" && rawImage.trim()
+            ? rawImage
+            : FALLBACK_IMAGE,
       };
     })
     .filter((item): item is CartRow => item !== null);
@@ -135,9 +159,15 @@ function Cart() {
 
     try {
       const response = await getCart();
-      setItems(mapCartRows(response));
+      const cartRows = mapCartRows(response);
+
+      console.log("Cart API response:", response);
+      console.log("Mapped cart items:", cartRows);
+
+      setItems(cartRows);
     } catch (err) {
       console.error("Unable to load cart:", err);
+
       setError(
         "Unable to load your cart. Please check the Cart API and guest cart token."
       );
@@ -164,34 +194,29 @@ function Cart() {
     item: CartRow,
     change: number
   ) => {
-    if (busyId) return;
+    if (busyId) {
+      return;
+    }
 
     const nextQuantity = item.quantity + change;
+
     setBusyId(item.cartItemId);
     setError("");
 
     try {
       if (nextQuantity <= 0) {
         await removeCartItem(item.cartItemId);
-
-        setItems((current) =>
-          current.filter(
-            (row) => row.cartItemId !== item.cartItemId
-          )
-        );
       } else {
-        await updateCartItemQty(item.cartItemId, nextQuantity);
-
-        setItems((current) =>
-          current.map((row) =>
-            row.cartItemId === item.cartItemId
-              ? { ...row, quantity: nextQuantity }
-              : row
-          )
+        await updateCartItemQty(
+          item.cartItemId,
+          nextQuantity
         );
       }
+
+      await loadCart();
     } catch (err) {
       console.error("Unable to update cart:", err);
+
       setError(
         "Unable to update your cart. Please try again."
       );
@@ -201,7 +226,9 @@ function Cart() {
   };
 
   const handleOrderNow = () => {
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      return;
+    }
 
     navigate("/order", {
       state: {
@@ -253,15 +280,24 @@ function Cart() {
         ) : error ? (
           <div className="cart-state cart-error">
             <p>{error}</p>
-            <button type="button" onClick={() => void loadCart()}>
+
+            <button
+              type="button"
+              onClick={() => void loadCart()}
+            >
               Try Again
             </button>
           </div>
         ) : items.length === 0 ? (
           <div className="cart-state cart-empty">
             <div className="cart-empty-icon">🛒</div>
+
             <h2>Your cart is empty</h2>
-            <p>Add your favourite homemade meals to get started.</p>
+
+            <p>
+              Add your favourite homemade meals to get started.
+            </p>
+
             <button
               type="button"
               className="cart-primary-button"
@@ -274,24 +310,31 @@ function Cart() {
           <div className="cart-layout">
             <div className="cart-items">
               {items.map((item) => (
-                <article className="cart-item" key={item.cartItemId}>
+                <article
+                  className="cart-item"
+                  key={item.cartItemId}
+                >
                   <img
                     src={item.imageUrl}
                     alt={item.name}
                     onError={(event) => {
+                      event.currentTarget.onerror = null;
                       event.currentTarget.src = FALLBACK_IMAGE;
                     }}
                   />
 
                   <div className="cart-item-details">
                     <h3>{item.name}</h3>
+
                     <p>₹{item.price.toFixed(2)} each</p>
 
                     <div className="cart-quantity">
                       <button
                         type="button"
                         disabled={busyId !== null}
-                        onClick={() => void changeQuantity(item, -1)}
+                        onClick={() =>
+                          void changeQuantity(item, -1)
+                        }
                         aria-label={`Decrease ${item.name}`}
                       >
                         −
@@ -302,7 +345,9 @@ function Cart() {
                       <button
                         type="button"
                         disabled={busyId !== null}
-                        onClick={() => void changeQuantity(item, 1)}
+                        onClick={() =>
+                          void changeQuantity(item, 1)
+                        }
                         aria-label={`Increase ${item.name}`}
                       >
                         +
@@ -313,14 +358,21 @@ function Cart() {
                       type="button"
                       className="cart-remove-button"
                       disabled={busyId !== null}
-                      onClick={() => void changeQuantity(item, -item.quantity)}
+                      onClick={() =>
+                        void changeQuantity(
+                          item,
+                          -item.quantity
+                        )
+                      }
                     >
                       Remove
                     </button>
                   </div>
 
                   <strong className="cart-item-total">
-                    ₹{(item.price * item.quantity).toFixed(2)}
+                    ₹{(
+                      item.price * item.quantity
+                    ).toFixed(2)}
                   </strong>
                 </article>
               ))}
@@ -340,7 +392,8 @@ function Cart() {
               </div>
 
               <p className="cart-delivery-note">
-                Delivery charges, if applicable, will be confirmed separately.
+                Delivery charges, if applicable, will be
+                confirmed separately.
               </p>
 
               <button
