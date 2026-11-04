@@ -22,6 +22,7 @@ type MenuNameMap = Record<string, string>;
 
 type AdminCartItem = CartItem & {
   id?: string;
+  cartItemId?: string;
   name?: string;
   menuItemName?: string;
   unitPrice?: number;
@@ -54,8 +55,10 @@ function normalizeCartResponse(value: unknown): CartResponse {
     data = (data as Record<string, unknown>).data;
   }
 
-  const object =
-    data && typeof data === "object" && !Array.isArray(data)
+  const object: Record<string, unknown> =
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data)
       ? (data as Record<string, unknown>)
       : {};
 
@@ -73,7 +76,12 @@ function normalizeCartResponse(value: unknown): CartResponse {
       )
     : [];
 
-  return {
+  const totalQuantityValue = readValue(object, [
+    "totalQuantity",
+    "TotalQuantity",
+  ]);
+
+  const normalized = {
     ...object,
     cartId: String(
       readValue(object, ["cartId", "CartId"]) ?? ""
@@ -89,17 +97,19 @@ function normalizeCartResponse(value: unknown): CartResponse {
       readValue(object, ["subtotal", "Subtotal"]) ?? 0
     ),
     totalQuantity: Number(
-      readValue(object, ["totalQuantity", "TotalQuantity"]) ??
+      totalQuantityValue ??
         items.reduce(
           (sum, item) => sum + Number(item.quantity || 0),
           0
         )
     ),
-  } as CartResponse;
+  };
+
+  return normalized as unknown as CartResponse;
 }
 
 function CartPage() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const [cart, setCart] = useState<CartResponse | null>(null);
   const [menuNames, setMenuNames] = useState<MenuNameMap>({});
@@ -115,10 +125,8 @@ function CartPage() {
   const language = i18n.language;
 
   const text = useCallback(
-    (
-      english: string,
-      marathi: string
-    ) => (language.startsWith("mr") ? marathi : english),
+    (english: string, marathi: string) =>
+      language.startsWith("mr") ? marathi : english,
     [language]
   );
 
@@ -139,10 +147,12 @@ function CartPage() {
     } catch (err) {
       console.error("Admin cart loading failed:", err);
       setCart(null);
-      setError(text(
-        "Unable to load cart. Please check the Cart API.",
-        "कार्ट लोड करता आला नाही. कृपया Cart API तपासा."
-      ));
+      setError(
+        text(
+          "Unable to load cart. Please check the Cart API.",
+          "कार्ट लोड करता आला नाही. कृपया Cart API तपासा."
+        )
+      );
     } finally {
       setLoading(false);
     }
@@ -255,18 +265,22 @@ function CartPage() {
     const cartItemId = getCartItemId(selectedItem);
 
     if (!Number.isInteger(newQuantity) || newQuantity < 1) {
-      setError(text(
-        "Enter a valid quantity.",
-        "कृपया योग्य संख्या टाका."
-      ));
+      setError(
+        text(
+          "Enter a valid quantity.",
+          "कृपया योग्य संख्या टाका."
+        )
+      );
       return;
     }
 
     if (!cartItemId) {
-      setError(text(
-        "Cart item ID is missing.",
-        "Cart Item ID उपलब्ध नाही."
-      ));
+      setError(
+        text(
+          "Cart item ID is missing.",
+          "Cart Item ID उपलब्ध नाही."
+        )
+      );
       return;
     }
 
@@ -279,16 +293,20 @@ function CartPage() {
       setSelectedItem(null);
       await loadCart();
 
-      setMessage(text(
-        "Quantity updated successfully.",
-        "Quantity यशस्वीरीत्या अपडेट झाली."
-      ));
+      setMessage(
+        text(
+          "Quantity updated successfully.",
+          "Quantity यशस्वीरीत्या अपडेट झाली."
+        )
+      );
     } catch (err) {
       console.error("Admin quantity update failed:", err);
-      setError(text(
-        "Unable to update quantity.",
-        "Quantity अपडेट करता आली नाही."
-      ));
+      setError(
+        text(
+          "Unable to update quantity.",
+          "Quantity अपडेट करता आली नाही."
+        )
+      );
     } finally {
       setActionId(null);
     }
@@ -299,10 +317,12 @@ function CartPage() {
     const cartItemId = getCartItemId(item);
 
     if (!cartItemId) {
-      setError(text(
-        "Cart item ID is missing.",
-        "Cart Item ID उपलब्ध नाही."
-      ));
+      setError(
+        text(
+          "Cart item ID is missing.",
+          "Cart Item ID उपलब्ध नाही."
+        )
+      );
       return;
     }
 
@@ -331,16 +351,20 @@ function CartPage() {
 
       await loadCart();
 
-      setMessage(text(
-        "Cart item deleted successfully.",
-        "Cart item यशस्वीरीत्या delete झाला."
-      ));
+      setMessage(
+        text(
+          "Cart item deleted successfully.",
+          "Cart item यशस्वीरीत्या delete झाला."
+        )
+      );
     } catch (err) {
       console.error("Admin item deletion failed:", err);
-      setError(text(
-        "Unable to delete cart item.",
-        "Cart item delete करता आला नाही."
-      ));
+      setError(
+        text(
+          "Unable to delete cart item.",
+          "Cart item delete करता आला नाही."
+        )
+      );
     } finally {
       setActionId(null);
     }
@@ -357,16 +381,20 @@ function CartPage() {
       const result = await validateCart();
       setValidationResult(result);
 
-      setMessage(text(
-        "Cart validation completed.",
-        "Cart validation पूर्ण झाले."
-      ));
+      setMessage(
+        text(
+          "Cart validation completed.",
+          "Cart validation पूर्ण झाले."
+        )
+      );
     } catch (err) {
       console.error("Cart validation failed:", err);
-      setError(text(
-        "Cart validation failed.",
-        "Cart validation अयशस्वी झाले."
-      ));
+      setError(
+        text(
+          "Cart validation failed.",
+          "Cart validation अयशस्वी झाले."
+        )
+      );
     } finally {
       setActionId(null);
     }
@@ -395,16 +423,20 @@ function CartPage() {
       setValidationResult(null);
       setCurrentPage(1);
 
-      setMessage(text(
-        "Cart deleted successfully.",
-        "Cart यशस्वीरीत्या delete झाला."
-      ));
+      setMessage(
+        text(
+          "Cart deleted successfully.",
+          "Cart यशस्वीरीत्या delete झाला."
+        )
+      );
     } catch (err) {
       console.error("Cart deletion failed:", err);
-      setError(text(
-        "Unable to delete cart.",
-        "Cart delete करता आला नाही."
-      ));
+      setError(
+        text(
+          "Unable to delete cart.",
+          "Cart delete करता आला नाही."
+        )
+      );
     } finally {
       setActionId(null);
     }
