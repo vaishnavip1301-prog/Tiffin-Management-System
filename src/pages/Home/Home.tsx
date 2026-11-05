@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./Home.css";
@@ -84,11 +85,15 @@ function Home() {
 
   return (
     <div className="home-page">
-      {/* HERO SECTION */}
+
+      {/* ================= HERO SECTION ================= */}
+
       <section className="home-hero">
         <div className="container">
-          <div className="row align-items-center g-4">
+          <div className="row align-items-center g-5">
+
             <div className="col-lg-6 hero-copy">
+
               <div className="hero-label">
                 <i className="bi bi-leaf-fill"></i>
                 {t("home.hero.label")}
@@ -122,15 +127,20 @@ function Home() {
                 <span className="hero-note-icon">
                   <i className="bi bi-heart-fill"></i>
                 </span>
+
                 <span>
                   <strong>{t("home.hero.careTitle")}</strong>
                   <small>{t("home.hero.careDescription")}</small>
                 </span>
               </div>
+
             </div>
 
             <div className="col-lg-6 hero-visual">
               <div className="hero-image-frame">
+
+                <div className="hero-image-backdrop"></div>
+
                 <img
                   src="/images/tiffin4.jpg"
                   alt={t("home.hero.imageAlt")}
@@ -139,6 +149,7 @@ function Home() {
 
                 <div className="hero-image-badge">
                   <i className="bi bi-stars"></i>
+
                   <span>
                     <strong>{t("home.hero.badgeTitle")}</strong>
                     <small>{t("home.hero.badgeDescription")}</small>
@@ -152,19 +163,24 @@ function Home() {
                 <div className="hero-floating-leaf hero-leaf-two">
                   <i className="bi bi-leaf"></i>
                 </div>
+
               </div>
             </div>
+
           </div>
         </div>
       </section>
 
-      {/* BENEFITS */}
+      {/* ================= BENEFITS STRIP ================= */}
+
       <section className="home-benefits">
-        <div className="container-fluid px-4 px-lg-5">
+        <div className="container">
           <div className="row g-3">
+
             {benefits.map((benefit, index) => (
               <div className="col-6 col-lg-3" key={benefit.title}>
                 <div className="benefit-item" data-delay={index}>
+
                   <div className="benefit-icon">
                     <i className={`bi ${benefit.icon}`}></i>
                   </div>
@@ -173,37 +189,199 @@ function Home() {
                     <h3>{benefit.title}</h3>
                     <p>{benefit.description}</p>
                   </div>
+
                 </div>
               </div>
             ))}
+
           </div>
         </div>
       </section>
 
-      {/* HOMEMADE FOOD VIDEO SECTION */}
-      <section className="home-food-video-section">
-        <video
-          className="home-food-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          controls
-          preload="metadata"
-          poster="/images/tiffin4.jpg"
-        >
-          <source src="/videos/video.mp4" type="video/mp4" />
-          {t("home.videoFallback")}
-        </video>
+      {/* ================= OUR STORY ================= */}
+
+      <section className="home-story section-padding">
+        <div className="container">
+
+          <div className="row align-items-center g-5">
+
+            <div className="col-lg-6">
+              <div className="story-gallery">
+
+                <div className="story-image story-image-main">
+                  <img
+                    src="/images/tiffin2.jpg"
+                    alt="Aapla Dabba homemade meal"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="story-image story-image-top">
+                  <img
+                    src="/images/tiffin1.jpg"
+                    alt="Fresh homemade tiffin"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="story-image story-image-bottom">
+                  <img
+                    src="/images/tiffin.jpg"
+                    alt="Traditional Indian food"
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="story-decoration story-decoration-one"></div>
+                <div className="story-decoration story-decoration-two"></div>
+
+                <div className="story-image-label">
+                  <i className="bi bi-heart-fill"></i>
+                  <span>{t("home.hero.careTitle")}</span>
+                </div>
+
+              </div>
+            </div>
+
+            <div className="col-lg-6">
+              <div className="story-content">
+
+                <span className="section-eyebrow">
+                  <i className="bi bi-flower1"></i>
+                  {t("home.hero.label")}
+                </span>
+
+                <h2>{t("home.hero.title")}</h2>
+
+                <p className="story-description">
+                  {t("home.hero.description")}
+                </p>
+
+                <div className="story-feature">
+                  <span>
+                    <i className="bi bi-check-lg"></i>
+                  </span>
+                  <div>
+                    <strong>{t("home.benefits.fresh.title")}</strong>
+                    <p>{t("home.benefits.fresh.description")}</p>
+                  </div>
+                </div>
+
+                <div className="story-feature">
+                  <span>
+                    <i className="bi bi-check-lg"></i>
+                  </span>
+                  <div>
+                    <strong>{t("home.benefits.homemade.title")}</strong>
+                    <p>{t("home.benefits.homemade.description")}</p>
+                  </div>
+                </div>
+
+                <Link to="/about" className="story-button">
+                  {t("home.mealPlans.exploreAll")}
+                  <i className="bi bi-arrow-right"></i>
+                </Link>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
       </section>
 
-      {/* MEAL PLANS */}
+      {/* ================= HOMEMADE FOOD VIDEO ================= */}
+
+      <section className="home-food-video-section">
+        <div className="container">
+
+          <div className="video-section-heading">
+            <span className="section-eyebrow">
+              <i className="bi bi-camera-video"></i>
+              {t("home.hero.label")}
+            </span>
+
+            <h2>
+              {t("home.hero.title")}
+              <span>{t("home.hero.titleHighlight")}</span>
+            </h2>
+
+            <p>{t("home.hero.description")}</p>
+          </div>
+
+          <div className="food-video-frame">
+            <video
+              className="home-food-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              preload="metadata"
+              poster="/images/tiffin4.jpg"
+            >
+              <source src="/videos/video.mp4" type="video/mp4" />
+              {t("home.videoFallback")}
+            </video>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ================= WHY CHOOSE US ================= */}
+
+      <section className="home-why section-padding">
+        <div className="container">
+
+          <div className="why-heading">
+            <span className="section-eyebrow">
+              <i className="bi bi-award"></i>
+              {t("home.hero.label")}
+            </span>
+
+            <h2>
+              {t("home.mealPlans.heading")}
+              <span>{t("home.mealPlans.headingHighlight")}</span>
+            </h2>
+
+            <p>{t("home.mealPlans.headingDescription")}</p>
+          </div>
+
+          <div className="row g-4">
+
+            {benefits.map((benefit, index) => (
+              <div className="col-sm-6 col-lg-3" key={benefit.title}>
+                <article className="why-card" data-delay={index}>
+
+                  <div className="why-icon">
+                    <i className={`bi ${benefit.icon}`}></i>
+                  </div>
+
+                  <span className="why-number">
+                    0{index + 1}
+                  </span>
+
+                  <h3>{benefit.title}</h3>
+                  <p>{benefit.description}</p>
+
+                  <div className="why-card-line"></div>
+
+                </article>
+              </div>
+            ))}
+
+          </div>
+        </div>
+      </section>
+
+      {/* ================= MEAL PLANS ================= */}
+
       <section className="home-plans section-padding">
         <div className="container">
+
           <div className="section-heading">
             <div>
               <span className="section-eyebrow">
-                <i className="bi bi-flower1"></i>{" "}
+                <i className="bi bi-calendar-heart"></i>
                 {t("home.mealPlans.headingLabel")}
               </span>
 
@@ -222,16 +400,26 @@ function Home() {
           </div>
 
           <div className="row g-4">
+
             {mealPlans.map((plan, index) => (
               <div className="col-md-6 col-lg-4" key={plan.name}>
-                <article className="meal-plan-card" data-delay={index}>
-                  <div className="meal-plan-image-wrap">
-                    <img src={plan.image} alt={plan.name} />
 
-                    <span className="meal-plan-tag">{plan.tag}</span>
+                <article className="meal-plan-card" data-delay={index}>
+
+                  <div className="meal-plan-image-wrap">
+                    <img
+                      src={plan.image}
+                      alt={plan.name}
+                      loading="lazy"
+                    />
+
+                    <span className="meal-plan-tag">
+                      {plan.tag}
+                    </span>
                   </div>
 
                   <div className="meal-plan-content">
+
                     <div className="meal-plan-title">
                       <span className="meal-plan-icon">
                         <i className={`bi ${plan.icon}`}></i>
@@ -243,6 +431,7 @@ function Home() {
                     <p>{plan.description}</p>
 
                     <div className="meal-plan-bottom">
+
                       <div className="meal-plan-price">
                         <strong>{plan.price}</strong>
                         <span>{plan.period}</span>
@@ -258,21 +447,26 @@ function Home() {
                         {t("home.mealPlans.explore")}
                         <i className="bi bi-arrow-right"></i>
                       </Link>
+
                     </div>
                   </div>
+
                 </article>
               </div>
             ))}
+
           </div>
         </div>
       </section>
 
-      {/* TODAY'S SPECIAL */}
-      <section className="home-special">
+      {/* ================= TODAY'S SPECIAL ================= */}
+
+      <section className="home-special section-padding">
         <div className="container">
+
           <div className="special-heading">
             <span className="section-eyebrow">
-              <i className="bi bi-fire"></i>{" "}
+              <i className="bi bi-fire"></i>
               {t("home.specialDishes.headingLabel")}
             </span>
 
@@ -282,17 +476,36 @@ function Home() {
           </div>
 
           <div className="row g-4">
+
             {specialDishes.map((dish, index) => (
               <div className="col-md-6 col-lg-4" key={dish.name}>
+
                 <article className="special-card" data-delay={index}>
-                  <img src={dish.image} alt={dish.name} />
+
+                  <div className="special-image-wrap">
+                    <img
+                      src={dish.image}
+                      alt={dish.name}
+                      loading="lazy"
+                    />
+
+                    <span className="special-price">
+                      {dish.price}
+                    </span>
+                  </div>
 
                   <div className="special-card-content">
+
                     <h3>{dish.name}</h3>
+
                     <p>{dish.description}</p>
 
                     <div className="special-card-bottom">
-                      <strong>{dish.price}</strong>
+
+                      <span className="special-fresh-label">
+                        <i className="bi bi-check-circle-fill"></i>
+                        {t("home.hero.label")}
+                      </span>
 
                       <Link
                         to="/menu"
@@ -303,19 +516,27 @@ function Home() {
                         {t("home.specialDishes.viewMenu")}
                         <i className="bi bi-arrow-right"></i>
                       </Link>
+
                     </div>
                   </div>
+
                 </article>
               </div>
             ))}
+
           </div>
         </div>
       </section>
 
-      {/* FINAL CALL TO ACTION */}
+      {/* ================= FINAL CTA ================= */}
+
       <section className="home-cta-section">
         <div className="container">
+
           <div className="home-cta">
+
+            <div className="home-cta-pattern"></div>
+
             <div className="home-cta-icon">
               <i className="bi bi-basket2"></i>
             </div>
@@ -330,9 +551,11 @@ function Home() {
               {t("home.cta.button")}
               <i className="bi bi-arrow-right"></i>
             </Link>
+
           </div>
         </div>
       </section>
+
     </div>
   );
 }
