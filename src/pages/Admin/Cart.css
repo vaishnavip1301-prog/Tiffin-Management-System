@@ -229,6 +229,40 @@
 }
 
 /* =========================================
+   QUANTITY INPUT - NEW
+========================================= */
+
+.cart-quantity-input {
+  width: 75px;
+  height: 35px;
+  padding: 6px 9px;
+  color: #294c38;
+  background: #fff;
+  border: 1px solid #cbdccf;
+  border-radius: 6px;
+  outline: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.cart-quantity-input:hover {
+  border-color: #347653;
+}
+
+.cart-quantity-input:focus {
+  border-color: #347653;
+  box-shadow: 0 0 0 3px rgba(52, 118, 83, 0.12);
+}
+
+.cart-quantity-input:disabled {
+  background: #f2f5f2;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================================
    TABLE CARD
 ========================================= */
 
@@ -375,7 +409,7 @@
   transition: all 0.2s ease;
 }
 
-/* View Button */
+/* View / Update Button */
 
 .cart-edit-btn {
   color: #1769aa;
@@ -550,6 +584,11 @@
 
   .cart-details-heading h3 {
     font-size: 17px;
+  }
+
+  .cart-quantity-input {
+    width: 65px;
+    height: 34px;
   }
 
   .cart-table-toolbar {

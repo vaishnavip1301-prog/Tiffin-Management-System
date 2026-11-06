@@ -18,3 +18,13 @@ export const cartAxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+
+// Identity / Authentication API
+export const authAxiosInstance = axios.create({
+  baseURL: "https://tiffinuser.ciitstudent.com",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});

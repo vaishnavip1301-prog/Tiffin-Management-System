@@ -1,15 +1,7 @@
 
 import { cartAxiosInstance } from "./axiosInstance";
 
-// =====================================================
-// CONSTANTS
-// =====================================================
-
 const GUEST_CART_TOKEN_KEY = "aaplaDabba_guestCartToken";
-
-// =====================================================
-// REQUEST INTERFACES
-// =====================================================
 
 export interface CartItemRequest {
   menuItemId: string;
@@ -20,9 +12,17 @@ export interface UpdateCartQuantityRequest {
   quantity: number;
 }
 
-// =====================================================
-// CART ITEM RESPONSE DTO
-// =====================================================
+export interface CartItemQuantityUpdateDto {
+  [key: string]: unknown;
+}
+
+export interface AdminUpdateCartRequest {
+  id: string;
+  expiresAtUtc: string | null;
+  itemQuantities: CartItemQuantityUpdateDto[];
+  status: number | null;
+}
+
 
 export interface CartItem {
   id: string;
@@ -53,10 +53,6 @@ export interface CartItem {
   currencyCode: string;
 }
 
-// =====================================================
-// CART RESPONSE DTO
-// =====================================================
-
 export interface CartResponse {
   cartId: string;
   status: string;
@@ -71,10 +67,6 @@ export interface CartResponse {
   updatedAtUtc: string | null;
 }
 
-// =====================================================
-// ADD CART RESPONSE
-// =====================================================
-
 export interface AddCartResponse {
   cartId?: string;
   guestCartToken?: string;
@@ -82,10 +74,6 @@ export interface AddCartResponse {
   currencyCode?: string;
   [key: string]: unknown;
 }
-
-// =====================================================
-// RESPONSE HANDLER
-// =====================================================
 
 function getResponseData<T>(responseData: unknown): T {
   let result = responseData;
@@ -103,16 +91,10 @@ function getResponseData<T>(responseData: unknown): T {
   return result as T;
 }
 
-// =====================================================
-// GUEST CART TOKEN - LOCAL STORAGE
-// =====================================================
-
-// Get saved token
 export function getGuestCartToken(): string | null {
   return localStorage.getItem(GUEST_CART_TOKEN_KEY);
 }
 
-// Save token
 export function saveGuestCartToken(token: string): void {
   if (!token || !token.trim()) {
     throw new Error("Guest Cart Token is required.");
@@ -121,27 +103,19 @@ export function saveGuestCartToken(token: string): void {
   localStorage.setItem(GUEST_CART_TOKEN_KEY, token);
 }
 
-// Remove token
 export function clearGuestCartToken(): void {
   localStorage.removeItem(GUEST_CART_TOKEN_KEY);
 }
 
-// Create headers with guest token
 function getCartHeaders(token: string) {
   return {
     "X-Guest-Cart-Token": token,
   };
 }
 
-// =====================================================
-// CREATE CART
-// POST /AddCart
-// =====================================================
-
 let createCartPromise: Promise<AddCartResponse> | null = null;
 
 export async function createCart(): Promise<AddCartResponse> {
-  // Prevent multiple cart creation requests
   if (createCartPromise) {
     return createCartPromise;
   }
@@ -157,7 +131,6 @@ export async function createCart(): Promise<AddCartResponse> {
       );
     }
 
-    // Save token in localStorage
     saveGuestCartToken(data.guestCartToken);
 
     console.log("Cart Created:", data);
@@ -173,19 +146,14 @@ export async function createCart(): Promise<AddCartResponse> {
   }
 }
 
-// =====================================================
-// ENSURE GUEST CART TOKEN
-// =====================================================
 
 export async function ensureGuestCartToken(): Promise<string> {
-  // Use existing token from localStorage
   const existingToken = getGuestCartToken();
 
   if (existingToken) {
     return existingToken;
   }
 
-  // Create cart only if token does not exist
   const cart = await createCart();
 
   if (!cart.guestCartToken) {
@@ -195,10 +163,6 @@ export async function ensureGuestCartToken(): Promise<string> {
   return cart.guestCartToken;
 }
 
-// =====================================================
-// GET CART
-// GET /GetCart
-// =====================================================
 
 export async function getCart(): Promise<CartResponse> {
   const token = await ensureGuestCartToken();
@@ -210,10 +174,6 @@ export async function getCart(): Promise<CartResponse> {
   return getResponseData<CartResponse>(response.data);
 }
 
-// =====================================================
-// GET MY CART
-// GET /GetMyCart
-// =====================================================
 
 export async function getMyCart(): Promise<CartResponse> {
   const token = await ensureGuestCartToken();
@@ -229,10 +189,6 @@ export async function getMyCart(): Promise<CartResponse> {
   return data;
 }
 
-// =====================================================
-// GET CART ITEM BY ID
-// GET /GetCartItemById/{cartItemId}
-// =====================================================
 
 export async function getCartItemById(
   cartItemId: string
@@ -253,10 +209,6 @@ export async function getCartItemById(
   return getResponseData<CartItem>(response.data);
 }
 
-// =====================================================
-// ASSOCIATE GUEST CART
-// POST /AssociateGuestCart
-// =====================================================
 
 export async function associateGuestCart(
   requestBody: Record<string, unknown>
@@ -273,11 +225,6 @@ export async function associateGuestCart(
 
   return getResponseData<unknown>(response.data);
 }
-
-// =====================================================
-// ADD CART ITEM
-// POST /AddCartItem
-// =====================================================
 
 export async function addCartItem(
   input: CartItemRequest
@@ -310,10 +257,6 @@ export async function addCartItem(
   return await getMyCart();
 }
 
-// =====================================================
-// UPDATE CART ITEM QUANTITY
-// PUT /UpdateCartItemQty/{cartItemId}
-// =====================================================
 
 export async function updateCartItemQty(
   cartItemId: string,
@@ -340,10 +283,6 @@ export async function updateCartItemQty(
   return await getMyCart();
 }
 
-// =====================================================
-// REMOVE CART ITEM BY CART ITEM ID
-// DELETE /RemoveCartItem/{cartItemId}
-// =====================================================
 
 export async function removeCartItem(
   cartItemId: string
@@ -364,10 +303,6 @@ export async function removeCartItem(
   return await getMyCart();
 }
 
-// =====================================================
-// REMOVE CART ITEM BY MENU ITEM ID
-// DELETE /RemoveCartItemById/{menuItemId}
-// =====================================================
 
 export async function removeCartItemByMenuItemId(
   menuItemId: string
@@ -388,11 +323,6 @@ export async function removeCartItemByMenuItemId(
   return await getMyCart();
 }
 
-// =====================================================
-// DELETE CART
-// DELETE /DeleteCart
-// =====================================================
-
 export async function deleteCart(): Promise<void> {
   const token = getGuestCartToken();
 
@@ -407,11 +337,6 @@ export async function deleteCart(): Promise<void> {
   clearGuestCartToken();
 }
 
-// =====================================================
-// DELETE CART ITEM
-// DELETE /DeleteCartItem
-// =====================================================
-
 export async function deleteCartItem(): Promise<void> {
   const token = await ensureGuestCartToken();
 
@@ -420,10 +345,6 @@ export async function deleteCartItem(): Promise<void> {
   });
 }
 
-// =====================================================
-// VALIDATE CART
-// GET /ValidateCart
-// =====================================================
 
 export async function validateCart(): Promise<unknown> {
   const token = await ensureGuestCartToken();
@@ -435,25 +356,17 @@ export async function validateCart(): Promise<unknown> {
   return getResponseData<unknown>(response.data);
 }
 
-// =====================================================
-// ADMIN: GET ALL CARTS
-// GET /GetAllCarts
-// =====================================================
 
-export async function getAllCarts(): Promise<unknown> {
+export async function getAllCarts(): Promise<CartResponse[]> {
   const response = await cartAxiosInstance.get("/GetAllCarts");
 
-  const data = getResponseData<unknown>(response.data);
+  const data = getResponseData<CartResponse[]>(response.data);
 
   console.log("Get All Carts Response:", data);
 
   return data;
 }
 
-// =====================================================
-// ADMIN: GET CART BY ID
-// GET /GetCartById/{cartId}
-// =====================================================
 
 export async function getCartById(
   cartId: string
@@ -469,17 +382,17 @@ export async function getCartById(
   return getResponseData<CartResponse>(response.data);
 }
 
-// =====================================================
-// ADMIN: UPDATE CART
-// PUT /UpdateCart/{cartId}
-// =====================================================
 
 export async function updateCart(
   cartId: string,
-  requestBody: Record<string, unknown>
+  requestBody: AdminUpdateCartRequest
 ): Promise<unknown> {
   if (!cartId) {
     throw new Error("Cart ID is required.");
+  }
+
+  if (!requestBody.id) {
+    throw new Error("Cart ID in request body is required.");
   }
 
   const response = await cartAxiosInstance.put(
@@ -487,10 +400,11 @@ export async function updateCart(
     requestBody
   );
 
+  console.log("Update Cart Response:", response.data);
+
   return getResponseData<unknown>(response.data);
 }
 
-// =====================================================
 // ADMIN: DELETE CART BY ID
 // DELETE /Admin/DeleteCart/{cartId}
 // =====================================================
@@ -507,9 +421,6 @@ export async function adminDeleteCart(
   );
 }
 
-// =====================================================
-// RESET GUEST CART
-// =====================================================
 
 export async function resetGuestCart(): Promise<void> {
   await deleteCart();
